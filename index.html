@@ -1475,37 +1475,37 @@
     .status-badge {
       display: inline-flex;
       align-items: center;
-      gap: 8px;
-      padding: 8px 16px;
-      border-radius: 24px;
-      font-size: 13px;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-size: 12px;
       font-weight: 600;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.4px;
     }
 
     .status-badge.not-started {
-      background: linear-gradient(135deg, rgba(149, 165, 166, 0.15) 0%, rgba(149, 165, 166, 0.25) 100%);
-      color: #7f8c8d;
-      border: 2px solid rgba(149, 165, 166, 0.3);
+      background: rgba(113, 128, 150, 0.1);
+      color: #718096;
+      border: 1px solid rgba(113, 128, 150, 0.25);
     }
 
     .status-badge.in-progress {
-      background: linear-gradient(135deg, rgba(52, 152, 219, 0.15) 0%, rgba(41, 128, 185, 0.25) 100%);
-      color: #2980b9;
-      border: 2px solid rgba(52, 152, 219, 0.4);
-      animation: progressPulse 2s infinite;
+      background: rgba(49, 130, 206, 0.1);
+      color: #2b6cb0;
+      border: 1px solid rgba(49, 130, 206, 0.3);
+      animation: progressPulse 2.5s infinite;
     }
 
     @keyframes progressPulse {
-      0%, 100% { box-shadow: 0 0 0 0 rgba(52, 152, 219, 0.4); }
-      50% { box-shadow: 0 0 0 8px rgba(52, 152, 219, 0); }
+      0%, 100% { box-shadow: 0 0 0 0 rgba(49, 130, 206, 0.3); }
+      50% { box-shadow: 0 0 0 4px rgba(49, 130, 206, 0); }
     }
 
     .status-badge.completed {
-      background: linear-gradient(135deg, rgba(39, 174, 96, 0.15) 0%, rgba(33, 154, 82, 0.25) 100%);
-      color: #27ae60;
-      border: 2px solid rgba(39, 174, 96, 0.4);
+      background: rgba(72, 187, 120, 0.1);
+      color: #276749;
+      border: 1px solid rgba(72, 187, 120, 0.3);
     }
 
     /* Assessment Card for History */
@@ -1530,21 +1530,46 @@
 
     .assessment-card-header {
       padding: 24px;
-      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+      background: linear-gradient(160deg, #1a2f4a 0%, #2d4a6f 50%, #1e3a5f 100%);
       color: white;
       position: relative;
+      overflow: hidden;
+    }
+
+    /* Subtle corner glow effect */
+    .assessment-card-header::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -50%;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 60%);
+      pointer-events: none;
     }
 
     .assessment-card-header.in-progress {
-      background: linear-gradient(135deg, #2980b9 0%, #3498db 100%);
+      background: linear-gradient(160deg, #1e3a5f 0%, #2c5282 50%, #1a365d 100%);
+    }
+
+    .assessment-card-header.in-progress::before {
+      background: radial-gradient(circle at top right, rgba(52, 152, 219, 0.15) 0%, transparent 50%);
     }
 
     .assessment-card-header.completed {
-      background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+      background: linear-gradient(160deg, #1a2f4a 0%, #234e6f 50%, #1e3a5f 100%);
+    }
+
+    .assessment-card-header.completed::before {
+      background: radial-gradient(circle at top right, rgba(39, 174, 96, 0.2) 0%, transparent 50%);
     }
 
     .assessment-card-header.not-started {
-      background: linear-gradient(135deg, #7f8c8d 0%, #95a5a6 100%);
+      background: linear-gradient(160deg, #2d3748 0%, #4a5568 50%, #2d3748 100%);
+    }
+
+    .assessment-card-header.not-started::before {
+      background: radial-gradient(circle at top right, rgba(160, 174, 192, 0.1) 0%, transparent 50%);
     }
 
     .assessment-card-logo {
@@ -3416,7 +3441,8 @@
     // Sub-standard Card
     const SubstandardCard = ({ substandard, score, onScoreChange }) => {
       const scoreValue = score?.value;
-      const comment = score?.comment || '';
+      // Support both 'comment' (live scoring) and 'findings' (mock/imported data)
+      const comment = score?.comment || score?.findings || '';
       const location = score?.location || '';
 
       const getScoreClass = () => {
@@ -3933,9 +3959,9 @@
       const [errors, setErrors] = useState({});
 
       const configOptions = [
-        { value: 'A1', label: 'Configuration A • Surveyor 1', desc: 'LD, PC, DL, IPC (180 sub-standards)' },
-        { value: 'A2', label: 'Configuration A • Surveyor 2', desc: 'LD, PC, MOI, FMS (169 sub-standards)' },
-        { value: 'B', label: 'Configuration B • Full Survey', desc: 'All 6 Domains: LD, PC, DL, IPC, MOI, FMS (349 sub-standards)' }
+        { value: 'A1', label: 'A - Surveyor 1', desc: 'LD, PC, DL, IPC (180 sub-standards)' },
+        { value: 'A2', label: 'A - Surveyor 2', desc: 'LD, PC, MOI, FMS (169 sub-standards)' },
+        { value: 'B', label: 'B - Full Survey', desc: 'All 6 Domains: LD, PC, DL, IPC, MOI, FMS (349 sub-standards)' }
       ];
 
       useEffect(() => {
@@ -4238,7 +4264,9 @@
       const [showCompletionModal, setShowCompletionModal] = useState(false);
       const [showConfirmDialog, setShowConfirmDialog] = useState(false);
       const [isSubmitting, setIsSubmitting] = useState(false);
-      const [completionShown, setCompletionShown] = useState(false);
+      // Track previous pending count to detect active completion (not page load)
+      const prevPendingRef = useRef(null);
+      const isInitialLoadRef = useRef(true);
 
       // Expanded domains state for Configuration B sidebar (all expanded by default)
       const [expandedDomains, setExpandedDomains] = useState({
@@ -4364,13 +4392,27 @@
         return { total, scored, fullyMet, partial, notMet, na, percentage, applicable };
       }, [scores, activeChapters]);
 
-      // Detect completion and show celebration modal
+      // Detect completion and show celebration modal - only on ACTIVE completion, not page load
       useEffect(() => {
-        if (overallPending === 0 && overallStats.total > 0 && !completionShown && !isFinalized) {
-          setShowCompletionModal(true);
-          setCompletionShown(true);
+        // Skip showing modal on initial page load
+        if (isInitialLoadRef.current) {
+          isInitialLoadRef.current = false;
+          prevPendingRef.current = overallPending;
+          return;
         }
-      }, [overallPending, overallStats.total, completionShown, isFinalized]);
+
+        // Only show modal when user actively completes the last item
+        // (pending transitions from >0 to 0, not when it's already 0 on load)
+        const wasIncomplete = prevPendingRef.current !== null && prevPendingRef.current > 0;
+        const isNowComplete = overallPending === 0 && overallStats.total > 0;
+
+        if (wasIncomplete && isNowComplete && !isFinalized) {
+          setShowCompletionModal(true);
+        }
+
+        // Update the ref for next comparison
+        prevPendingRef.current = overallPending;
+      }, [overallPending, overallStats.total, isFinalized]);
 
       // Handle finalization
       const handleFinalizeClick = () => {
@@ -4631,7 +4673,7 @@
             </div>
             <button className="chapters-summary-btn" onClick={() => setShowSummary(true)}>
               CHAPTERS SUMMARY
-              <span className="summary-numbers">{scoreStats.fullyMet}/{scoreStats.scored}/{scoreStats.notMet}</span>
+              <span className="summary-numbers">{overallStats.fullyMet}/{overallStats.scored}/{overallStats.notMet}</span>
             </button>
             {isFinalized ? (
               <div className="finalized-badge">
@@ -4649,30 +4691,82 @@
               {assessmentDetails?.configuration === 'B' ? (
                 /* Full Survey Mode - Domain-grouped navigation */
                 <div className="sidebar-section">
-                  <div className="sidebar-title" style={{marginBottom: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-                    <span style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
-                      📊 All Domains
-                      <span style={{fontSize: '11px', background: 'var(--bg-hover)', padding: '2px 8px', borderRadius: '10px', color: 'var(--text-muted)'}}>
-                        {activeChapters.reduce((sum, ch) => sum + getAllSubstandards(ch.standards).length, 0)} total
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    padding: '12px 8px',
+                    marginBottom: '8px',
+                    borderBottom: '1px solid var(--border)'
+                  }}>
+                    <div style={{display: 'flex', alignItems: 'baseline', gap: '10px'}}>
+                      <span style={{
+                        fontSize: '11px',
+                        fontWeight: 600,
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.5px',
+                        color: 'var(--text-muted)'
+                      }}>All Domains</span>
+                      <span style={{
+                        fontSize: '13px',
+                        fontWeight: 600,
+                        color: 'var(--text-secondary)'
+                      }}>
+                        {activeChapters.reduce((sum, ch) => sum + getAllSubstandards(ch.standards).length, 0)}
+                        <span style={{fontSize: '10px', fontWeight: 500, marginLeft: '3px', textTransform: 'uppercase'}}>total</span>
                       </span>
-                    </span>
-                    <div style={{display: 'flex', gap: '4px'}}>
+                    </div>
+                    <div style={{display: 'flex', gap: '2px'}}>
                       <button
                         onClick={expandAllDomains}
                         title="Expand All"
                         style={{
-                          background: 'var(--bg-hover)', border: 'none', borderRadius: '4px',
-                          padding: '4px 8px', cursor: 'pointer', fontSize: '11px', color: 'var(--text-secondary)'
+                          background: 'transparent',
+                          border: '1px solid var(--border)',
+                          borderRadius: '4px',
+                          width: '26px',
+                          height: '26px',
+                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          color: 'var(--text-muted)',
+                          transition: 'all 0.15s ease'
                         }}
-                      >⊞</button>
+                        onMouseOver={(e) => { e.currentTarget.style.background = 'var(--bg-hover)'; e.currentTarget.style.borderColor = 'var(--text-muted)'; }}
+                        onMouseOut={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.borderColor = 'var(--border)'; }}
+                      >
+                        <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor">
+                          <rect x="1" y="1" width="6" height="6" rx="1" />
+                          <rect x="9" y="1" width="6" height="6" rx="1" />
+                          <rect x="1" y="9" width="6" height="6" rx="1" />
+                          <rect x="9" y="9" width="6" height="6" rx="1" />
+                        </svg>
+                      </button>
                       <button
                         onClick={collapseAllDomains}
                         title="Collapse All"
                         style={{
-                          background: 'var(--bg-hover)', border: 'none', borderRadius: '4px',
-                          padding: '4px 8px', cursor: 'pointer', fontSize: '11px', color: 'var(--text-secondary)'
+                          background: 'transparent',
+                          border: '1px solid var(--border)',
+                          borderRadius: '4px',
+                          width: '26px',
+                          height: '26px',
+                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          color: 'var(--text-muted)',
+                          transition: 'all 0.15s ease'
                         }}
-                      >⊟</button>
+                        onMouseOver={(e) => { e.currentTarget.style.background = 'var(--bg-hover)'; e.currentTarget.style.borderColor = 'var(--text-muted)'; }}
+                        onMouseOut={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.borderColor = 'var(--border)'; }}
+                      >
+                        <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor">
+                          <rect x="1" y="4" width="14" height="3" rx="1" />
+                          <rect x="1" y="9" width="14" height="3" rx="1" />
+                        </svg>
+                      </button>
                     </div>
                   </div>
                   {activeChapters.map(chapter => {
@@ -4911,32 +5005,32 @@
           <div className="score-summary-panel">
             <div className="score-display">
               <div className="score-main">
-                <div className={`score-percentage ${getScoreColorClass(scoreStats.percentage)}`}>{scoreStats.percentage}%</div>
+                <div className={`score-percentage ${getScoreColorClass(overallStats.percentage)}`}>{overallStats.percentage}%</div>
                 <div className="score-label">Overall Score</div>
               </div>
               <div className="score-breakdown">
                 <div className={`breakdown-item ${scoreFilter === 'full' ? 'active filter-full' : ''}`}
                   onClick={() => setScoreFilter(scoreFilter === 'full' ? null : 'full')}
                   title="Click to filter Fully Met">
-                  <div className="breakdown-value" style={{color: 'var(--success)'}}>{scoreStats.fullyMet}</div>
+                  <div className="breakdown-value" style={{color: 'var(--success)'}}>{overallStats.fullyMet}</div>
                   <div className="breakdown-label">Fully Met</div>
                 </div>
                 <div className={`breakdown-item ${scoreFilter === 'partial' ? 'active filter-partial' : ''}`}
                   onClick={() => setScoreFilter(scoreFilter === 'partial' ? null : 'partial')}
                   title="Click to filter Partial">
-                  <div className="breakdown-value" style={{color: 'var(--warning)'}}>{scoreStats.partialMet}</div>
+                  <div className="breakdown-value" style={{color: 'var(--warning)'}}>{overallStats.partial}</div>
                   <div className="breakdown-label">Partial</div>
                 </div>
                 <div className={`breakdown-item ${scoreFilter === 'not-met' ? 'active filter-not-met' : ''}`}
                   onClick={() => setScoreFilter(scoreFilter === 'not-met' ? null : 'not-met')}
                   title="Click to filter Not Met">
-                  <div className="breakdown-value" style={{color: 'var(--danger)'}}>{scoreStats.notMet}</div>
+                  <div className="breakdown-value" style={{color: 'var(--danger)'}}>{overallStats.notMet}</div>
                   <div className="breakdown-label">Not Met</div>
                 </div>
                 <div className={`breakdown-item ${scoreFilter === 'na' ? 'active filter-na' : ''}`}
                   onClick={() => setScoreFilter(scoreFilter === 'na' ? null : 'na')}
                   title="Click to filter N/A">
-                  <div className="breakdown-value" style={{color: 'var(--neutral)'}}>{scoreStats.naCount}</div>
+                  <div className="breakdown-value" style={{color: 'var(--neutral)'}}>{overallStats.na}</div>
                   <div className="breakdown-label">N/A</div>
                 </div>
                 <div className="breakdown-item not-scored-item"
@@ -4950,11 +5044,11 @@
             <div className="progress-bar-container">
               <div className="progress-bar">
                 <div className="progress-fill" style={{
-                  width: `${(scoreStats.scored / scoreStats.total) * 100}%`,
+                  width: `${overallStats.total > 0 ? (overallStats.scored / overallStats.total) * 100 : 0}%`,
                   background: 'linear-gradient(90deg, var(--success) 0%, var(--accent) 100%)'
                 }} />
               </div>
-              <div className="progress-text">{scoreStats.scored} of {scoreStats.total} sub-standards scored</div>
+              <div className="progress-text">{overallStats.scored} of {overallStats.total} sub-standards scored</div>
             </div>
             <AutosaveIndicator saving={saving} />
             {/* Finalize Button in Bottom Panel */}
@@ -5238,20 +5332,22 @@
                           </div>
 
                           {/* Configuration - With Label */}
-                          <div style={{minWidth: '160px', borderRight: '1px solid var(--border)', paddingRight: '24px'}}>
-                            <div style={{fontSize: '11px', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '4px'}}>
+                          <div style={{minWidth: '140px', borderRight: '1px solid var(--border)', paddingRight: '24px'}}>
+                            <div style={{fontSize: '11px', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '6px'}}>
                               Survey Type
                             </div>
                             <div style={{
-                              padding: '5px 12px',
-                              background: 'linear-gradient(135deg, var(--primary) 0%, #2c5282 100%)',
-                              color: 'white',
+                              padding: '6px 14px',
+                              background: 'rgba(30, 58, 95, 0.08)',
+                              border: '1px solid rgba(30, 58, 95, 0.2)',
+                              color: 'var(--primary)',
                               borderRadius: '6px',
                               fontSize: '12px',
                               fontWeight: 600,
-                              display: 'inline-block'
+                              display: 'inline-block',
+                              letterSpacing: '0.3px'
                             }}>
-                              {survey.configuration || 'Config A • Surveyor 1'}
+                              {survey.configuration || 'A - Surveyor 1'}
                             </div>
                           </div>
 
@@ -5266,7 +5362,7 @@
                           </div>
 
                           {/* Status Badge */}
-                          <div style={{minWidth: '110px'}}>
+                          <div style={{minWidth: '100px'}}>
                             <div style={{fontSize: '11px', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '4px'}}>
                               Status
                             </div>
@@ -5285,6 +5381,21 @@
                               {survey.status === 'completed' ? 'Finalized' : 'In Progress'}
                             </div>
                           </div>
+
+                          {/* Submission Date - Only for completed */}
+                          {survey.status === 'completed' && survey.completedAt && (
+                            <div style={{minWidth: '130px', borderLeft: '1px solid var(--border)', paddingLeft: '20px'}}>
+                              <div style={{fontSize: '11px', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '4px'}}>
+                                Submitted
+                              </div>
+                              <div style={{fontSize: '13px', color: 'var(--text-secondary)', fontWeight: 500}}>
+                                {new Date(survey.completedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                                <span style={{color: 'var(--text-muted)', fontWeight: 400, marginLeft: '6px'}}>
+                                  {new Date(survey.completedAt).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
+                                </span>
+                              </div>
+                            </div>
+                          )}
 
                           {/* Spacer */}
                           <div style={{flex: 1}}></div>
@@ -5630,7 +5741,7 @@
                   }}>
                     <div style={{padding: '16px', background: 'var(--bg-secondary)', borderRadius: '12px'}}>
                       <div style={{fontSize: '12px', color: 'var(--text-muted)', marginBottom: '4px'}}>Configuration</div>
-                      <div style={{fontWeight: 600, color: 'var(--primary)'}}>{survey.configuration || 'Configuration A • Surveyor 1'}</div>
+                      <div style={{fontWeight: 600, color: 'var(--primary)'}}>{survey.configuration || 'A - Surveyor 1'}</div>
                     </div>
                     <div style={{padding: '16px', background: 'var(--bg-secondary)', borderRadius: '12px'}}>
                       <div style={{fontSize: '12px', color: 'var(--text-muted)', marginBottom: '4px'}}>Coordinator</div>
@@ -6082,15 +6193,18 @@
                         {Icons.user({size: 14, color: 'rgba(255,255,255,0.8)'})} {details.coordinatorName || 'No coordinator assigned'}
                       </div>
                       <div style={{
-                        marginTop: '8px',
-                        padding: '4px 10px',
-                        background: 'rgba(255,255,255,0.15)',
-                        borderRadius: '12px',
+                        marginTop: '10px',
+                        padding: '5px 12px',
+                        background: 'rgba(255,255,255,0.08)',
+                        border: '1px solid rgba(255,255,255,0.25)',
+                        borderRadius: '6px',
                         fontSize: '11px',
-                        fontWeight: 600,
-                        display: 'inline-block'
+                        fontWeight: 500,
+                        letterSpacing: '0.3px',
+                        display: 'inline-block',
+                        backdropFilter: 'blur(4px)'
                       }}>
-                        {survey.configuration || 'Configuration A • Surveyor 1'}
+                        {survey.configuration || 'A - Surveyor 1'}
                       </div>
                     </div>
 
@@ -6190,26 +6304,26 @@
                     <div className="assessment-card-footer" style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
                       <div>
                         <div style={{fontSize: '12px', color: 'var(--text-muted)'}}>
-                          Created: {new Date(survey.createdAt).toLocaleDateString('en-US', {
-                            year: 'numeric', month: 'short', day: 'numeric'
-                          })}
+                          Started: {new Date(survey.createdAt).toLocaleDateString('en-US', {
+                            month: 'short', day: 'numeric', year: 'numeric'
+                          })} • {new Date(survey.createdAt).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
                         </div>
                         {survey.completedAt && (
-                          <div style={{fontSize: '12px', color: 'var(--success)'}}>
-                            Finalized: {new Date(survey.completedAt).toLocaleDateString('en-US', {
-                              year: 'numeric', month: 'short', day: 'numeric'
-                            })}
+                          <div style={{fontSize: '12px', color: 'var(--success)', marginTop: '2px'}}>
+                            Submitted: {new Date(survey.completedAt).toLocaleDateString('en-US', {
+                              month: 'short', day: 'numeric', year: 'numeric'
+                            })} • {new Date(survey.completedAt).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
                           </div>
                         )}
                       </div>
                       <div style={{
-                        padding: '8px 16px',
+                        padding: '10px 18px',
                         borderRadius: '8px',
                         fontSize: '13px',
                         fontWeight: 600,
                         background: survey.status === 'completed'
-                          ? 'linear-gradient(135deg, var(--success) 0%, #219a52 100%)'
-                          : 'linear-gradient(135deg, var(--accent) 0%, #2980b9 100%)',
+                          ? 'linear-gradient(135deg, #1e3a5f 0%, #2d5a8a 100%)'
+                          : 'linear-gradient(135deg, #2c5282 0%, #3182ce 100%)',
                         color: 'white',
                         display: 'flex',
                         alignItems: 'center',
@@ -6279,10 +6393,1164 @@
         }, 300);
       };
 
+      // ============================================
+      // MOCK TRAINING DATA - For Action Plan Report Development
+      // ============================================
+      const generateMockTrainingAssessments = () => {
+        // Helper to generate all sub-standard IDs for a configuration
+        const getAllSubstandardIds = (chaptersConfig) => {
+          const ids = [];
+          chaptersConfig.forEach(chapter => {
+            chapter.standards.forEach(std => {
+              std.substandards.forEach(sub => {
+                ids.push(sub.id);
+              });
+            });
+          });
+          return ids;
+        };
+
+        // Mock Assessment #1: Al-Noor Dental Care Center
+        // Configuration B with 10 findings from training scenarios
+        const mock1_scores = {};
+        const allSubIds_B = getAllSubstandardIds(chapters_B);
+
+        // Initialize all as Fully Met (value: 2)
+        allSubIds_B.forEach(id => {
+          mock1_scores[id] = { value: 2, findings: '', recommendations: '' };
+        });
+
+        // Apply the 10 specific findings:
+        // 1. LD.9.3 — Partially Met (value: 1)
+        mock1_scores['LD.9.3'] = {
+          value: 1,
+          findings: 'Upon reviewing ten personnel files, one staff member was contracted as a general dentist while credentials and assigned responsibilities reflected a dental hygienist role.',
+          recommendations: 'Review all personnel contracts to ensure job titles match actual credentials and assigned responsibilities. Implement a verification process during hiring.'
+        };
+
+        // 2. LD.12.1 — Partially Met (value: 1)
+        mock1_scores['LD.12.1'] = {
+          value: 1,
+          findings: 'Upon reviewing ten personnel files, general orientation was provided; however, safety and security orientation was not conducted by qualified personnel.',
+          recommendations: 'Assign qualified safety officers to conduct safety and security orientation. Document trainer qualifications in personnel files.'
+        };
+
+        // 3. LD.23.1 — Not Met (value: 0)
+        mock1_scores['LD.23.1'] = {
+          value: 0,
+          findings: 'No documented analysis or trending of quality performance indicators was available.',
+          recommendations: 'Establish a quality committee to analyze and trend KPIs quarterly. Implement data visualization dashboards for leadership review.'
+        };
+
+        // 4. LD.24.3 — Not Met (value: 0)
+        mock1_scores['LD.24.3'] = {
+          value: 0,
+          findings: 'Performance indicator data were collected but not analyzed or trended over time.',
+          recommendations: 'Train quality staff on statistical process control methods. Create monthly trending reports with run charts for all indicators.'
+        };
+
+        // 5. IPC.2.2 — Not Met (value: 0)
+        mock1_scores['IPC.2.2'] = {
+          value: 0,
+          findings: 'During the facility tour, a designated janitorial room was not available.',
+          recommendations: 'Designate and properly equip a dedicated janitorial room for storing cleaning equipment and materials, separate from clinical areas.'
+        };
+
+        // 6. PC.7.2 — Partially Met (value: 1)
+        mock1_scores['PC.7.2'] = {
+          value: 1,
+          findings: 'Upon reviewing five dental records, treatment plans were procedure-based and did not reflect comprehensive planning.',
+          recommendations: 'Implement comprehensive treatment planning templates that include diagnosis, prognosis, and sequenced treatment phases.'
+        };
+
+        // 7. PC.12.4 — Not Applicable
+        mock1_scores['PC.12.4'] = {
+          value: 'NA',
+          findings: 'Clinical research activities were out of the center\'s scope of services.',
+          recommendations: ''
+        };
+
+        // 8. LD.7.2 — Partially Met (value: 1)
+        mock1_scores['LD.7.2'] = {
+          value: 1,
+          findings: 'A departmental operational plan was provided in a brief form without clear linkage to center-wide objectives.',
+          recommendations: 'Develop comprehensive departmental operational plans with explicit alignment to strategic objectives. Include measurable targets and timelines.'
+        };
+
+        // 9. LD.2.3 — Not Met (value: 0)
+        mock1_scores['LD.2.3'] = {
+          value: 0,
+          findings: 'Quality and patient safety reports were not provided to demonstrate periodic review by leadership.',
+          recommendations: 'Establish quarterly governance meetings with documented agenda items for quality and patient safety reports. Maintain meeting minutes with corrective actions.'
+        };
+
+        // Calculate stats for Mock 1
+        let fullyMet1 = 0, partial1 = 0, notMet1 = 0, na1 = 0;
+        Object.values(mock1_scores).forEach(score => {
+          if (score.value === 2) fullyMet1++;
+          else if (score.value === 1) partial1++;
+          else if (score.value === 0) notMet1++;
+          else if (score.value === 'NA') na1++;
+        });
+        const scored1 = fullyMet1 + partial1 + notMet1;
+        const percentage1 = scored1 > 0 ? Math.round((fullyMet1 / scored1) * 100) : 0;
+
+        const mockAssessment1 = {
+          id: 'MOCK_TRAINING_001',
+          centerName: 'Al-Noor Dental Care Center',
+          assessmentDetails: {
+            centerName: 'Al-Noor Dental Care Center',
+            coordinatorName: 'Dr. Fatima Al-Hassan',
+            coordinatorPhone: '+966 55 123 4567',
+            coordinatorEmail: 'f.alhassan@alnoor-dental.com',
+            configuration: 'B'
+          },
+          configuration: 'B - Full Survey',
+          status: 'completed',
+          scoredCount: allSubIds_B.length,
+          totalSubstandards: allSubIds_B.length,
+          stats: {
+            total: allSubIds_B.length,
+            scored: allSubIds_B.length - na1,
+            fullyMet: fullyMet1,
+            partial: partial1,
+            notMet: notMet1,
+            na: na1,
+            percentage: percentage1
+          },
+          scores: mock1_scores,
+          createdAt: '2026-01-15T09:00:00Z',
+          completedAt: '2026-01-15T16:30:00Z',
+          lastUpdated: '2026-01-15T16:30:00Z',
+          submissionId: 'MOCK_TRAINING_001',
+          storageType: 'mock',
+          isMockData: true
+        };
+
+        // Mock Assessment #2: Riyadh Smile Dental Clinic
+        // Cross-Center Training Scenarios - Multiple category findings
+        const mock2_scores = {};
+
+        // Initialize all as Fully Met (value: 2)
+        allSubIds_B.forEach(id => {
+          mock2_scores[id] = { value: 2, findings: '', recommendations: '' };
+        });
+
+        // Category 1: Credentialing vs Job Assignment
+        mock2_scores['LD.9.3'] = {
+          value: 0,
+          findings: 'Upon reviewing 12 personnel files, three dental assistants were found to hold nursing credentials. Additionally, two staff performing sterilization were trained but held credentials as dental assistants, not CSSD technicians.',
+          recommendations: 'Conduct comprehensive credential audit for all staff. Ensure job assignments align with verified credentials. Implement credential verification during hiring process.'
+        };
+
+        // Category 2: Policy Describing Process Without Evidence (QM.5.1 → LD.23.3, RM.3.3 → LD.25.1)
+        mock2_scores['LD.23.3'] = {
+          value: 0,
+          findings: 'Only a document describing quality and safety principles was provided; no structured quality improvement program was available.',
+          recommendations: 'Develop and implement a structured QI program using evidence-based methodology like FOCUS-PDCA. Document at least one improvement project annually.'
+        };
+        mock2_scores['LD.25.1'] = {
+          value: 0,
+          findings: 'Although a risk management program was provided, it contained only general principles and lacked center-specific risks.',
+          recommendations: 'Conduct center-specific risk assessment. Develop risk register with identified clinical, managerial, and financial risks specific to dental operations.'
+        };
+
+        // Category 3: Hospital Language in Dental Center Policies
+        mock2_scores['FMS.9.3'] = {
+          value: 1,
+          findings: 'The CPR policy was center-specific but included hospital-setting terminology across multiple sections.',
+          recommendations: 'Review and revise all policies to remove hospital-specific terminology. Ensure language reflects dental center context and capabilities.'
+        };
+        mock2_scores['FMS.1.1'] = {
+          value: 0,
+          findings: 'The safety management program referred to a sister facility and was not tailored to the surveyed center.',
+          recommendations: 'Develop center-specific safety management program addressing unique hazards and processes of this dental facility.'
+        };
+
+        // Category 4: Partial Compliance Through Generalization (QM.1.1 → LD.1.2)
+        mock2_scores['LD.7.3'] = {
+          value: 1,
+          findings: 'Meeting minutes evidenced leadership discussions, but content was limited to audits without covering KPIs or feedback.',
+          recommendations: 'Expand leadership meeting agendas to include KPI review, staff feedback, quality metrics, and action item follow-up.'
+        };
+        mock2_scores['LD.1.2'] = {
+          value: 1,
+          findings: 'The strategic plan included general goals and objectives without measurable indicators or clear alignment to center-specific services.',
+          recommendations: 'Revise strategic plan with SMART objectives. Include measurable indicators and explicit linkage to scope of dental services.'
+        };
+
+        // Category 5: Not Applicable Correctly Applied
+        mock2_scores['PC.14.4'] = {
+          value: 'NA',
+          findings: 'Laser procedures were not offered during the visit, rendering the standard out of scope.',
+          recommendations: ''
+        };
+        mock2_scores['FMS.2.4'] = {
+          value: 'NA',
+          findings: 'Piped medical gases were not installed, and medical gas services were out of scope.',
+          recommendations: ''
+        };
+
+        // Category 6: Interview-Based Standards (QM.6.3 → LD.24.4, PC.9.1 → PC.11.1)
+        mock2_scores['LD.24.4'] = {
+          value: 0,
+          findings: 'Although KPIs were presented, interviews with five staff showed no evidence of access or utilization for decision-making.',
+          recommendations: 'Implement regular KPI communication sessions with staff. Document how performance data informs operational decisions.'
+        };
+        mock2_scores['PC.11.1'] = {
+          value: 0,
+          findings: 'Staff stated informed consent was present but only provided English forms for Arabic-speaking patients, with no evidence of comprehension ensured.',
+          recommendations: 'Provide bilingual consent forms. Implement teach-back method to verify patient comprehension. Document language preference in records.'
+        };
+
+        // Category 7: File Review Revealing Scope Mismatch (HR.2.1 → LD.10.3)
+        mock2_scores['PC.4.2'] = {
+          value: 0,
+          findings: 'Two general practitioners were privileged to perform procedures beyond their scope, including molar RCT and replacing missing teeth.',
+          recommendations: 'Review and revise privilege delineation process. Ensure privileges align with verified credentials and competencies.'
+        };
+        mock2_scores['LD.10.3'] = {
+          value: 0,
+          findings: 'No documentation was found for periodic review of credentials or privileges in reviewed personnel files.',
+          recommendations: 'Establish annual credential and privilege review process. Document reviews in personnel files with dates and outcomes.'
+        };
+
+        // Category 8: Quality Data Collected but Not Analyzed (QM.4.2 → LD.24.3, QM.6.1 → IPC.11.3)
+        mock2_scores['LD.24.3'] = {
+          value: 0,
+          findings: 'Survey and complaints data were collected but not analyzed or trended; action plans were not based on actual outcomes.',
+          recommendations: 'Train quality staff on data analysis methods. Create quarterly trending reports with run charts and implement data-driven action plans.'
+        };
+        mock2_scores['IPC.11.3'] = {
+          value: 0,
+          findings: 'Only one sharp injury incident was documented with no evidence of trend analysis or preventive planning.',
+          recommendations: 'Implement sharps injury surveillance program. Analyze trends quarterly and develop preventive measures based on findings.'
+        };
+
+        // Category 9: Training Calendars Without Programs (HR.6.3 → LD.15.3)
+        mock2_scores['LD.15.3'] = {
+          value: 1,
+          findings: 'Only mandatory training certificates were provided; no scheduled programs were documented for quality, safety, or infection control.',
+          recommendations: 'Develop annual training calendar covering all required competencies. Document attendance and effectiveness evaluation.'
+        };
+
+        // Category 10: Out-of-Scope Services Properly Identified
+        mock2_scores['PC.10.1'] = {
+          value: 'NA',
+          findings: 'Avulsed tooth identification and management was out of scope for the center\'s dental laboratory services.',
+          recommendations: ''
+        };
+        mock2_scores['PC.16.1'] = {
+          value: 'NA',
+          findings: 'Moderate sedation was not offered and confirmed as out of scope during the visit.',
+          recommendations: ''
+        };
+
+        // Calculate stats for Mock 2
+        let fullyMet2 = 0, partial2 = 0, notMet2 = 0, na2 = 0;
+        Object.values(mock2_scores).forEach(score => {
+          if (score.value === 2) fullyMet2++;
+          else if (score.value === 1) partial2++;
+          else if (score.value === 0) notMet2++;
+          else if (score.value === 'NA') na2++;
+        });
+        const scored2 = fullyMet2 + partial2 + notMet2;
+        const percentage2 = scored2 > 0 ? Math.round((fullyMet2 / scored2) * 100) : 0;
+
+        const mockAssessment2 = {
+          id: 'MOCK_TRAINING_002',
+          centerName: 'Riyadh Smile Dental Clinic',
+          assessmentDetails: {
+            centerName: 'Riyadh Smile Dental Clinic',
+            coordinatorName: 'Dr. Mohammed Al-Rashid',
+            coordinatorPhone: '+966 50 987 6543',
+            coordinatorEmail: 'm.alrashid@riyadhsmile.com',
+            configuration: 'B'
+          },
+          configuration: 'B - Full Survey',
+          status: 'completed',
+          scoredCount: allSubIds_B.length,
+          totalSubstandards: allSubIds_B.length,
+          stats: {
+            total: allSubIds_B.length,
+            scored: allSubIds_B.length - na2,
+            fullyMet: fullyMet2,
+            partial: partial2,
+            notMet: notMet2,
+            na: na2,
+            percentage: percentage2
+          },
+          scores: mock2_scores,
+          createdAt: '2026-01-18T08:30:00Z',
+          completedAt: '2026-01-18T17:00:00Z',
+          lastUpdated: '2026-01-18T17:00:00Z',
+          submissionId: 'MOCK_TRAINING_002',
+          storageType: 'mock',
+          isMockData: true
+        };
+
+        // Mock Assessment #3: Jeddah Premier Dental Center
+        // Additional Cross-Center Training Scenarios
+        const mock3_scores = {};
+
+        // Initialize all as Fully Met (value: 2)
+        allSubIds_B.forEach(id => {
+          mock3_scores[id] = { value: 2, findings: '', recommendations: '' };
+        });
+
+        // 1. Inaccurate Scoring Despite Stated Non-Compliance
+        mock3_scores['LD.6.5'] = {
+          value: 0,
+          findings: 'The finding stated the requirement was not met, yet the substandard was scored as "2" (Fully Met). This represents a scoring calibration error.',
+          recommendations: 'Implement surveyor calibration sessions to ensure scoring consistency. Review all findings against assigned scores before finalization.'
+        };
+
+        // 2. Missing Documentation vs Verbal Claims (QM.7.2 → LD.24.2)
+        mock3_scores['LD.24.2'] = {
+          value: 0,
+          findings: 'Staff reported that incomplete records were monitored, but no documentation of tracking or utilization was provided.',
+          recommendations: 'Establish documented tracking system for incomplete records. Maintain logs showing monitoring activities and follow-up actions.'
+        };
+
+        // 3. Environment-Related Facility Hazards (FMS.10.2 → FMS.6.1)
+        mock3_scores['FMS.6.1'] = {
+          value: 0,
+          findings: 'A water leak from the air conditioning was observed dripping onto electrical components and dental air compressors, creating a safety risk.',
+          recommendations: 'Immediately address water leak and conduct facility safety inspection. Implement preventive maintenance schedule for HVAC systems.'
+        };
+
+        // 4. Missing Contact Information in Emergency Plan (FMS.7.3 → FMS.4.3)
+        mock3_scores['FMS.4.3'] = {
+          value: 0,
+          findings: 'The emergency plan did not include contact persons or relevant authorities.',
+          recommendations: 'Update emergency plan with complete contact directory including internal responders, emergency services, and regulatory authorities.'
+        };
+
+        // 5. Combined Documents Without Clarity
+        mock3_scores['LD.7.2'] = {
+          value: 1,
+          findings: 'Operational, departmental, and strategic plans were combined in one document, with vague objectives and unclear alignment.',
+          recommendations: 'Separate strategic, operational, and departmental plans. Ensure each contains specific, measurable objectives with clear accountability.'
+        };
+
+        // 6. Radiograph Process Not Aligned with Digital Use
+        mock3_scores['IPC.8.1'] = {
+          value: 'NA',
+          findings: 'Only digital radiographs were used; no handling of contaminated film packets was involved.',
+          recommendations: ''
+        };
+
+        // 7. Manual Content Does Not Match Scope (IC.1.1 → IPC.1.4)
+        mock3_scores['IPC.1.4'] = {
+          value: 1,
+          findings: 'The infection control manual consisted of scattered MOH guidelines and manufacturer manuals, not a structured center-specific document.',
+          recommendations: 'Develop comprehensive center-specific IPC manual integrating MOH guidelines with local protocols. Organize in logical sections with table of contents.'
+        };
+
+        // 8. Incomplete Training Documentation (HR.6.2 → LD.15.2)
+        mock3_scores['LD.15.2'] = {
+          value: 0,
+          findings: 'Training certificates were provided in personnel files but lacked signatures and evidence of attendance.',
+          recommendations: 'Implement training documentation standards requiring signatures, dates, trainer credentials, and attendance verification for all certificates.'
+        };
+
+        // 9. CPR Equipment Requirements Not Fully Met (PC.15.1 → PC.15.5)
+        mock3_scores['PC.15.5'] = {
+          value: 0,
+          findings: 'Only one defibrillator was available, and no crash cart was found in the patient care areas.',
+          recommendations: 'Procure and position crash cart with required emergency medications and equipment. Ensure defibrillator coverage meets patient volume needs.'
+        };
+
+        // 10. Audit Reports Presented as KPI Evidence
+        mock3_scores['LD.7.3'] = {
+          value: 1,
+          findings: 'Leaders provided audit reports as evidence of KPI monitoring, but no documentation addressed surveys, feedback, or improvement actions.',
+          recommendations: 'Develop comprehensive KPI monitoring system including patient surveys, staff feedback, and documented improvement action plans.'
+        };
+
+        // Calculate stats for Mock 3
+        let fullyMet3 = 0, partial3 = 0, notMet3 = 0, na3 = 0;
+        Object.values(mock3_scores).forEach(score => {
+          if (score.value === 2) fullyMet3++;
+          else if (score.value === 1) partial3++;
+          else if (score.value === 0) notMet3++;
+          else if (score.value === 'NA') na3++;
+        });
+        const scored3 = fullyMet3 + partial3 + notMet3;
+        const percentage3 = scored3 > 0 ? Math.round((fullyMet3 / scored3) * 100) : 0;
+
+        const mockAssessment3 = {
+          id: 'MOCK_TRAINING_003',
+          centerName: 'Jeddah Premier Dental Center',
+          assessmentDetails: {
+            centerName: 'Jeddah Premier Dental Center',
+            coordinatorName: 'Dr. Amal Al-Zahrani',
+            coordinatorPhone: '+966 56 234 5678',
+            coordinatorEmail: 'a.alzahrani@jeddahpremier.com',
+            configuration: 'B'
+          },
+          configuration: 'B - Full Survey',
+          status: 'completed',
+          scoredCount: allSubIds_B.length,
+          totalSubstandards: allSubIds_B.length,
+          stats: {
+            total: allSubIds_B.length,
+            scored: allSubIds_B.length - na3,
+            fullyMet: fullyMet3,
+            partial: partial3,
+            notMet: notMet3,
+            na: na3,
+            percentage: percentage3
+          },
+          scores: mock3_scores,
+          createdAt: '2026-01-22T09:15:00Z',
+          completedAt: '2026-01-22T16:45:00Z',
+          lastUpdated: '2026-01-22T16:45:00Z',
+          submissionId: 'MOCK_TRAINING_003',
+          storageType: 'mock',
+          isMockData: true
+        };
+
+        // Mock Assessment #4: Dammam Family Dental Care
+        // Advanced Field Cases - Set 4
+        const mock4_scores = {};
+
+        // Initialize all as Fully Met (value: 2)
+        allSubIds_B.forEach(id => {
+          mock4_scores[id] = { value: 2, findings: '', recommendations: '' };
+        });
+
+        // 1. Evidence Provided for a Different Facility (QM.1.1 → LD.1.2)
+        mock4_scores['LD.1.2'] = {
+          value: 0,
+          findings: 'The strategic plan was titled for the main hospital and included no center-specific goals, despite being submitted as the dental center\'s document.',
+          recommendations: 'Develop center-specific strategic plan with goals aligned to dental services scope. Ensure all documents are properly titled for the correct facility.'
+        };
+
+        // 2. Overstated Compliance Based on Policy Title Alone
+        mock4_scores['PC.11.4'] = {
+          value: 0,
+          findings: 'Although a policy was titled "Informed Consent," the document lacked any content related to patient understanding, language adaptation, or family involvement.',
+          recommendations: 'Revise informed consent policy to include patient comprehension verification, multilingual options, and family involvement procedures.'
+        };
+
+        // 3. Irrelevant Benchmarking Statements (QM.5.4 → LD.24.5)
+        mock4_scores['LD.24.5'] = {
+          value: 0,
+          findings: 'The center stated that "benchmarking is done," but no reference data, comparison tables, or source centers were provided.',
+          recommendations: 'Establish formal benchmarking program with documented comparison data from similar dental centers. Include trend analysis and improvement targets.'
+        };
+
+        // 4. Assumptions About Incomplete Training (HR.6.2 → LD.15.2)
+        mock4_scores['LD.15.2'] = {
+          value: 0,
+          findings: 'Staff had certificates for IPC training, but none were signed or dated, and no attendance log was provided to confirm completion.',
+          recommendations: 'Implement training documentation standards requiring signatures, dates, and attendance logs. Verify all existing certificates meet requirements.'
+        };
+
+        // 5. Misuse of Verbal Justification in Record Review (PC.2.2 → PC.12.2)
+        mock4_scores['PC.12.2'] = {
+          value: 0,
+          findings: 'Two of five dental records lacked consent for invasive procedures; staff explained they were "scanned later," but no evidence was present in the files.',
+          recommendations: 'Implement real-time consent documentation process. Ensure all consents are documented before procedures and immediately filed in patient records.'
+        };
+
+        // 6. Emergency Plans Focused on One Type Only (FMS.7.1 → FMS.4.1)
+        mock4_scores['FMS.4.1'] = {
+          value: 0,
+          findings: 'The emergency plan focused solely on fire response and did not address other emergency scenarios or roles across departments.',
+          recommendations: 'Expand emergency plan to cover all hazards including medical emergencies, natural disasters, security threats, and utility failures.'
+        };
+
+        // 7. Incomplete Maintenance Logs (FMS.10.4 → FMS.5.5)
+        mock4_scores['FMS.5.5'] = {
+          value: 0,
+          findings: 'Maintenance records were available for extinguishers and smoke detectors, but none for the fire alarm system.',
+          recommendations: 'Establish comprehensive maintenance schedule covering all fire safety equipment. Document all inspections, tests, and repairs.'
+        };
+
+        // 8. Certificates Without Associated Competency Validation (HR.6.3 → LD.15.3)
+        mock4_scores['LD.15.3'] = {
+          value: 1,
+          findings: 'Sterilization staff held general IPC training certificates, but no competency checklists or validation were provided for their assigned tasks.',
+          recommendations: 'Develop role-specific competency checklists. Implement competency validation process with documented assessment of practical skills.'
+        };
+
+        // 9. Overgeneralization in Performance Data Use (QM.6.1 → IPC.11.3)
+        mock4_scores['IPC.11.3'] = {
+          value: 0,
+          findings: 'Staff reported that sharp injury reports were investigated, but no data analysis or trend tracking was shown over time.',
+          recommendations: 'Implement sharps injury surveillance with quarterly trend analysis. Document root cause analysis and preventive actions for each incident.'
+        };
+
+        // 10. Unlocked Equipment Housing
+        mock4_scores['FMS.5.1'] = {
+          value: 0,
+          findings: 'Dental compressors and vacuum pumps were placed outside the building in a ventilated area, but no physical security (e.g., lock or cage) was in place.',
+          recommendations: 'Install secure enclosure with lock for outdoor equipment. Implement access control measures and regular security checks.'
+        };
+
+        // Calculate stats for Mock 4
+        let fullyMet4 = 0, partial4 = 0, notMet4 = 0, na4 = 0;
+        Object.values(mock4_scores).forEach(score => {
+          if (score.value === 2) fullyMet4++;
+          else if (score.value === 1) partial4++;
+          else if (score.value === 0) notMet4++;
+          else if (score.value === 'NA') na4++;
+        });
+        const scored4 = fullyMet4 + partial4 + notMet4;
+        const percentage4 = scored4 > 0 ? Math.round((fullyMet4 / scored4) * 100) : 0;
+
+        const mockAssessment4 = {
+          id: 'MOCK_TRAINING_004',
+          centerName: 'Dammam Family Dental Care',
+          assessmentDetails: {
+            centerName: 'Dammam Family Dental Care',
+            coordinatorName: 'Dr. Khalid Al-Dosari',
+            coordinatorPhone: '+966 54 345 6789',
+            coordinatorEmail: 'k.aldosari@dammamfamily.com',
+            configuration: 'B'
+          },
+          configuration: 'B - Full Survey',
+          status: 'completed',
+          scoredCount: allSubIds_B.length,
+          totalSubstandards: allSubIds_B.length,
+          stats: {
+            total: allSubIds_B.length,
+            scored: allSubIds_B.length - na4,
+            fullyMet: fullyMet4,
+            partial: partial4,
+            notMet: notMet4,
+            na: na4,
+            percentage: percentage4
+          },
+          scores: mock4_scores,
+          createdAt: '2026-01-25T08:00:00Z',
+          completedAt: '2026-01-25T17:30:00Z',
+          lastUpdated: '2026-01-25T17:30:00Z',
+          submissionId: 'MOCK_TRAINING_004',
+          storageType: 'mock',
+          isMockData: true
+        };
+
+        // Mock Assessment #5: Makkah Central Dental Clinic
+        // Field Variability & Misalignment - Set 5
+        const mock5_scores = {};
+
+        // Initialize all as Fully Met (value: 2)
+        allSubIds_B.forEach(id => {
+          mock5_scores[id] = { value: 2, findings: '', recommendations: '' };
+        });
+
+        // 1. Document Exists but Not Center-Specific (RM.1.1 → LD.25.1)
+        mock5_scores['LD.25.1'] = {
+          value: 0,
+          findings: 'A risk management policy was provided, but its content focused on the main hospital and did not reflect the dental center\'s services or risk profile.',
+          recommendations: 'Develop center-specific risk management policy addressing dental-specific risks including procedural complications, infection risks, and equipment hazards.'
+        };
+
+        // 2. Confusion Between Department Plan and Operational Plan
+        mock5_scores['LD.7.2'] = {
+          value: 0,
+          findings: 'The provided operational plan was in fact a departmental objective list, lacking defined projects, assigned responsibilities, or timeframes.',
+          recommendations: 'Create proper operational plan with specific projects, responsible parties, timelines, resource allocation, and measurable outcomes.'
+        };
+
+        // 3. Lack of Patient Safety Elements in CPR Equipment (PC.15.1 → PC.15.5)
+        mock5_scores['PC.15.5'] = {
+          value: 0,
+          findings: 'A defibrillator was available, but no crash cart was located in patient care areas as required by the standard.',
+          recommendations: 'Procure and position crash cart with emergency medications and equipment in accessible patient care area. Establish daily readiness checks.'
+        };
+
+        // 4. Over-reliance on Interview Comments (QM.6.2 → LD.24.4)
+        mock5_scores['LD.24.4'] = {
+          value: 0,
+          findings: 'Staff reported that risk information was shared quarterly, but no minutes, emails, or documentation were provided to confirm it.',
+          recommendations: 'Document all risk communication activities including meeting minutes, email records, and staff acknowledgments. Maintain communication logs.'
+        };
+
+        // 5. Absence of Tracking for Incomplete Records (PC.3.4 → MOI.4.3)
+        mock5_scores['MOI.4.3'] = {
+          value: 0,
+          findings: 'Staff acknowledged record incompleteness, but no tracking or trending of incomplete dental records was documented.',
+          recommendations: 'Implement incomplete record tracking system with monitoring dashboard. Trend data monthly and establish completion targets.'
+        };
+
+        // 6. Inappropriate Scope Expansion in Credentialing (PC.4.1 → LD.10.2)
+        mock5_scores['LD.10.2'] = {
+          value: 0,
+          findings: 'A general dentist was granted privileges to conduct pediatric full-mouth rehabilitation under GA without evidence of subspecialty or supporting recommendations.',
+          recommendations: 'Review privilege delineation process. Require documented evidence of subspecialty training or competency for advanced procedures.'
+        };
+
+        // 7. Absence of Maintenance Documentation (FMS.10.1 → FMS.7.1)
+        mock5_scores['FMS.7.1'] = {
+          value: 0,
+          findings: 'No preventive or corrective maintenance records were provided for dental air compressors or medical refrigerators.',
+          recommendations: 'Establish preventive maintenance schedule for all critical equipment. Document all maintenance activities with dates, findings, and corrective actions.'
+        };
+
+        // 8. Disconnected Patient Feedback Loop (QM.4.1 → LD.23.1)
+        mock5_scores['LD.23.1'] = {
+          value: 0,
+          findings: 'Surveys were collected, but results were not analyzed or linked to documented action plans for improvement.',
+          recommendations: 'Implement patient feedback analysis process. Create action plans based on survey findings and track improvement outcomes.'
+        };
+
+        // 9. Shared Staff Credential Files Without Role Clarity (HR.3.2 → LD.9.3)
+        mock5_scores['LD.9.3'] = {
+          value: 0,
+          findings: 'Two sterilization staff were found to be dental assistants by credential, with no record of role-specific training or reassignment documentation.',
+          recommendations: 'Ensure staff assignments match credentials. Document role-specific training and formal reassignment when duties change.'
+        };
+
+        // 10. Emergency Contact Information Missing from Plan (FMS.7.3 → FMS.4.3)
+        mock5_scores['FMS.4.3'] = {
+          value: 0,
+          findings: 'The emergency plan did not include the names or numbers of internal contact persons or external emergency authorities.',
+          recommendations: 'Update emergency plan with complete contact directory including internal responders, local emergency services, and regulatory authorities.'
+        };
+
+        // Calculate stats for Mock 5
+        let fullyMet5 = 0, partial5 = 0, notMet5 = 0, na5 = 0;
+        Object.values(mock5_scores).forEach(score => {
+          if (score.value === 2) fullyMet5++;
+          else if (score.value === 1) partial5++;
+          else if (score.value === 0) notMet5++;
+          else if (score.value === 'NA') na5++;
+        });
+        const scored5 = fullyMet5 + partial5 + notMet5;
+        const percentage5 = scored5 > 0 ? Math.round((fullyMet5 / scored5) * 100) : 0;
+
+        const mockAssessment5 = {
+          id: 'MOCK_TRAINING_005',
+          centerName: 'Makkah Central Dental Clinic',
+          assessmentDetails: {
+            centerName: 'Makkah Central Dental Clinic',
+            coordinatorName: 'Dr. Noura Al-Harbi',
+            coordinatorPhone: '+966 57 456 7890',
+            coordinatorEmail: 'n.alharbi@makkahcentral.com',
+            configuration: 'B'
+          },
+          configuration: 'B - Full Survey',
+          status: 'completed',
+          scoredCount: allSubIds_B.length,
+          totalSubstandards: allSubIds_B.length,
+          stats: {
+            total: allSubIds_B.length,
+            scored: allSubIds_B.length - na5,
+            fullyMet: fullyMet5,
+            partial: partial5,
+            notMet: notMet5,
+            na: na5,
+            percentage: percentage5
+          },
+          scores: mock5_scores,
+          createdAt: '2026-01-28T09:00:00Z',
+          completedAt: '2026-01-28T16:00:00Z',
+          lastUpdated: '2026-01-28T16:00:00Z',
+          submissionId: 'MOCK_TRAINING_005',
+          storageType: 'mock',
+          isMockData: true
+        };
+
+        // Mock Assessment #6: Tabuk Family Dental Center
+        // Cross-Center Survey Training - Extended Case Set 6
+        const mock6_scores = {};
+
+        // Initialize all as Fully Met (value: 2)
+        allSubIds_B.forEach(id => {
+          mock6_scores[id] = { value: 2, findings: '', recommendations: '' };
+        });
+
+        // 1. Policies Referencing Non-Applicable Departments (IC.1.2 → IPC.1.2)
+        mock6_scores['IPC.1.2'] = {
+          value: 0,
+          findings: 'The infection control manual referenced hospital operating rooms and inpatient services not available in the center.',
+          recommendations: 'Revise infection control manual to reflect center-specific services and remove references to non-applicable hospital departments.'
+        };
+
+        // 2. Overgeneralized Action Plans (QM.4.2 → LD.24.2)
+        mock6_scores['LD.24.2'] = {
+          value: 0,
+          findings: 'Action plans were written in general terms and did not reference specific survey or complaint outcomes.',
+          recommendations: 'Develop specific action plans linked to identified issues with clear objectives, responsible parties, timelines, and measurable outcomes.'
+        };
+
+        // 3. Language Misalignment in Informed Consent (PC.11.4)
+        mock6_scores['PC.11.4'] = {
+          value: 0,
+          findings: 'Upon reviewing five dental records, informed consent forms were written in English for Arabic-speaking patients with no evidence of translation or comprehension verification.',
+          recommendations: 'Provide informed consent forms in Arabic or ensure documented translation services. Verify patient comprehension before obtaining consent.'
+        };
+
+        // 4. Audit Reports Mistaken as KPI Monitoring (LD.7.3)
+        mock6_scores['LD.7.3'] = {
+          value: 1,
+          findings: 'Leadership discussions focused solely on audit reports with no documentation of KPI or feedback analysis.',
+          recommendations: 'Establish separate KPI monitoring process distinct from audits. Include KPI review, feedback analysis, and quality metrics in leadership meetings.'
+        };
+
+        // 5. Undocumented Role Assignment (RM.7.1 → LD.25.1)
+        mock6_scores['LD.25.1'] = {
+          value: 0,
+          findings: 'No documentation was provided assigning a staff member responsible for managing risk or complaints.',
+          recommendations: 'Formally assign and document risk management responsibilities. Include role in job description and organizational chart.'
+        };
+
+        // 6. Operational Plans without Execution Framework (LD.7.2)
+        mock6_scores['LD.7.2'] = {
+          value: 0,
+          findings: 'The operational plan lacked defined projects, assigned roles, timeframes, or resource needs.',
+          recommendations: 'Revise operational plan to include specific projects, assigned responsibilities, timelines, resource allocation, and success metrics.'
+        };
+
+        // 7. Untracked Staff Training Completion (HR.6.3 → LD.15.3)
+        mock6_scores['LD.15.3'] = {
+          value: 0,
+          findings: 'Staff had certificates of attendance, but none were signed or documented in training logs.',
+          recommendations: 'Implement training tracking system with signed attendance records, competency verification, and centralized documentation in personnel files.'
+        };
+
+        // 8. CPR Process Scattered in Multiple Sections (FMS.9.3)
+        mock6_scores['FMS.9.3'] = {
+          value: 1,
+          findings: 'CPR staff roles were defined across multiple document sections using inconsistent terminology.',
+          recommendations: 'Consolidate CPR protocol into single comprehensive document with consistent terminology and clear role definitions.'
+        };
+
+        // 9. Equipment Placement Not Compliant with Safety Standards (FMS.5.2)
+        mock6_scores['FMS.5.2'] = {
+          value: 0,
+          findings: 'Dental air compressors were placed outside in an open area without locking or signage, despite being in a ventilated location.',
+          recommendations: 'Relocate equipment to secure location with appropriate locking mechanisms and safety signage. Ensure compliance with equipment placement standards.'
+        };
+
+        // 10. Staff Privileges Not Supported by Training (PC.4.2)
+        mock6_scores['PC.4.2'] = {
+          value: 0,
+          findings: 'Two general dentists were granted privileges to perform molar RCT and prosthodontic procedures without documentation of specialty training or endorsement.',
+          recommendations: 'Review privilege delineation process. Require documented evidence of training, competency assessment, or specialist endorsement for advanced procedures.'
+        };
+
+        // 11. No Clear Schedule for Safety Rounds (FMS.3.3)
+        mock6_scores['FMS.3.3'] = {
+          value: 0,
+          findings: 'Only one facility round was documented over a one-year period, despite policy requiring quarterly inspections.',
+          recommendations: 'Establish and follow quarterly safety round schedule. Document all rounds with findings, corrective actions, and follow-up verification.'
+        };
+
+        // 12. No Emergency Authority Contacts in Plan (FMS.7.3)
+        mock6_scores['FMS.7.3'] = {
+          value: 0,
+          findings: 'The emergency preparedness plan lacked any listing of contact persons or external emergency authorities.',
+          recommendations: 'Update emergency plan with complete contact directory including internal responders, local emergency services, civil defense, and regulatory authorities.'
+        };
+
+        // 13. Scoring Based on Missing Staff, Not Activity (PC.8.3)
+        mock6_scores['PC.8.3'] = {
+          value: 0,
+          findings: 'The finding referenced staff absence, although the standard required a review of dental radiography protocols and documentation.',
+          recommendations: 'Review and document dental radiography protocols, safety procedures, and quality control measures independent of staff availability.'
+        };
+
+        // 14. Misapplication of Not Applicable Scoring (PC.16.2 → PC.15.2)
+        mock6_scores['PC.15.2'] = {
+          value: 0,
+          findings: 'Moderate sedation was not implemented during the visit, but documentation and equipment were present, indicating the standard was applicable.',
+          recommendations: 'Score standards based on capability and documentation, not just activity during survey. Review sedation protocols and staff competencies.'
+        };
+
+        // 15. Fire Safety Equipment Maintained Irregularly (FMS.10.2 → FMS.6.2)
+        mock6_scores['FMS.6.2'] = {
+          value: 1,
+          findings: 'Records were available for extinguisher checks but lacked documentation for fire alarm system testing.',
+          recommendations: 'Implement comprehensive fire safety maintenance program covering all equipment. Document regular testing of alarms, extinguishers, and suppression systems.'
+        };
+
+        // 16. Water Leak Near Electrical Systems (FMS.5.3)
+        mock6_scores['FMS.5.3'] = {
+          value: 0,
+          findings: 'A water leak from the ceiling was observed dripping onto dental air compressors, posing a risk to electrical safety and equipment integrity.',
+          recommendations: 'Immediately address water leak and relocate equipment. Implement facility inspection protocol to identify and remediate environmental hazards.'
+        };
+
+        // 17. Staff Role in Emergencies Not Defined (FMS.7.2)
+        mock6_scores['FMS.7.2'] = {
+          value: 0,
+          findings: 'The emergency plan did not define individual staff roles in various emergency scenarios.',
+          recommendations: 'Define specific staff roles and responsibilities for each emergency scenario. Conduct drills to ensure staff understanding and competency.'
+        };
+
+        // 18. No Risk Register Maintained (RM.3.2 → LD.25.2)
+        mock6_scores['LD.25.2'] = {
+          value: 0,
+          findings: 'No risk register was provided documenting clinical, managerial, or financial risks.',
+          recommendations: 'Develop comprehensive risk register identifying clinical, operational, financial, and strategic risks. Include risk assessment, mitigation strategies, and monitoring.'
+        };
+
+        // 19. Training Program Missing Despite Certificates (HR.6.1 → LD.12.1)
+        mock6_scores['LD.12.1'] = {
+          value: 0,
+          findings: 'Staff certificates were presented, but no structured annual training plan or schedule was provided.',
+          recommendations: 'Develop annual training plan aligned with competency requirements. Include orientation, mandatory training, and professional development schedule.'
+        };
+
+        // 20. General Goals in Strategic Plan (LD.6.1)
+        mock6_scores['LD.6.1'] = {
+          value: 1,
+          findings: 'Goals in the strategic plan were broad and not linked to measurable outcomes or the center\'s specific services.',
+          recommendations: 'Revise strategic plan with SMART objectives linked to center services. Include measurable outcomes, timelines, and alignment with mission.'
+        };
+
+        // 21. Data Collection Without Analysis (QM.5.2 → LD.24.4)
+        mock6_scores['LD.24.4'] = {
+          value: 0,
+          findings: 'Survey and suggestion data were collected, but no evidence of analysis, trending, or integration into decision-making was found.',
+          recommendations: 'Implement data analysis process for all collected feedback. Trend results, identify patterns, and integrate findings into quality improvement activities.'
+        };
+
+        // Calculate stats for Mock 6
+        let fullyMet6 = 0, partial6 = 0, notMet6 = 0, na6 = 0;
+        Object.values(mock6_scores).forEach(score => {
+          if (score.value === 2) fullyMet6++;
+          else if (score.value === 1) partial6++;
+          else if (score.value === 0) notMet6++;
+          else if (score.value === 'NA') na6++;
+        });
+        const scored6 = fullyMet6 + partial6 + notMet6;
+        const percentage6 = scored6 > 0 ? Math.round((fullyMet6 / scored6) * 100) : 0;
+
+        const mockAssessment6 = {
+          id: 'MOCK_TRAINING_006',
+          centerName: 'Tabuk Family Dental Center',
+          assessmentDetails: {
+            centerName: 'Tabuk Family Dental Center',
+            coordinatorName: 'Dr. Saleh Al-Otaibi',
+            coordinatorPhone: '+966 58 234 5678',
+            coordinatorEmail: 's.alotaibi@tabukfamily.com',
+            configuration: 'B'
+          },
+          configuration: 'B - Full Survey',
+          status: 'completed',
+          scoredCount: allSubIds_B.length,
+          totalSubstandards: allSubIds_B.length,
+          stats: {
+            total: allSubIds_B.length,
+            scored: allSubIds_B.length - na6,
+            fullyMet: fullyMet6,
+            partial: partial6,
+            notMet: notMet6,
+            na: na6,
+            percentage: percentage6
+          },
+          scores: mock6_scores,
+          createdAt: '2026-01-30T08:30:00Z',
+          completedAt: '2026-01-30T17:45:00Z',
+          lastUpdated: '2026-01-30T17:45:00Z',
+          submissionId: 'MOCK_TRAINING_006',
+          storageType: 'mock',
+          isMockData: true
+        };
+
+        // Mock Assessment #7: Jizan Coastal Dental Center
+        // Cross-Center Survey Training - High-Intensity Set (Set 7)
+        const mock7_scores = {};
+
+        // Initialize all as Fully Met (value: 2)
+        allSubIds_B.forEach(id => {
+          mock7_scores[id] = { value: 2, findings: '', recommendations: '' };
+        });
+
+        // 1. Credentials vs Assigned Role - Dental Hygienist (LD.9.3)
+        mock7_scores['LD.9.3'] = {
+          value: 0,
+          findings: 'A dental hygienist credential file showed license for dental assistant but was assigned to perform scaling and prophylaxis procedures during survey.',
+          recommendations: 'Review all staff credentials to ensure assigned roles match professional licenses. Reassign duties according to verified qualifications.'
+        };
+
+        // 2. Credentials vs Assigned Role - Dentist Privileges (PC.4.2)
+        mock7_scores['PC.4.2'] = {
+          value: 0,
+          findings: 'Dentist credential file showed general dentistry license but was granted privileges for surgical extractions and implant placement without specialty documentation.',
+          recommendations: 'Review privilege delineation process. Require documented specialty training or competency assessment before granting advanced procedure privileges.'
+        };
+
+        // 3. Credentials vs Assigned Role - Job Description Mismatch (HR.3.1 → LD.13.1)
+        mock7_scores['LD.13.1'] = {
+          value: 0,
+          findings: 'Job description listed "oral surgery assistant" but employee file contained only dental assistant certification with no surgical training documentation.',
+          recommendations: 'Align job descriptions with actual credentials. Provide additional training if role requires competencies beyond current certification.'
+        };
+
+        // 4. Policies Not Tailored - Infection Control (IC.1.2 → IPC.1.2)
+        mock7_scores['IPC.1.2'] = {
+          value: 0,
+          findings: 'Infection control policy referenced hospital ICU protocols and surgical suite procedures not applicable to dental center services.',
+          recommendations: 'Revise infection control policies to reflect dental center-specific services, equipment, and procedures. Remove irrelevant hospital references.'
+        };
+
+        // 5. Policies Not Tailored - Facility Safety (FMS.1.1)
+        mock7_scores['FMS.1.1'] = {
+          value: 0,
+          findings: 'Facility management policy was copied from multi-story hospital template including elevator maintenance and helipad protocols not applicable to single-floor dental center.',
+          recommendations: 'Develop facility-specific safety policies addressing actual center infrastructure, equipment, and operational needs.'
+        };
+
+        // 6. Policies Not Tailored - Quality Management (QM.1.1 → LD.24.1)
+        mock7_scores['LD.24.1'] = {
+          value: 0,
+          findings: 'Quality management framework referenced inpatient quality indicators and nursing metrics not relevant to outpatient dental services.',
+          recommendations: 'Develop quality framework specific to dental services including appropriate clinical indicators, patient satisfaction measures, and outcome metrics.'
+        };
+
+        // 7. Incomplete/Non-Operational Plans - Operational Plan (LD.7.2)
+        mock7_scores['LD.7.2'] = {
+          value: 0,
+          findings: 'Operational plan existed but lacked specific projects, timelines, assigned responsibilities, or resource allocation details.',
+          recommendations: 'Revise operational plan to include SMART objectives, assigned owners, realistic timelines, required resources, and measurable outcomes.'
+        };
+
+        // 8. Incomplete/Non-Operational Plans - Training Plan (HR.6.1 → LD.12.1)
+        mock7_scores['LD.12.1'] = {
+          value: 0,
+          findings: 'Annual training plan was documented but showed no evidence of implementation - no attendance records, completion tracking, or competency assessments.',
+          recommendations: 'Implement training tracking system with attendance documentation, completion verification, and competency assessment records.'
+        };
+
+        // 9. Incomplete/Non-Operational Plans - Risk Register (RM.3.2 → LD.25.2)
+        mock7_scores['LD.25.2'] = {
+          value: 0,
+          findings: 'Risk management plan mentioned risk assessment but no risk register documenting identified risks, likelihood, impact, or mitigation strategies was available.',
+          recommendations: 'Develop comprehensive risk register with identified risks categorized by type, assessed for likelihood and impact, with documented mitigation strategies.'
+        };
+
+        // 10. Action Plans Without Linked Data (QM.4.2 → LD.24.2)
+        mock7_scores['LD.24.2'] = {
+          value: 0,
+          findings: 'Action plans were documented but not linked to any specific audit findings, patient complaints, or incident reports.',
+          recommendations: 'Link all action plans to source data (audits, complaints, incidents). Include root cause analysis and specific corrective measures.'
+        };
+
+        // 11. Action Plans Without Linked Data - Analysis (QM.5.3 → LD.24.5)
+        mock7_scores['LD.24.5'] = {
+          value: 0,
+          findings: 'Quality improvement activities were documented but showed no evidence of data analysis or trending to identify systemic issues.',
+          recommendations: 'Implement data analysis protocols to identify trends, patterns, and root causes. Use findings to drive targeted improvement initiatives.'
+        };
+
+        // 12. Emergency Preparedness - Staff Roles (FMS.7.2)
+        mock7_scores['FMS.7.2'] = {
+          value: 0,
+          findings: 'Emergency preparedness plan existed but did not define specific staff roles, responsibilities, or chain of command during emergencies.',
+          recommendations: 'Define clear roles and responsibilities for each staff member during various emergency scenarios. Conduct drills to verify understanding.'
+        };
+
+        // 13. Emergency Preparedness - Emergency Contacts (FMS.7.3)
+        mock7_scores['FMS.7.3'] = {
+          value: 0,
+          findings: 'Emergency plan lacked contact information for local civil defense, fire department, ambulance services, or utility emergency lines.',
+          recommendations: 'Update emergency plan with complete contact directory including all relevant emergency services, utilities, and regulatory authorities.'
+        };
+
+        // 14. Infection Control Gaps - Surveillance (IC.1.3 → IPC.1.3)
+        mock7_scores['IPC.1.3'] = {
+          value: 0,
+          findings: 'No infection surveillance program was documented. No tracking of HAI rates, surgical site infections, or post-procedure complications.',
+          recommendations: 'Establish infection surveillance program with defined indicators, regular monitoring, data analysis, and reporting mechanisms.'
+        };
+
+        // 15. Infection Control Gaps - Hand Hygiene (IC.3.2 → IPC.3.2)
+        mock7_scores['IPC.3.2'] = {
+          value: 1,
+          findings: 'Hand hygiene compliance monitoring was documented but showed only 60% compliance rate with no improvement actions documented.',
+          recommendations: 'Implement hand hygiene improvement program with staff education, visual reminders, increased monitoring, and feedback mechanisms.'
+        };
+
+        // 16. Infection Control Gaps - Sterilization (IC.5.2 → IPC.5.2)
+        mock7_scores['IPC.5.2'] = {
+          value: 0,
+          findings: 'Sterilization logs showed biological indicator testing performed monthly instead of with each sterilizer load as required by policy.',
+          recommendations: 'Revise sterilization protocols to ensure biological indicator testing per load. Train staff on proper documentation requirements.'
+        };
+
+        // 17. Misalignment Between Activity and Evidence - Radiography (PC.8.3)
+        mock7_scores['PC.8.3'] = {
+          value: 0,
+          findings: 'Finding stated "radiography services not available during survey" but dental X-ray unit was operational and patient records showed recent radiographs.',
+          recommendations: 'Score based on documented protocols, equipment availability, and record evidence - not solely on activities observed during survey.'
+        };
+
+        // 18. Misalignment Between Activity and Evidence - Sedation (PC.15.4)
+        mock7_scores['PC.15.4'] = {
+          value: 0,
+          findings: 'Moderate sedation scored as Not Met because no procedures occurred during survey, despite complete documentation, trained staff, and emergency equipment.',
+          recommendations: 'Assess sedation services based on documented protocols, staff credentials, equipment readiness, and patient records - not just survey-day activity.'
+        };
+
+        // 19. Performance Monitoring - KPI Framework (QM.5.1 → LD.24.3)
+        mock7_scores['LD.24.3'] = {
+          value: 0,
+          findings: 'Performance indicators were listed but no monitoring framework, data collection methodology, or reporting schedule was documented.',
+          recommendations: 'Develop KPI monitoring framework with clear definitions, data sources, collection frequency, responsible parties, and reporting mechanisms.'
+        };
+
+        // 20. Performance Monitoring - Feedback Integration (QM.6.2 → LD.26.2)
+        mock7_scores['LD.26.2'] = {
+          value: 1,
+          findings: 'Patient satisfaction surveys were collected but analysis showed no connection to quality improvement activities or leadership decisions.',
+          recommendations: 'Integrate patient feedback into quality improvement process. Present findings to leadership with recommended actions and track implementation.'
+        };
+
+        // 21. Facility/Equipment Safety - Medical Equipment (FMS.5.1)
+        mock7_scores['FMS.5.1'] = {
+          value: 0,
+          findings: 'Dental equipment maintenance records showed preventive maintenance overdue by 4-6 months for multiple units including autoclave and X-ray machine.',
+          recommendations: 'Implement preventive maintenance schedule with alerts for upcoming services. Document all maintenance activities with dates and findings.'
+        };
+
+        // 22. Facility/Equipment Safety - Fire Safety (FMS.10.3 → FMS.6.3)
+        mock7_scores['FMS.6.3'] = {
+          value: 0,
+          findings: 'Fire extinguisher inspection tags showed last inspection 18 months ago. Annual fire drill documentation not available.',
+          recommendations: 'Establish monthly fire extinguisher inspection schedule. Conduct and document annual fire drills with staff participation records.'
+        };
+
+        // 23. Facility/Equipment Safety - Utility Systems (FMS.5.3)
+        mock7_scores['FMS.5.3'] = {
+          value: 0,
+          findings: 'Electrical panel in sterilization area had exposed wiring. Dental unit water lines showed discoloration indicating potential biofilm contamination.',
+          recommendations: 'Immediately address electrical hazard. Implement dental unit waterline management protocol including regular testing and treatment.'
+        };
+
+        // 24. Job Descriptions/File Documentation - JD Completeness (HR.3.2 → LD.13.2)
+        mock7_scores['LD.13.2'] = {
+          value: 0,
+          findings: 'Personnel files reviewed showed job descriptions lacking required qualifications, reporting relationships, and key performance indicators.',
+          recommendations: 'Update all job descriptions to include required qualifications, experience, competencies, reporting structure, and performance expectations.'
+        };
+
+        // 25. Job Descriptions/File Documentation - Credential Files (HR.4.1 → LD.14.1)
+        mock7_scores['LD.14.1'] = {
+          value: 1,
+          findings: 'Credential files were maintained but 3 of 8 files reviewed were missing license verification from primary source.',
+          recommendations: 'Implement primary source verification for all professional licenses. Maintain documentation of verification process and dates.'
+        };
+
+        // 26. Improper Scoring - Fully Met with Findings (LD.5.1)
+        mock7_scores['LD.5.1'] = {
+          value: 2,
+          findings: 'Standard scored Fully Met. Comment field contained: "Governing body meeting minutes available but some agenda items not documented in detail." This finding suggests partial compliance, not full compliance.',
+          recommendations: 'Note: This was scored Fully Met but findings indicate Partially Met may be more appropriate. Review scoring criteria for consistency.'
+        };
+
+        // 27. Improper Scoring - Fully Met with Gaps (PC.11.4)
+        mock7_scores['PC.11.4'] = {
+          value: 2,
+          findings: 'Standard scored Fully Met. Comment stated: "Informed consent obtained but not all risks documented in 2 of 5 records reviewed." Partial documentation compliance suggests PM scoring.',
+          recommendations: 'Note: Findings indicate gaps in documentation that may warrant Partially Met scoring. Ensure scoring reflects actual compliance level.'
+        };
+
+        // 28. Inappropriate N/A Labeling - Pediatric Sedation (PC.16.3 → PC.15.3)
+        mock7_scores['PC.15.3'] = {
+          value: 0,
+          findings: 'Pediatric sedation marked N/A because "no pediatric patients during survey," but center treats children and has sedation equipment available.',
+          recommendations: 'Score based on service capability and documentation, not survey-day activity. Review pediatric sedation protocols and staff competencies.'
+        };
+
+        // 29. Inappropriate N/A Labeling - Outbreak Management (IC.8.1 → IPC.8.1)
+        mock7_scores['IPC.8.1'] = {
+          value: 0,
+          findings: 'Outbreak management scored N/A stating "no outbreaks occurred." Outbreak preparedness plans and protocols are required regardless of occurrence.',
+          recommendations: 'Develop outbreak management plan including identification criteria, response protocols, communication procedures, and reporting requirements.'
+        };
+
+        // 30. Strategic Planning - Goals and Objectives (LD.6.1)
+        mock7_scores['LD.6.1'] = {
+          value: 1,
+          findings: 'Strategic plan contained broad vision and mission statements but lacked specific, measurable objectives linked to dental center services.',
+          recommendations: 'Revise strategic plan with SMART objectives aligned to center services. Include measurable targets, timelines, and accountability assignments.'
+        };
+
+        // 31. Training Without Attendance Evidence (HR.6.2 → LD.15.2)
+        mock7_scores['LD.15.2'] = {
+          value: 0,
+          findings: 'Training certificates were provided but no signed attendance sheets, pre/post assessments, or competency verification records were available.',
+          recommendations: 'Implement comprehensive training documentation including signed attendance, learning assessments, and competency verification records.'
+        };
+
+        // 32. Staff Competency Verification (HR.6.3 → LD.15.3)
+        mock7_scores['LD.15.3'] = {
+          value: 0,
+          findings: 'Mandatory training completion tracked but no evidence of competency assessment or skill verification following training completion.',
+          recommendations: 'Develop competency assessment tools for mandatory training. Document skill verification and maintain records in personnel files.'
+        };
+
+        // Calculate stats for Mock 7
+        let fullyMet7 = 0, partial7 = 0, notMet7 = 0, na7 = 0;
+        Object.values(mock7_scores).forEach(score => {
+          if (score.value === 2) fullyMet7++;
+          else if (score.value === 1) partial7++;
+          else if (score.value === 0) notMet7++;
+          else if (score.value === 'NA') na7++;
+        });
+        const scored7 = fullyMet7 + partial7 + notMet7;
+        const percentage7 = scored7 > 0 ? Math.round((fullyMet7 / scored7) * 100) : 0;
+
+        const mockAssessment7 = {
+          id: 'MOCK_TRAINING_007',
+          centerName: 'Jizan Coastal Dental Center',
+          assessmentDetails: {
+            centerName: 'Jizan Coastal Dental Center',
+            coordinatorName: 'Dr. Ahmed Al-Zahrani',
+            coordinatorPhone: '+966 59 345 6789',
+            coordinatorEmail: 'a.alzahrani@jizancoastal.com',
+            configuration: 'B'
+          },
+          configuration: 'B - Full Survey',
+          status: 'completed',
+          scoredCount: allSubIds_B.length,
+          totalSubstandards: allSubIds_B.length,
+          stats: {
+            total: allSubIds_B.length,
+            scored: allSubIds_B.length - na7,
+            fullyMet: fullyMet7,
+            partial: partial7,
+            notMet: notMet7,
+            na: na7,
+            percentage: percentage7
+          },
+          scores: mock7_scores,
+          createdAt: '2026-01-31T07:45:00Z',
+          completedAt: '2026-01-31T18:30:00Z',
+          lastUpdated: '2026-01-31T18:30:00Z',
+          submissionId: 'MOCK_TRAINING_007',
+          storageType: 'mock',
+          isMockData: true
+        };
+
+        return [mockAssessment1, mockAssessment2, mockAssessment3, mockAssessment4, mockAssessment5, mockAssessment6, mockAssessment7];
+      };
+
       // Load data on mount
       useEffect(() => {
         const savedCenters = storage.get(STORAGE_KEYS.CENTERS) || [];
         let savedSurveys = storage.get(STORAGE_KEYS.SURVEYS) || [];
+
+        // Inject mock training data - ALWAYS update to ensure latest version
+        const mockData = generateMockTrainingAssessments();
+        mockData.forEach(mock => {
+          const existingIndex = savedSurveys.findIndex(s => s.id === mock.id);
+          if (existingIndex >= 0) {
+            // Replace existing mock data with updated version
+            savedSurveys[existingIndex] = mock;
+          } else {
+            // Add new mock data
+            savedSurveys = [...savedSurveys, mock];
+          }
+        });
+        storage.set(STORAGE_KEYS.SURVEYS, savedSurveys);
         const savedScores = storage.get(STORAGE_KEYS.CURRENT_SCORES) || {};
         const savedFinalized = storage.get('cbahi_finalized') || false;
         const savedFinalizedData = storage.get('cbahi_finalized_data') || null;
@@ -6376,9 +7644,9 @@
       // Configuration labels lookup
       const getConfigLabel = (configCode) => {
         const labels = {
-          'A1': 'Configuration A • Surveyor 1',
-          'A2': 'Configuration A • Surveyor 2',
-          'B': 'Configuration B • Full Survey'
+          'A1': 'A - Surveyor 1',
+          'A2': 'A - Surveyor 2',
+          'B': 'B - Full Survey'
         };
         return labels[configCode] || labels['A1'];
       };
@@ -6433,7 +7701,7 @@
           coordinatorName: assessmentDetails?.coordinatorName || '',
           coordinatorPhone: assessmentDetails?.coordinatorPhone || '',
           coordinatorEmail: assessmentDetails?.coordinatorEmail || '',
-          configuration: assessmentDetails?.configuration ? getConfigLabel(assessmentDetails.configuration) : 'Configuration A • Surveyor 1',
+          configuration: assessmentDetails?.configuration ? getConfigLabel(assessmentDetails.configuration) : 'A - Surveyor 1',
           totalSubstandards: stats.total,
           scoredSubstandards: stats.scored,
           percentage: stats.percentage,
@@ -6728,12 +7996,12 @@
                   fontWeight: 500,
                   cursor: 'pointer',
                   outline: 'none',
-                  minWidth: '200px'
+                  minWidth: '130px'
                 }}
               >
-                <option value="A1" style={{color: '#1e3a5f'}}>Configuration A • Surveyor 1</option>
-                <option value="A2" style={{color: '#1e3a5f'}}>Configuration A • Surveyor 2</option>
-                <option value="B" style={{color: '#1e3a5f'}}>Configuration B • Full Survey</option>
+                <option value="A1" style={{color: '#1e3a5f'}}>A - Surveyor 1</option>
+                <option value="A2" style={{color: '#1e3a5f'}}>A - Surveyor 2</option>
+                <option value="B" style={{color: '#1e3a5f'}}>B - Full Survey</option>
               </select>
             </div>
             <div className="nav-tabs">

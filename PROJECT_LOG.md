@@ -712,7 +712,218 @@ Multiple UI fixes including:
 
 ## Future Development
 
-### Phase 13: Action Plan Report Generation (PLANNED)
+### Phase 13: Mock Assessment Training Data System
+**Status:** Completed (February 2, 2026)
+
+**Objective:** Create realistic mock completed assessments to stress-test the application, validate the Executive Summary modal, and prepare for Action Plan report generation development.
+
+**Mock Assessments Created (5 of 10):**
+
+| # | Center Name | Configuration | Compliance | Key Findings |
+|---|-------------|---------------|------------|--------------|
+| 1 | Al-Noor Dental Care Center | B (349) | ~97% | Personnel credentialing gaps, quality indicator analysis missing |
+| 2 | Riyadh Smile Dental Clinic | B (349) | ~94% | Cross-center credentialing issues, strategic planning gaps |
+| 3 | Jeddah Premier Dental Center | B (349) | ~97% | KPI monitoring gaps, operational plan misalignment |
+| 4 | Dammam Family Dental Care | B (349) | ~97% | Training documentation incomplete, sterilization issues |
+| 5 | Makkah Central Dental Clinic | B (349) | ~95% | Risk management gaps, quality indicator trending missing |
+
+---
+
+### Phase 13.1: Critical Bug Discovery & Resolution
+
+**Challenge 1: Score Values Not Displaying in Executive Summary**
+
+**Problem:** History cards showed correct statistics (e.g., "97.06% • 115 FM • 1 PM • 3 NM"), but Executive Summary modal showed "0%" for all chapters and "0 items need attention."
+
+**Root Cause Analysis:**
+The application's internal scoring logic uses **numeric values**:
+```javascript
+// App expects:
+if (score.value === 2) fullyMet++;      // Fully Met
+else if (score.value === 1) partial++;   // Partially Met
+else if (score.value === 0) notMet++;    // Not Met
+else if (score.value === 'NA') na++;     // Not Applicable
+```
+
+Initial mock data incorrectly used **string values**:
+```javascript
+// Bug - used strings:
+mock1_scores[id] = { value: 'FM', findings: '...', recommendations: '...' };
+```
+
+**Solution:**
+Changed all mock score values to numeric format:
+```javascript
+// Fixed - uses numbers:
+mock1_scores[id] = { value: 2, findings: '...', recommendations: '...' };
+mock1_scores['LD.9.3'] = { value: 1, findings: '...', recommendations: '...' }; // Partial
+mock1_scores['LD.23.1'] = { value: 0, findings: '...', recommendations: '...' }; // Not Met
+```
+
+---
+
+**Challenge 2: LocalStorage Cache Preventing Updates**
+
+**Problem:** After fixing the score values, the Executive Summary still showed 0%. The fix was in the code, but the browser was using cached old mock data from localStorage.
+
+**Root Cause:**
+Mock data injection logic **skipped** updating if IDs already existed:
+```javascript
+// Old logic - skips if ID exists:
+if (!savedSurveys.find(s => s.id === mock.id)) {
+  savedSurveys = [...savedSurveys, mock];
+}
+```
+
+Since the user had already loaded the app with the buggy mock data, the IDs existed in localStorage, and the corrected mock data was never injected.
+
+**Solution:**
+Changed injection logic to **replace** existing mock data:
+```javascript
+// New logic - always replaces mock data:
+const existingIndex = savedSurveys.findIndex(s => s.id === mock.id);
+if (existingIndex >= 0) {
+  savedSurveys[existingIndex] = mock;  // Replace with updated version
+} else {
+  savedSurveys = [...savedSurveys, mock];
+}
+```
+
+---
+
+**Challenge 3: Findings Not Appearing in Scoring Interface**
+
+**Problem:** Executive Summary modal correctly displayed findings and recommendations, but when viewing the Full Scoring Interface, the "Finding / Comment..." textarea was empty.
+
+**Root Cause:**
+Field name mismatch between data sources:
+
+| Location | Field Used | Purpose |
+|----------|------------|---------|
+| Executive Summary Modal | `score.findings` | Reads findings for display |
+| SubstandardCard textarea | `score.comment` | Reads comment for display |
+| Mock Data Structure | `score.findings` | Stores finding text |
+| Live Scoring Save | `score.comment` | Saves user input |
+
+**Solution:**
+Updated SubstandardCard to read from both fields with fallback:
+```javascript
+// Before:
+const comment = score?.comment || '';
+
+// After:
+const comment = score?.comment || score?.findings || '';
+```
+
+This ensures:
+- Mock data findings (using `findings` field) display correctly
+- User edits (saved to `comment` field) take precedence
+- Backward compatibility with existing assessments
+
+---
+
+**Challenge 4: Bottom Panel Stats Inconsistent with Full Survey Total**
+
+**Problem:** For Configuration B (Full Survey with 349 sub-standards), the bottom score panel showed stats for only 119 sub-standards (current chapter LD), while the Chapters Summary modal correctly showed all 349. This created confusion and distrust in the application's accuracy.
+
+**Symptoms:**
+- Bottom panel: `97.06% • 115 Fully Met • 1 Partial • 3 Not Met` (119 total = LD only)
+- Chapters Summary button: `115/119/3` (showing current chapter stats)
+- Chapters Summary modal: `349 of 349 scored` (correct full survey)
+
+**Root Cause:**
+Two separate stats calculations existed:
+```javascript
+// scoreStats - calculates for CURRENT CHAPTER only
+const scoreStats = useMemo(() => {
+  const total = allSubstandards.length;  // allSubstandards = current chapter's items
+  // ... calculations based on current chapter
+}, [scores, allSubstandards]);
+
+// overallStats - calculates across ALL CHAPTERS
+const overallStats = useMemo(() => {
+  activeChapters.forEach(ch => {
+    // ... calculations across all chapters
+  });
+}, [scores, activeChapters]);
+```
+
+The bottom panel and Chapters Summary button were using `scoreStats` (current chapter) instead of `overallStats` (entire assessment).
+
+**Solution:**
+Updated all bottom panel displays to use `overallStats`:
+```javascript
+// Before (Bug):
+<div>{scoreStats.percentage}%</div>
+<div>{scoreStats.fullyMet}</div>
+<div>{scoreStats.scored} of {scoreStats.total}</div>
+
+// After (Fix):
+<div>{overallStats.percentage}%</div>
+<div>{overallStats.fullyMet}</div>
+<div>{overallStats.scored} of {overallStats.total}</div>
+```
+
+Also updated the Chapters Summary button:
+```javascript
+// Before:
+<span>{scoreStats.fullyMet}/{scoreStats.scored}/{scoreStats.notMet}</span>
+
+// After:
+<span>{overallStats.fullyMet}/{overallStats.scored}/{overallStats.notMet}</span>
+```
+
+**Key Insight:**
+The bottom panel should ALWAYS show the overall assessment score regardless of which chapter/domain is being viewed. Chapter-specific stats belong in the chapter headers and domain separators, not in the global score panel.
+
+---
+
+### Lessons Learned for Future Development
+
+**1. Data Type Consistency**
+Always match the exact data types expected by the application's internal logic. Document the expected types clearly:
+```javascript
+// Score object structure:
+{
+  value: number | 'NA',  // 2=Fully Met, 1=Partial, 0=Not Met, 'NA'=N/A
+  comment: string,       // Live scoring input
+  findings: string,      // Mock/imported data
+  recommendations: string,
+  location: string,      // For OBS activity types
+  scoredAt: string       // ISO timestamp
+}
+```
+
+**2. Cache Invalidation Strategy**
+When injecting test/mock data that may be updated:
+- Use versioned IDs (e.g., `MOCK_v2_001`) to force re-injection, OR
+- Implement replace logic instead of skip-if-exists, OR
+- Add a version number to mock data and compare before skipping
+
+**3. Field Name Harmonization**
+Maintain consistent field names across all data paths:
+- If using `findings` for imported/mock data, update all read points
+- Consider adding migration logic for legacy data
+- Document field mappings in project log
+
+**4. Testing Protocol**
+For mock data systems, always verify:
+1. History card statistics match expected values
+2. Executive Summary percentages and counts are correct
+3. Expanded chapter details show individual scores
+4. Full Scoring Interface displays findings in textareas
+5. Button states (N/A, Not Met, Partial, Fully Met) visually reflect scores
+
+**5. Global vs. Local Stats Separation**
+When building multi-section/multi-chapter scoring systems:
+- **Global stats** (bottom panel, header summary) → Always use overall/aggregate calculations
+- **Local stats** (chapter headers, section dividers) → Use section-specific calculations
+- Never mix these in the UI - users expect the "Overall Score" to reflect the ENTIRE assessment
+- For multi-configuration apps, ensure stats calculations adapt to the active configuration's total sub-standards
+
+---
+
+### Phase 14: Action Plan Report Generation (PLANNED)
 **Objective:** Generate professional action plan reports from completed assessments
 
 **Framework:**
@@ -723,12 +934,11 @@ Multiple UI fixes including:
   - Medium priority: Partial Met items (60-day deadline)
 - Quick wins vs long-term investments analysis
 
-**Mock Data Creation:**
-10 mock completed assessments will be created for testing:
-- Different center names and contact details
-- Various scoring patterns and compliance levels
-- Different configurations (A1, A2, B)
-- Realistic findings and recommendations
+**Remaining Mock Data:**
+5 more mock completed assessments to be created (#6-10):
+- Different compliance levels (75%-95%)
+- Various domain-specific weaknesses
+- Edge cases for report generation testing
 
 **Report Components:**
 1. Executive Summary with overall compliance score
@@ -743,6 +953,55 @@ Multiple UI fixes including:
 - [ ] PDF/Markdown report export
 - [ ] Offline support (PWA)
 - [ ] Auto-generated reports with infographics
+
+---
+
+### Future Application: CBAHI Ambulatory Care Services Scoring Application (PLANNED)
+
+**Why This Project Log Update Matters:**
+
+The challenges and solutions documented in Phase 13.1 are critical knowledge for developing future survey applications. The CBAHI Dental Center application serves as a **template and learning resource** for:
+
+1. **CBAHI Ambulatory Care Services (ACS) Accreditation Scoring Application**
+   - Similar survey structure with different domains
+   - Same scoring methodology (Fully Met, Partial, Not Met, N/A)
+   - Reusable components and patterns
+
+2. **Other Healthcare Accreditation Survey Applications**
+   - CBAHI Hospital Accreditation
+   - CBAHI Primary Healthcare Centers
+   - International accreditation standards (JCI, etc.)
+
+**Key Reusable Patterns:**
+
+| Component | Dental App Implementation | ACS App Adaptation |
+|-----------|--------------------------|-------------------|
+| Score Object Structure | `{ value: 2\|1\|0\|'NA', comment, findings, recommendations }` | Same structure |
+| Configuration System | A1, A2, B configurations | Adapt for ACS surveyor splits |
+| Mock Data Injection | Replace existing + version control | Apply from day one |
+| Field Name Consistency | `comment` + `findings` fallback | Standardize upfront |
+| Executive Summary Modal | Domain → Standard → Sub-standard drill-down | Reuse component |
+| Domain Color System | 6 unique color schemes | Adapt for ACS domains |
+
+**Development Checklist for ACS Application:**
+
+1. [ ] Import standards data from CBAHI ACS manual
+2. [ ] Define surveyor configurations (if applicable)
+3. [ ] Create domain structure with color schemes
+4. [ ] Implement mock data system with:
+   - [ ] Numeric score values from start
+   - [ ] Replace-on-load injection logic
+   - [ ] Consistent field naming (`findings` = `comment`)
+5. [ ] Test all data display paths before creating mock assessments
+6. [ ] Document any ACS-specific adaptations in project log
+
+**Timeline Estimate:**
+- Foundation (standards import, basic structure): 1-2 days
+- Configuration system adaptation: 1 day
+- Mock data and testing: 1 day
+- Action Plan report generation (shared component): 1-2 days
+
+**Total Estimated Development:** 4-6 days (significantly reduced due to lessons learned)
 
 ---
 
@@ -839,6 +1098,14 @@ CBAHI Scoring Application/
 | | | - Collapsible sidebar with abbreviation-only labels |
 | | | - Clickable configuration dropdown in header |
 | | | - Fixed sidebar bottom cutoff (80px padding) |
+| 1.3.1 | Feb 2026 | **Mock Assessment Training System & Critical Bug Fixes** |
+| | | - Created 5 mock completed assessments for action plan testing |
+| | | - Fixed score value format (strings → numbers: 2/1/0/'NA') |
+| | | - Fixed localStorage cache preventing mock data updates |
+| | | - Fixed findings field display in Full Scoring Interface |
+| | | - Added `findings` fallback in SubstandardCard component |
+| | | - Documented lessons learned for future survey applications |
+| | | - Added Ambulatory Care Services application roadmap |
 
 ---
 
@@ -854,4 +1121,5 @@ CBAHI Scoring Application/
 ---
 
 *Document Last Updated: February 2, 2026*
-*Application Version: 1.3.0*
+*Application Version: 1.3.1*
+*Training Phase: Mock Assessment System Completed*
