@@ -281,10 +281,11 @@
       position: sticky;
       top: 120px;
       height: fit-content;
-      max-height: calc(100vh - 140px);
+      max-height: calc(100vh - 220px);
       overflow-y: auto;
       transition: all 0.3s ease;
       flex-shrink: 0;
+      padding-bottom: 80px;
     }
 
     .sidebar.collapsed {
@@ -501,6 +502,266 @@
     .substandard-card.scored-1 { border-left: 4px solid var(--warning); }
     .substandard-card.scored-2 { border-left: 4px solid var(--success); }
     .substandard-card.scored-na { border-left: 4px solid var(--neutral); }
+
+    /* Domain Separator Styles for Full Survey (Config B) */
+    .domain-separator {
+      position: relative;
+      margin: 32px 0 24px 0;
+      padding: 20px 24px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, rgba(30, 58, 95, 0.03) 0%, rgba(52, 152, 219, 0.06) 100%);
+      border: 1px solid rgba(52, 152, 219, 0.15);
+      overflow: hidden;
+    }
+
+    .domain-separator::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 5px;
+      border-radius: 12px 0 0 12px;
+    }
+
+    .domain-separator::after {
+      content: '';
+      position: absolute;
+      right: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      opacity: 0.08;
+    }
+
+    .domain-separator.domain-ld::before { background: linear-gradient(180deg, #1e3a5f 0%, #3498db 100%); }
+    .domain-separator.domain-ld::after { background: #1e3a5f; }
+    .domain-separator.domain-ld { border-left-color: #3498db; }
+
+    .domain-separator.domain-pc::before { background: linear-gradient(180deg, #0d6b4e 0%, #27ae60 100%); }
+    .domain-separator.domain-pc::after { background: #0d6b4e; }
+    .domain-separator.domain-pc { border-left-color: #27ae60; }
+
+    .domain-separator.domain-dl::before { background: linear-gradient(180deg, #6b4e0d 0%, #f39c12 100%); }
+    .domain-separator.domain-dl::after { background: #6b4e0d; }
+    .domain-separator.domain-dl { border-left-color: #f39c12; }
+
+    .domain-separator.domain-ipc::before { background: linear-gradient(180deg, #5e1e5e 0%, #9b59b6 100%); }
+    .domain-separator.domain-ipc::after { background: #5e1e5e; }
+    .domain-separator.domain-ipc { border-left-color: #9b59b6; }
+
+    .domain-separator.domain-moi::before { background: linear-gradient(180deg, #1e5e5e 0%, #16a085 100%); }
+    .domain-separator.domain-moi::after { background: #1e5e5e; }
+    .domain-separator.domain-moi { border-left-color: #16a085; }
+
+    .domain-separator.domain-fms::before { background: linear-gradient(180deg, #5e1e2d 0%, #e74c3c 100%); }
+    .domain-separator.domain-fms::after { background: #5e1e2d; }
+    .domain-separator.domain-fms { border-left-color: #e74c3c; }
+
+    .domain-separator-content {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .domain-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 16px;
+      color: white;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    .domain-icon.domain-ld { background: linear-gradient(135deg, #1e3a5f 0%, #2d5a8a 100%); }
+    .domain-icon.domain-pc { background: linear-gradient(135deg, #0d6b4e 0%, #1a9d6c 100%); }
+    .domain-icon.domain-dl { background: linear-gradient(135deg, #6b4e0d 0%, #9d7a1a 100%); }
+    .domain-icon.domain-ipc { background: linear-gradient(135deg, #5e1e5e 0%, #8a3d8a 100%); }
+    .domain-icon.domain-moi { background: linear-gradient(135deg, #1e5e5e 0%, #3d8a8a 100%); }
+    .domain-icon.domain-fms { background: linear-gradient(135deg, #5e1e2d 0%, #8a3d4d 100%); }
+
+    .domain-info { flex: 1; }
+
+    .domain-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .domain-subtitle {
+      font-size: 13px;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .domain-stats {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-left: auto;
+    }
+
+    .domain-stat {
+      text-align: center;
+      padding: 8px 16px;
+      background: rgba(255,255,255,0.7);
+      border-radius: 8px;
+      min-width: 70px;
+    }
+
+    .domain-stat-value {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--primary);
+      font-family: 'Inter', sans-serif;
+    }
+
+    .domain-stat-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* Full Survey sidebar navigation */
+    .sidebar-domain-group {
+      margin-bottom: 4px;
+      border-radius: 8px;
+      overflow: hidden;
+      transition: all 0.2s ease;
+    }
+
+    .sidebar-domain-group:hover {
+      background: rgba(52, 152, 219, 0.03);
+    }
+
+    .sidebar-domain-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      margin-bottom: 2px;
+      user-select: none;
+    }
+
+    .sidebar-domain-header:hover {
+      background: rgba(52, 152, 219, 0.1);
+    }
+
+    .sidebar-domain-header.active {
+      background: rgba(52, 152, 219, 0.15);
+      border-left: 3px solid var(--accent);
+    }
+
+    .sidebar-domain-header:active {
+      transform: scale(0.98);
+    }
+
+    .sidebar-domain-toggle {
+      cursor: pointer;
+      width: 18px;
+      height: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg-hover);
+      border-radius: 4px;
+      font-size: 10px;
+      color: var(--text-muted);
+      transition: all 0.2s ease;
+      flex-shrink: 0;
+    }
+
+    .sidebar-domain-toggle:hover {
+      background: var(--accent);
+      color: white;
+    }
+
+    .sidebar-domain-toggle.expanded {
+      transform: rotate(90deg);
+    }
+
+    .sidebar-domain-badge {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 11px;
+      color: white;
+    }
+
+    .sidebar-domain-badge.domain-ld { background: linear-gradient(135deg, #1e3a5f 0%, #3498db 100%); }
+    .sidebar-domain-badge.domain-pc { background: linear-gradient(135deg, #0d6b4e 0%, #27ae60 100%); }
+    .sidebar-domain-badge.domain-dl { background: linear-gradient(135deg, #6b4e0d 0%, #f39c12 100%); }
+    .sidebar-domain-badge.domain-ipc { background: linear-gradient(135deg, #5e1e5e 0%, #9b59b6 100%); }
+    .sidebar-domain-badge.domain-moi { background: linear-gradient(135deg, #1e5e5e 0%, #16a085 100%); }
+    .sidebar-domain-badge.domain-fms { background: linear-gradient(135deg, #5e1e2d 0%, #e74c3c 100%); }
+
+    .sidebar-domain-name {
+      flex: 1;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .sidebar-domain-count {
+      font-size: 12px;
+      color: var(--text-muted);
+      background: var(--bg-hover);
+      padding: 2px 8px;
+      border-radius: 10px;
+    }
+
+    .sidebar-domain-standards {
+      margin-left: 24px;
+      border-left: 2px solid var(--border);
+      padding-left: 10px;
+      margin-bottom: 4px;
+      margin-top: 4px;
+    }
+
+    /* Full Survey View Styles */
+    .full-survey-view {
+      scroll-behavior: smooth;
+    }
+
+    .domain-section {
+      scroll-margin-top: 20px;
+      padding-top: 8px;
+    }
+
+    .domain-section:first-child .domain-separator {
+      margin-top: 0;
+    }
+
+    /* Sticky domain navigation for full survey */
+    .domain-quick-nav {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: var(--bg-main);
+      padding: 12px 0;
+      margin-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
 
     .substandard-header {
       display: flex;
@@ -2193,6 +2454,361 @@
     ];
 
     // ============================================
+    // DATA: Leadership Domain - Surveyor 2 (LD.13, LD.14, LD.18-LD.29)
+    // ============================================
+    const leadershipStandards_A2 = [
+      {
+        id: 'LD.13', code: 'LD.13',
+        title: 'There is a policy that ensures dental assistants and other healthcare staff are competent in specific procedures and operating equipment.',
+        intent: 'To ensure patient safety, staff must be tested when initially hired and annually on their competency in certain procedures according to their scope of work.',
+        substandards: [
+          { id: 'LD.13.1', code: 'LD.13.1', text: "The policy contains a list of all procedures requiring competency assessment.", activityType: 'DOC' },
+          { id: 'LD.13.2', code: 'LD.13.2', text: "All staff are tested upon hiring and annually for the required competencies.", activityType: 'PER' },
+          { id: 'LD.13.3', code: 'LD.13.3', text: "The policy is in place to ensure staff are trained on the safe operation of current and newly introduced equipment and devices.", activityType: 'DOC' },
+          { id: 'LD.13.4', code: 'LD.13.4', text: "Only properly trained and competent staff are allowed to use specialized equipment and medical devices.", activityType: 'INT' }
+        ]
+      },
+      {
+        id: 'LD.14', code: 'LD.14',
+        title: 'There is a program for continuing education and training of all categories of staff.',
+        intent: 'Staff professional development is crucial to improving services. The center should provide regularly scheduled educational programs addressing quality, patient safety, risk management, and infection control.',
+        substandards: [
+          { id: 'LD.14.1', code: 'LD.14.1', text: "The center has a regularly scheduled educational and training program based on the center and staff needs including quality, patient safety, risk management, and infection control practices.", activityType: 'DOC' },
+          { id: 'LD.14.2', code: 'LD.14.2', text: "The leaders encourage and compensate staff to attend educational and training activities relevant to the center's scope of services and in line with the national labor law.", activityType: 'INT' },
+          { id: 'LD.14.3', code: 'LD.14.3', text: "All staff members who provide direct patient care maintain a valid certificate on basic life support (BLS).", activityType: 'PER' },
+          { id: 'LD.14.4', code: 'LD.14.4', text: "Information about staff credentials, privileges, competencies, orientation, training, education, and evaluation are securely kept in an updated personnel file.", activityType: 'PER' }
+        ]
+      },
+      {
+        id: 'LD.18', code: 'LD.18',
+        title: "The leaders support and protect the patient and family's rights.",
+        intent: 'Patient and family rights are paramount for ethical and safe care. Leaders should develop policies for patient rights, ensure staff are trained, and patients are treated with dignity.',
+        substandards: [
+          { id: 'LD.18.1', code: 'LD.18.1', text: "The leaders develop and maintain a patient rights and responsibilities statement and develop processes that support their implementation.", activityType: 'INT' },
+          { id: 'LD.18.2', code: 'LD.18.2', text: "The leaders ensure that written documentation of patient rights and responsibilities is available to patients and families and ensure patients are informed about their rights and responsibilities in a manner they can understand.", activityType: 'OBS' },
+          { id: 'LD.18.3', code: 'LD.18.3', text: "The leaders ensure that patients' dignity, privacy, and confidentiality are respected.", activityType: 'OBS' },
+          { id: 'LD.18.4', code: 'LD.18.4', text: "The health team provides care and services that are respectful of the patient's values and beliefs.", activityType: 'DOC' },
+          { id: 'LD.18.5', code: 'LD.18.5', text: "Vulnerable patients are identified and protected from additional risks.", activityType: 'INT' },
+          { id: 'LD.18.6', code: 'LD.18.6', text: "The leaders ensure that staff are provided with training and education on patient and family rights and responsibilities.", activityType: 'INT' },
+          { id: 'LD.18.7', code: 'LD.18.7', text: "The leaders ensure that patients and their families have the right to be involved in their own care and treatment, including the right to refuse treatment or request a second opinion.", activityType: 'INT' }
+        ]
+      },
+      {
+        id: 'LD.19', code: 'LD.19',
+        title: "The leaders develop and implement a policy and procedure to describe the patients' right to voice their complaints, concerns, and suggestions.",
+        intent: 'The center should have well-defined policy for collecting patient feedback and resolving complaints within specified timeframes, with findings incorporated into quality and safety programs.',
+        substandards: [
+          { id: 'LD.19.1', code: 'LD.19.1', text: "Patients' complaints are resolved within the time frame described in the policy.", activityType: 'DOC' },
+          { id: 'LD.19.2', code: 'LD.19.2', text: "The center assigns a staff member to be responsible for managing complaints.", activityType: 'PER' },
+          { id: 'LD.19.3', code: 'LD.19.3', text: "Patient satisfaction surveys are conducted regularly.", activityType: 'DOC' },
+          { id: 'LD.19.4', code: 'LD.19.4', text: "Data collected from surveys, complaints, and suggestions are analyzed and trended, with the information collected used for improvement and integrated into the quality and safety program.", activityType: 'DOC' }
+        ]
+      },
+      {
+        id: 'LD.20', code: 'LD.20',
+        title: "Patients and their families have the right to accurate billing for provided services.",
+        intent: 'The center ensures dental treatments adhere to a displayed pricing list and that receipts are issued, including for insured patients.',
+        substandards: [
+          { id: 'LD.20.1', code: 'LD.20.1', text: "The leaders ensure the availability of a price list for services provided to patients and their sponsors.", activityType: 'OBS' },
+          { id: 'LD.20.2', code: 'LD.20.2', text: "The patients and their families have the right to receive an initial estimated cost of required services.", activityType: 'INT' },
+          { id: 'LD.20.3', code: 'LD.20.3', text: "The patients and their families have the right to obtain an invoice for services rendered.", activityType: 'INT' }
+        ]
+      },
+      {
+        id: 'LD.21', code: 'LD.21',
+        title: "The center provides assistance to patients with special needs.",
+        intent: 'The center should take into account requirements for enabling access for patients with special needs including designated parking, accessible entrances, elevators, ramps, and restrooms.',
+        substandards: [
+          { id: 'LD.21.1', code: 'LD.21.1', text: "Street parking and drop-off points dedicated to patients with special needs are available near the center's entrance.", activityType: 'OBS' },
+          { id: 'LD.21.2', code: 'LD.21.2', text: "The center's entrance, elevators, and toilets allow wheelchair access.", activityType: 'OBS' },
+          { id: 'LD.21.3', code: 'LD.21.3', text: "Staircases have handrails.", activityType: 'OBS' },
+          { id: 'LD.21.4', code: 'LD.21.4', text: "Elevated areas have ramps.", activityType: 'OBS' }
+        ]
+      },
+      {
+        id: 'LD.22', code: 'LD.22',
+        title: "The center has a policy and procedure for controlling the development and maintenance of key documents.",
+        intent: 'Key documents should have standardized structure with unique identifiers, dates, and be reviewed and approved by authorized individuals with a system ensuring only current versions circulate.',
+        substandards: [
+          { id: 'LD.22.1', code: 'LD.22.1', text: "The center maintains a unique identifier for each key document, with title, number, date of issue, and date of revision.", activityType: 'DOC' },
+          { id: 'LD.22.2', code: 'LD.22.2', text: "Key documents are developed, approved, revised, and terminated by authorized individuals.", activityType: 'DOC' },
+          { id: 'LD.22.3', code: 'LD.22.3', text: "Key documents are communicated to relevant staff and are always accessible.", activityType: 'INT' },
+          { id: 'LD.22.4', code: 'LD.22.4', text: "A process is in place to ensure that key documents are always implemented.", activityType: 'INT' }
+        ]
+      },
+      {
+        id: 'LD.23', code: 'LD.23',
+        title: "The center collaboratively develops a comprehensive quality improvement and patient safety program.",
+        intent: 'The center should ensure quality of services through a quality management and patient safety program utilizing key performance indicators and evidence-based improvement approaches.',
+        substandards: [
+          { id: 'LD.23.1', code: 'LD.23.1', text: "The quality improvement and safety program utilize key performance indicators, and patient and staff surveys to measure performance and improve clinical and managerial areas.", activityType: 'DOC' },
+          { id: 'LD.23.2', code: 'LD.23.2', text: "The information generated from key performance indicators is readily accessible on a timely basis to those responsible for and/or involved in the delivery of the center's services, and is utilized for making improvements and supporting the leaders' decision-making.", activityType: 'INT' },
+          { id: 'LD.23.3', code: 'LD.23.3', text: "The center implements at least one improvement project per year utilizing an evidence-based quality improvement method such as 'FOCUS PDCA'.", activityType: 'DOC' },
+          { id: 'LD.23.4', code: 'LD.23.4', text: "The center leaders assess and support the patient safety culture in the center.", activityType: 'INT' }
+        ]
+      },
+      {
+        id: 'LD.24', code: 'LD.24',
+        title: "The center prioritizes and selects a set of relevant indicators that focus on the structure, process, and outcome of the dental and non-dental services provided.",
+        intent: 'Key performance indicators should follow an evidence-based approach covering structure, process, and outcome. Information should be presented to staff and used for benchmarking.',
+        substandards: [
+          { id: 'LD.24.1', code: 'LD.24.1', text: "The selection process of performance indicators is based on the center's most important processes and priorities.", activityType: 'INT' },
+          { id: 'LD.24.2', code: 'LD.24.2', text: "Each indicator has an operational definition, defined numerator and denominator, data collection method and frequency, a mathematical expression such as ratio or percentage, and a desirable target.", activityType: 'DOC' },
+          { id: 'LD.24.3', code: 'LD.24.3', text: "The indicators are collected, validated, and analyzed by staff with appropriate knowledge and skills.", activityType: 'PER' },
+          { id: 'LD.24.4', code: 'LD.24.4', text: "The performance monitoring results are discussed with staff, utilized in their evaluation, and reported regularly to the governance together with the action plans taken for improvement.", activityType: 'DOC' },
+          { id: 'LD.24.5', code: 'LD.24.5', text: "The indicators are compared internally by historical trends and externally by benchmarking to other similar centers when available.", activityType: 'DOC' }
+        ]
+      },
+      {
+        id: 'LD.25', code: 'LD.25',
+        title: "The center develops and implements a comprehensive risk management program.",
+        intent: 'The risk management program should cover clinical, managerial, and financial aspects with both reactive incident reporting and proactive approaches like FMEA.',
+        substandards: [
+          { id: 'LD.25.1', code: 'LD.25.1', text: "The risk management program addresses clinical, managerial, and financial risks.", activityType: 'DOC' },
+          { id: 'LD.25.2', code: 'LD.25.2', text: "The reporting of incidents, variances, and claims constitutes the program's essential reactive arm.", activityType: 'INT' },
+          { id: 'LD.25.3', code: 'LD.25.3', text: "The center develops and implements at least one proactive risk reduction approach per year.", activityType: 'DOC' },
+          { id: 'LD.25.4', code: 'LD.25.4', text: "The center develops and periodically updates a risk register for all potential clinical, managerial, and financial processes in the center.", activityType: 'DOC' },
+          { id: 'LD.25.5', code: 'LD.25.5', text: "The center utilizes an evidence-based process for grading risks based on severity, frequency, and likelihood of occurrence.", activityType: 'DOC' },
+          { id: 'LD.25.6', code: 'LD.25.6', text: "Information from the risk management program, including incidents, analysis, and improvement projects, is communicated to staff and the governing body at least quarterly.", activityType: 'INT' }
+        ]
+      },
+      {
+        id: 'LD.26', code: 'LD.26',
+        title: "The center implements an incident reporting policy.",
+        intent: 'The center should develop an incident reporting policy with unified reporting mechanism for all occurrences, variances, accidents, and near misses.',
+        substandards: [
+          { id: 'LD.26.1', code: 'LD.26.1', text: "The incident report policy outlines the types of incidents to be reported internally and to relevant regulatory authorities, the time frame, and the mechanism for reporting.", activityType: 'DOC' },
+          { id: 'LD.26.2', code: 'LD.26.2', text: "Sentinel events and major incidents are reported, investigated, and the findings are utilized to prevent their recurrence.", activityType: 'INT' },
+          { id: 'LD.26.3', code: 'LD.26.3', text: "Incidences involving patients are documented in the dental record, and patients and families are informed by the physician/dentist of any investigation results.", activityType: 'DEN' },
+          { id: 'LD.26.4', code: 'LD.26.4', text: "The center compiles a report on incidences according to type and severity, and an action plan to prevent its recurrence is distributed to staff and governance on a regular basis.", activityType: 'DOC' }
+        ]
+      },
+      {
+        id: 'LD.27', code: 'LD.27',
+        title: "The center has a program to select and monitor clinical and operational contracts.",
+        intent: 'Process owners should closely monitor contracted services implementation with agreed-upon indicators. Contract renewal should be based on monitoring findings.',
+        substandards: [
+          { id: 'LD.27.1', code: 'LD.27.1', text: "Contracted entities are selected based on evidence-based criteria that the relevant department develops.", activityType: 'DOC' },
+          { id: 'LD.27.2', code: 'LD.27.2', text: "The center director ensures relevant leaders' recommendations and approval on contracts.", activityType: 'DOC' },
+          { id: 'LD.27.3', code: 'LD.27.3', text: "The leaders ensure that the contracting entity and services provided meet applicable laws and regulations.", activityType: 'INT' },
+          { id: 'LD.27.4', code: 'LD.27.4', text: "When radiology services are provided through a contract; the center is responsible to provide oversight of the contract.", activityType: 'DOC' },
+          { id: 'LD.27.5', code: 'LD.27.5', text: "The leaders ensure that the services provided are integrated into the overall quality and patient safety program.", activityType: 'INT' },
+          { id: 'LD.27.6', code: 'LD.27.6', text: "The leaders regularly monitor and document the compliance of contracted services with the appropriate standards and take documented corrective actions for improvement when standards are not met.", activityType: 'INT' }
+        ]
+      },
+      {
+        id: 'LD.28', code: 'LD.28',
+        title: "The leaders implement policies and procedures to guide efficient procurement of equipment, either purchased or donated, medications, and medical consumables following national laws and regulations.",
+        intent: 'Leaders should develop a procurement policy to ensure purchase of nationally approved medical equipment, medications, and supplies with proper SFDA compliance.',
+        substandards: [
+          { id: 'LD.28.1', code: 'LD.28.1', text: "The leaders ensure that contractors and suppliers of devices and consumables have a Medical Device Establishment License (MDEL).", activityType: 'DOC' },
+          { id: 'LD.28.2', code: 'LD.28.2', text: "Leaders ensure that all newly purchased devices have a Medical Device Marketing Authorization (MDMA) certificate.", activityType: 'DOC' },
+          { id: 'LD.28.3', code: 'LD.28.3', text: "Leaders approve newly introduced consumables based on a formal testing and feedback process from end-users.", activityType: 'INT' }
+        ]
+      },
+      {
+        id: 'LD.29', code: 'LD.29',
+        title: "The center maintains an aesthetic appeal.",
+        intent: 'Patients\' confidence starts from first impression. The center should maintain cleanliness with temperatures between 20-24.4°C per OSHA standards.',
+        substandards: [
+          { id: 'LD.29.1', code: 'LD.29.1', text: "The center is clean and tidy.", activityType: 'OBS' },
+          { id: 'LD.29.2', code: 'LD.29.2', text: "The center is free of broken furniture, scratched, and damaged walls and floors.", activityType: 'OBS' },
+          { id: 'LD.29.3', code: 'LD.29.3', text: "The center maintains an ambient temperature between 20 - 24.4 Celsius.", activityType: 'OBS' }
+        ]
+      }
+    ];
+
+    // Management of Information (MOI) Standards - Surveyor 2
+    const moiStandards = [
+      {
+        id: 'MOI.1', code: 'MOI.1',
+        title: 'The center defines, in a policy, the information that may be shared among the staff internally and with other external entities, and its format.',
+        intent: 'Communication facilitates a free flow of information and mandates in healthcare, identifying and organizing this flow of information. Both inside the organization and with various customers, helps to enhance communication and eliminate communication errors. All stakeholders should clearly develop a management of information plan that outlines the process of managing the patients\' information.',
+        substandards: [
+          { id: 'MOI.1.1', code: 'MOI.1.1', text: 'The policy highlights how patient demographics and medical/dental information are shared among dental and administrative staff including paper format, electronic, or a combination.', activityType: 'DOC' },
+          { id: 'MOI.1.2', code: 'MOI.1.2', text: 'The policy identifies how the information is disseminated from leaders to staff and vice versa.', activityType: 'INT' },
+          { id: 'MOI.1.3', code: 'MOI.1.3', text: 'The policy defines what information is required by the relevant external authorities, and the frequency of reporting.', activityType: 'DOC' },
+          { id: 'MOI.1.4', code: 'MOI.1.4', text: 'The policy highlights the patients\' personal and dental information required to refer a patient to a higher center.', activityType: 'DOC' },
+          { id: 'MOI.1.5', code: 'MOI.1.5', text: 'The policy identifies the staff security levels required to access patient information.', activityType: 'DOC' },
+          { id: 'MOI.1.6', code: 'MOI.1.6', text: 'The policy identifies how each type of information is secured and safely stored.', activityType: 'DOC' },
+          { id: 'MOI.1.7', code: 'MOI.1.7', text: 'The policy highlights how long the center needs to retain the various types of information in accordance with the applicable national rules and regulations.', activityType: 'DOC' }
+        ]
+      },
+      {
+        id: 'MOI.2', code: 'MOI.2',
+        title: 'All patients seen in the center have unique dental record files.',
+        intent: 'To ensure continuity of care, each patient cared for at the center must have his or her own dental record that has a unique dental record number. The dental record shall contain all of the elements identified in MOI.2.2 and MOI.2.3.',
+        substandards: [
+          { id: 'MOI.2.1', code: 'MOI.2.1', text: 'The contents of the dental record are arranged according to a standardized process.', activityType: 'OBS' },
+          { id: 'MOI.2.2', code: 'MOI.2.2', text: 'Dental record files contain the required patient demographics including national identification number, contact information, emergency contacts, and insurance history.', activityType: 'DEN' },
+          { id: 'MOI.2.3', code: 'MOI.2.3', text: 'Medical/dental record files contain sufficient updated medical information to safely manage the patient and promote continuity of care including history, physical examination, plan of care, investigations, consultations, observations, consents, procedure/surgery reports, medications, allergies, and prior adverse reactions.', activityType: 'DEN' }
+        ]
+      },
+      {
+        id: 'MOI.3', code: 'MOI.3',
+        title: 'The center has a policy for making entries in dental record files.',
+        intent: 'Uniformity of medical/dental records enhances better documentation and results implementation of written instructions. A policy should be developed and implemented based on the elements identified in MOI.3.1 through MOI.3.6. Abbreviations and symbols used may be referenced differently by different individuals throughout the policy/survey, thus inadvertently changing the intended care plans.',
+        substandards: [
+          { id: 'MOI.3.1', code: 'MOI.3.1', text: 'The dental file documentation policy identifies the category of staff allowed to write in the dental record.', activityType: 'DOC' },
+          { id: 'MOI.3.2', code: 'MOI.3.2', text: 'All entries in the patient file are legible, dated, timed, and signed by the author.', activityType: 'DEN' },
+          { id: 'MOI.3.3', code: 'MOI.3.3', text: 'There is a uniform entry of data in dental records, whereby orders are written separately from assessments, care plans, and progress notes.', activityType: 'DEN' },
+          { id: 'MOI.3.4', code: 'MOI.3.4', text: 'Entries written in error are not deleted or erased. Instead, a single line is passed through the error text and dated, timed, and signed by the author, or the system allows for electronic amendment tracing.', activityType: 'DEN' },
+          { id: 'MOI.3.5', code: 'MOI.3.5', text: 'Only standardized and approved abbreviations and symbols are used in dental records.', activityType: 'DEN' },
+          { id: 'MOI.3.6', code: 'MOI.3.6', text: 'The center uses diagnosis codes and procedure codes including international classification of diseases (ICD) or current procedural terminology (CPT) consistent with the requirements of relevant authorities.', activityType: 'DEN' }
+        ]
+      },
+      {
+        id: 'MOI.4', code: 'MOI.4',
+        title: 'The center has a process for completing the patient dental record files.',
+        intent: 'At the end of a patient\'s visit, the dental record should be returned to the dental records store. This keeps the dental records safe, secure, and in good order. Upon its receipt in the store, the dental record should be checked for completeness according to a written process that includes complete demographics, clinical information, and authentication.',
+        substandards: [
+          { id: 'MOI.4.1', code: 'MOI.4.1', text: 'Regular checks are made on returned files to ensure completion. The check includes but is not limited to demographics, medical information, and authentication.', activityType: 'INT' },
+          { id: 'MOI.4.2', code: 'MOI.4.2', text: 'Incomplete files are separated from completed ones in the records storage area and are completed in a time frame defined by the organization.', activityType: 'OBS' },
+          { id: 'MOI.4.3', code: 'MOI.4.3', text: 'The center keeps a record of the percentage of incomplete records over time and uses this information to improve staff compliance with record completion.', activityType: 'INT' }
+        ]
+      },
+      {
+        id: 'MOI.5', code: 'MOI.5',
+        title: 'The center develops a policy and procedure for the use of information technology.',
+        intent: 'Despite advances in information resources, many centers still face databases, networks, and software disasters, waiting short periods or shutting down work for days. To maintain the confidentiality and comprehensiveness of data, an adequate data capturing process along appropriate software is critical. A standard manual system must be available for use during the downtime period and include both managerial and clinical activities.',
+        substandards: [
+          { id: 'MOI.5.1', code: 'MOI.5.1', text: 'The policy and procedure for the use of information technology highlight how the generated information is stored and regularly backed up.', activityType: 'DOC' },
+          { id: 'MOI.5.2', code: 'MOI.5.2', text: 'The information technology policy and procedure describe the manual procedures required to execute the various activities in the event of system failure, maintenance, or repair.', activityType: 'DOC' },
+          { id: 'MOI.5.3', code: 'MOI.5.3', text: 'Staff can demonstrate the manual procedure for the downtime regulation of data generated by information technology.', activityType: 'INT' }
+        ]
+      },
+      {
+        id: 'MOI.6', code: 'MOI.6',
+        title: 'The center implements an effective clinical documentation improvement (CDI) program.',
+        intent: 'Clinical documentation improvement (CDI) is implemented in any healthcare organization. CDI ensures accurate reporting of diagnoses and procedures in the health authorities as per final regulations. The center has a developed policy and procedure that guides proper documentation to ensure to provide for healthcare leaders to have an holistic delivery of healthcare services.',
+        substandards: [
+          { id: 'MOI.6.1', code: 'MOI.6.1', text: 'The center develops a policy and procedure for the clinical documentation improvement program.', activityType: 'DOC' },
+          { id: 'MOI.6.2', code: 'MOI.6.2', text: 'The center has at a minimum, a dentist and a dental assistant, who are properly trained in clinical documentation improvement.', activityType: 'PER' }
+        ]
+      }
+    ];
+
+    // Facility Management and Safety (FMS) Standards - Surveyor 2
+    const fmsStandards = [
+      {
+        id: 'FMS.1', code: 'FMS.1',
+        title: 'The center establishes and appoints a lead for managing environmental safety programs.',
+        intent: 'Environmental safety requires leadership and coordination. The center must have designated staff responsible for managing all aspects of facility safety including emergency management, utility systems, hazardous materials, fire safety, medical equipment, building safety, security, and electrical safety.',
+        substandards: [
+          { id: 'FMS.1.1', code: 'FMS.1.1', text: 'The safety management program includes plans for emergency management, utility systems, hazardous materials, fire safety, medical equipment, building safety, security, and electrical safety.', activityType: 'DOC' },
+          { id: 'FMS.1.2', code: 'FMS.1.2', text: 'The safety management program includes plans for orientation of new hires regarding safety, participation in training programs, and knowledge assessments.', activityType: 'PER' },
+          { id: 'FMS.1.3', code: 'FMS.1.3', text: 'There are staff with dedicated roles and responsibilities set out for the safety management and safety programs.', activityType: 'PER' },
+          { id: 'FMS.1.4', code: 'FMS.1.4', text: 'Staff undergo fire safety awareness and are able to understand their respective roles and obligations in prevention and response protocols.', activityType: 'PER' },
+          { id: 'FMS.1.5', code: 'FMS.1.5', text: 'An SOP for alerting the center, fire services, and the relevant authorities in the event of fire that complies with any related local civil defence guidelines is developed.', activityType: 'DOC' }
+        ]
+      },
+      {
+        id: 'FMS.2', code: 'FMS.2',
+        title: 'Identified safety risks are documented and used for the development and implementation of corrective actions and external audit activities to improve facility management.',
+        intent: 'Risk documentation enables systematic improvement of facility safety through identification, tracking, and mitigation of hazards across all areas of the facility.',
+        substandards: [
+          { id: 'FMS.2.1', code: 'FMS.2.1', text: 'There is a fire risk assessment across all utility and all the other essential equipment or processes, to improve a facilities safe, clean environment.', activityType: 'DOC' },
+          { id: 'FMS.2.2', code: 'FMS.2.2', text: 'Fire drills and safety assessments are carried out on an annual basis.', activityType: 'DOC' }
+        ]
+      },
+      {
+        id: 'FMS.3', code: 'FMS.3',
+        title: 'The center\'s security program for protection of patients and personnel protects.',
+        intent: 'A comprehensive security program ensures the safety of patients, staff, and visitors through proper equipment, monitoring, and fire prevention measures.',
+        substandards: [
+          { id: 'FMS.3.1', code: 'FMS.3.1', text: 'The security program is defined and has a focal point for coordination.', activityType: 'INT' },
+          { id: 'FMS.3.2', code: 'FMS.3.2', text: 'Fire extinguishers are located and maintained at the site of services and support areas.', activityType: 'OBS' },
+          { id: 'FMS.3.3', code: 'FMS.3.3', text: 'Fire sprinklers including fire alarms and fire prevention and smoke detectors equipment are properly functional.', activityType: 'OBS' },
+          { id: 'FMS.3.4', code: 'FMS.3.4', text: 'The fire alarm system is maintained and tested, and all passive smoke containment elements are functional.', activityType: 'OBS' },
+          { id: 'FMS.3.5', code: 'FMS.3.5', text: 'A "No Smoke" policy is imposed in work areas.', activityType: 'OBS' },
+          { id: 'FMS.3.6', code: 'FMS.3.6', text: 'The "No Smoking" signs are posted at all entrance and waiting areas.', activityType: 'OBS' },
+          { id: 'FMS.3.7', code: 'FMS.3.7', text: 'Fire equipment and related systems are tested and documented according to manufacturer specifications.', activityType: 'DOC' }
+        ]
+      },
+      {
+        id: 'FMS.4', code: 'FMS.4',
+        title: 'The center is secure and designed for access.',
+        intent: 'Proper access control and security measures protect patients, staff, and the facility while ensuring appropriate visitor management and flow separation.',
+        substandards: [
+          { id: 'FMS.4.1', code: 'FMS.4.1', text: 'Staff have an adequate security protocol defined for the safety of access to their areas, taking adequate precautions.', activityType: 'INT' },
+          { id: 'FMS.4.2', code: 'FMS.4.2', text: 'Security measures for the security appropriate control and access for unauthorized buildings are seen.', activityType: 'INT' },
+          { id: 'FMS.4.3', code: 'FMS.4.3', text: 'The visitor admission is tracked.', activityType: 'INT' },
+          { id: 'FMS.4.4', code: 'FMS.4.4', text: 'The center is maintained and clean in a reasonable manner.', activityType: 'OBS' },
+          { id: 'FMS.4.5', code: 'FMS.4.5', text: 'Patients and staff flow are separated into non-healthcare areas.', activityType: 'OBS' },
+          { id: 'FMS.4.6', code: 'FMS.4.6', text: 'An exit door and its clearance-way is in place.', activityType: 'OBS' }
+        ]
+      },
+      {
+        id: 'FMS.5', code: 'FMS.5',
+        title: 'The center has a written plan for the proper maintenance, inspection, testing, and safe operation of medical equipment.',
+        intent: 'Medical equipment must be properly maintained, inspected, and tested to ensure patient safety and optimal performance. This includes acceptance testing, inventory management, and preventive maintenance programs.',
+        substandards: [
+          { id: 'FMS.5.1', code: 'FMS.5.1', text: 'Medical equipment in the center, including sterilizers, radiological equipment, or any functional equipment, is subjected to acceptance testing as per documented and established guidelines and or manufacturer specifications.', activityType: 'DOC' },
+          { id: 'FMS.5.2', code: 'FMS.5.2', text: 'The list of equipment and medical equipment used in the facility is well validated, documented, and periodically revised.', activityType: 'DOC' },
+          { id: 'FMS.5.3', code: 'FMS.5.3', text: 'Medical/dental equipment in an active inspection/maintenance program with test prompts and the final checklist for data documented.', activityType: 'DOC' },
+          { id: 'FMS.5.4', code: 'FMS.5.4', text: 'All dental medical electrical equipment is labeled and the asset tagged via local acceptance.', activityType: 'OBS' },
+          { id: 'FMS.5.5', code: 'FMS.5.5', text: 'Medical equipment needed to be installed in an area while completed, or failure events indicated is available at the facility of support element.', activityType: 'OBS' }
+        ]
+      },
+      {
+        id: 'FMS.6', code: 'FMS.6',
+        title: 'The center has a program to ensure the reliability and safety of utility systems.',
+        intent: 'Utility systems including electrical, water, ventilation, and medical gas systems must be reliably maintained to support patient care operations and ensure safety.',
+        substandards: [
+          { id: 'FMS.6.1', code: 'FMS.6.1', text: 'The center identifies and maintains an inventory of all utility systems.', activityType: 'DOC' },
+          { id: 'FMS.6.2', code: 'FMS.6.2', text: 'Utility systems are inspected, tested, and maintained on a regular schedule.', activityType: 'DOC' },
+          { id: 'FMS.6.3', code: 'FMS.6.3', text: 'Emergency power systems are tested regularly and maintained in operational condition.', activityType: 'OBS' },
+          { id: 'FMS.6.4', code: 'FMS.6.4', text: 'Water quality is monitored and maintained according to applicable standards.', activityType: 'DOC' },
+          { id: 'FMS.6.5', code: 'FMS.6.5', text: 'Ventilation systems are adequate for the facility requirements and regularly maintained.', activityType: 'OBS' },
+          { id: 'FMS.6.6', code: 'FMS.6.6', text: 'Electrical systems are properly grounded and maintained for safety.', activityType: 'OBS' },
+          { id: 'FMS.6.7', code: 'FMS.6.7', text: 'Staff are trained in utility system emergency procedures.', activityType: 'INT' },
+          { id: 'FMS.6.8', code: 'FMS.6.8', text: 'Backup systems are in place for critical utilities.', activityType: 'OBS' },
+          { id: 'FMS.6.9', code: 'FMS.6.9', text: 'Utility system failures are documented and analyzed for improvement.', activityType: 'DOC' },
+          { id: 'FMS.6.10', code: 'FMS.6.10', text: 'The center has contingency plans for utility system failures.', activityType: 'DOC' }
+        ]
+      },
+      {
+        id: 'FMS.7', code: 'FMS.7',
+        title: 'Fire safety and smoke monitoring plan for fire emergency.',
+        intent: 'A comprehensive fire safety program ensures proper signage, evacuation routes, equipment functionality, and staff preparedness to respond to fire emergencies effectively.',
+        substandards: [
+          { id: 'FMS.7.1', code: 'FMS.7.1', text: 'Fire door signage and the lighting of all fire service equipment.', activityType: 'OBS' },
+          { id: 'FMS.7.2', code: 'FMS.7.2', text: 'Fire emergency exits and evacuation plans and safety equipment for safety compliance.', activityType: 'DOC' },
+          { id: 'FMS.7.3', code: 'FMS.7.3', text: 'The clear route plan on how to coordinate various locations where it will release to any emergency of designated evacuation.', activityType: 'OBS' },
+          { id: 'FMS.7.4', code: 'FMS.7.4', text: 'Fire rescue has direct access and access to evacuation emergency areas.', activityType: 'OBS' },
+          { id: 'FMS.7.5', code: 'FMS.7.5', text: 'Staff are familiar with the emergency and evacuation process.', activityType: 'INT' },
+          { id: 'FMS.7.6', code: 'FMS.7.6', text: 'The fire emergency plan is reviewed annually.', activityType: 'DOC' },
+          { id: 'FMS.7.7', code: 'FMS.7.7', text: 'The center has a policy to guide visitors during an emergency evacuation.', activityType: 'DOC' }
+        ]
+      },
+      {
+        id: 'FMS.8', code: 'FMS.8',
+        title: 'The dental center develops a hazardous material (HAZMAT) and waste disposal plan.',
+        intent: 'The center must protect its occupants from the effects of hazardous materials and waste. There should be a hazardous material plan in place that includes identifying and safely controlling hazardous materials and waste throughout the facility. A hazardous material is any solid, liquid, or gas that can harm people, other living organisms, property, or the environment.',
+        substandards: [
+          { id: 'FMS.8.1', code: 'FMS.8.1', text: 'The center keeps an updated register of all hazardous materials in the center, along with their "Safety Data Sheets".', activityType: 'DOC' },
+          { id: 'FMS.8.2', code: 'FMS.8.2', text: 'Staff are trained in properly dealing with available hazardous materials and waste disposal.', activityType: 'INT' },
+          { id: 'FMS.8.3', code: 'FMS.8.3', text: 'The center controls and reduces the risk associated with the use of hazardous materials and wastes.', activityType: 'OBS' },
+          { id: 'FMS.8.4', code: 'FMS.8.4', text: 'Hazardous materials are stored, handled, transported, used, and disposed of as per the "Safety Data Sheets".', activityType: 'OBS' },
+          { id: 'FMS.8.5', code: 'FMS.8.5', text: 'Waste disposal is conducted safely within the facility or through an authorized contractor.', activityType: 'OBS' },
+          { id: 'FMS.8.6', code: 'FMS.8.6', text: 'Fire-rated cabinets are used for flammable hazardous materials.', activityType: 'OBS' }
+        ]
+      },
+      {
+        id: 'FMS.9', code: 'FMS.9',
+        title: 'The center has a policy and procedure for the safe use of various types of compressed medical gasses.',
+        intent: 'Compressed gas systems are a standard feature of most healthcare facilities, and they require special monitoring and maintenance to ensure their proper operation. The hazards associated with compressed gasses include oxygen displacement, explosion, toxicity, and the physical hazards of a ruptured cylinder. The center must develop and implement a policy for handling, storing, transporting, and disposing of various types of compressed gasses.',
+        substandards: [
+          { id: 'FMS.9.1', code: 'FMS.9.1', text: 'The medical gasses policy highlights the use of cylinder transporters.', activityType: 'DOC' },
+          { id: 'FMS.9.2', code: 'FMS.9.2', text: 'The policy emphasizes secure storage of the cylinder(s) in well-ventilated areas.', activityType: 'OBS' },
+          { id: 'FMS.9.3', code: 'FMS.9.3', text: 'The policy describes how to secure the cylinders by positioning them upright against a wall and securing it by either a chain or inside special containers.', activityType: 'DOC' },
+          { id: 'FMS.9.4', code: 'FMS.9.4', text: 'The policy ensures the timely replacement of empty cylinders and the availability of a backup system.', activityType: 'DOC' },
+          { id: 'FMS.9.5', code: 'FMS.9.5', text: 'Centers equipped with piped gas systems follow the regulatory body\'s testing and safety requirements.', activityType: 'OBS' }
+        ]
+      }
+    ];
+
+    // ============================================
     // DATA: Provision of Care (PC) - Surveyor 1
     // ============================================
     const provisionOfCareStandards = [
@@ -2521,13 +3137,159 @@
       }
     ];
 
-    // Chapter definitions for Surveyor 1
-    const chapters = [
+    // Chapter definitions for Surveyor 1 (A1)
+    const chapters_A1 = [
       { id: 'LD', code: 'LD', name: 'Leadership of the Organization', standards: leadershipStandards, active: true },
       { id: 'PC', code: 'PC', name: 'Provision of Care', standards: provisionOfCareStandards, active: true },
       { id: 'DL', code: 'DL', name: 'Dental Laboratory', standards: dentalLaboratoryStandards, active: true },
       { id: 'IPC', code: 'IPC', name: 'Infection Prevention and Control', standards: infectionControlStandards, active: true }
     ];
+
+    // Provision of Care Standards for Surveyor 2
+    const provisionOfCareStandards_A2 = [
+      {
+        id: 'PC.1', code: 'PC.1',
+        title: 'Patients have access to services based on their dental needs and the available services, and are registered with the center for providing such services.',
+        intent: 'The center has to demonstrate a registry where every dental service is available based on the identified service requirements and the facility\'s scope of practice. New patients are met by a patient services personnel team or receptionist who helps establish care, assign a dental record, and register them with a primary dentist.',
+        substandards: [
+          { id: 'PC.1.1', code: 'PC.1.1', text: 'A standardized process is in place for screening and registering patients for services using their full name and identification number.', activityType: 'INT' },
+          { id: 'PC.1.2', code: 'PC.1.2', text: 'Registration creates a dental record number that is unique to every patient.', activityType: 'DEN' },
+          { id: 'PC.1.3', code: 'PC.1.3', text: 'An appointment system is in place to book patients in advance.', activityType: 'INT' }
+        ]
+      },
+      {
+        id: 'PC.2', code: 'PC.2',
+        title: 'The center has a process to ensure the correct identification of patients and teeth.',
+        intent: 'Patient identification errors can occur in virtually all aspects of diagnosis and treatment. The intent is to reliably identify the patient as the person for whom the service or treatment is intended and to match the service or treatment to that patient.',
+        substandards: [
+          { id: 'PC.2.1', code: 'PC.2.1', text: 'Patients are identified by at least two (2) identifiers: the full name as in the identification document, and a unique dental record number.', activityType: 'INT' },
+          { id: 'PC.2.2', code: 'PC.2.2', text: 'Patients are identified before blood withdrawal, before any investigation, before administering medications, and before any surgery or procedure.', activityType: 'INT' },
+          { id: 'PC.2.3', code: 'PC.2.3', text: 'Patients are actively involved in the process of patient identification.', activityType: 'OBS' },
+          { id: 'PC.2.4', code: 'PC.2.4', text: 'An approved tooth numbering system (FDI) is used to identify the tooth in each intervention.', activityType: 'DEN' }
+        ]
+      },
+      {
+        id: 'PC.3', code: 'PC.3',
+        title: 'The center develops and implements a process for reporting critical test results, whether performed on-site or outsourced.',
+        intent: 'Diagnostic procedures and their results help define the patient\'s condition and identify treatment options. The center determines its critical tests and critical values. The process defines who reports to whom, what is reported, and how the process is managed.',
+        substandards: [
+          { id: 'PC.3.1', code: 'PC.3.1', text: 'The process defines which staff is responsible to receive critical test results.', activityType: 'DOC' },
+          { id: 'PC.3.2', code: 'PC.3.2', text: 'The process involves writing down the test result by the receiver and reading back the findings to the result provider.', activityType: 'INT' },
+          { id: 'PC.3.3', code: 'PC.3.3', text: 'The read-back process and the dentist\'s intervention are documented in the patient dental record.', activityType: 'DEN' },
+          { id: 'PC.3.4', code: 'PC.3.4', text: 'The center develops a process for contacting patients that left the center when critical test results are reported.', activityType: 'INT' }
+        ]
+      },
+      {
+        id: 'PC.5', code: 'PC.5',
+        title: 'The dental center ensures all required safety measures are performed for moderate sedation.',
+        intent: 'Moderate sedation is a drug-induced depression of consciousness during which patients respond purposefully to verbal commands. The center must ensure proper equipment, trained staff, recovery protocols, and documentation for patient safety.',
+        substandards: [
+          { id: 'PC.5.1', code: 'PC.5.1', text: 'The procedure room is equipped with an appropriate nitrous oxide/oxygen mixing device and the appropriate monitoring equipment that permits continuous recording of the patient\'s EEG and oxygen saturation, with an intermittent recording of the blood pressure.', activityType: 'OBS' },
+          { id: 'PC.5.2', code: 'PC.5.2', text: 'The dentist performing the procedure is certified competent in moderate sedation and managing its possible complications.', activityType: 'PER' },
+          { id: 'PC.5.3', code: 'PC.5.3', text: 'The dental assistant is certified/competent in monitoring patients under moderate sedation.', activityType: 'PER' },
+          { id: 'PC.5.4', code: 'PC.5.4', text: 'The center has a recovery room, with monitoring equipment, adjacent to the procedure room or the patient is reassessed in the same procedure room.', activityType: 'OBS' },
+          { id: 'PC.5.5', code: 'PC.5.5', text: 'The patient is discharged home after full recovery utilizing evidence-based recovery criteria that are documented in the patient dental record.', activityType: 'DEN' }
+        ]
+      },
+      {
+        id: 'PC.10', code: 'PC.10',
+        title: 'The center has a policy and process to safely provide care to patients who require cardiopulmonary resuscitation (CPR).',
+        intent: 'A policy and process are in place that outlines how the dental center will care for patients who require cardiopulmonary resuscitation (CPR). The policy documents arrangements for transferring patients to appropriate facilities when needed.',
+        substandards: [
+          { id: 'PC.10.1', code: 'PC.10.1', text: 'The CPR policy highlights the availability of a standardized crash cart(s) or automated external defibrillator (AED) in the patient care areas.', activityType: 'OBS' },
+          { id: 'PC.10.2', code: 'PC.10.2', text: 'The policy describes the process for qualified staff to check the crash cart every shift and after each use.', activityType: 'INT' },
+          { id: 'PC.10.3', code: 'PC.10.3', text: 'The role of staff involved in the CPR process is clearly defined in the CPR policy and monitored for implementation.', activityType: 'DOC' }
+        ]
+      },
+      {
+        id: 'PC.15', code: 'PC.15',
+        title: 'Internal radiology services are available in dental centers and operated safely. Other radiology services are outsourced, as needed, to meet patient needs.',
+        intent: 'Intraoral x-ray tests are usually in-house services. Panoramic and cephalometric x-rays are found in orthodontic centers. Cone beam CT scans are available in some dental centers and performed when clinically indicated.',
+        substandards: [
+          { id: 'PC.15.1', code: 'PC.15.1', text: 'The center has functional in-house intraoral and panoramic radiology services.', activityType: 'OBS' },
+          { id: 'PC.15.2', code: 'PC.15.2', text: 'Intraoral radiographs, dental panorama, and cephalometric radiographs are carried out by the dental assistant or a radiology technician.', activityType: 'PER' },
+          { id: 'PC.15.3', code: 'PC.15.3', text: 'Dental cone-beam CT scans are carried out by a licensed radiology technician or a trained dental assistant.', activityType: 'PER' },
+          { id: 'PC.15.4', code: 'PC.15.4', text: 'Intraoral, panoramic, and cephalometric radiographs are read and reported by the ordering dentist.', activityType: 'DEN' },
+          { id: 'PC.15.5', code: 'PC.15.5', text: 'Dental cone-beam CT scans are read and reported by a qualified trained dentist.', activityType: 'PER' }
+        ]
+      },
+      {
+        id: 'PC.16', code: 'PC.16',
+        title: 'The center develops a radiation safety program.',
+        intent: 'Radiation safety programs reduce the risk of exposure to ionizing radiation to patients, visitors, and staff. The center ensures all radiation equipment is properly maintained, staff are trained and monitored, and appropriate safety measures are in place.',
+        substandards: [
+          { id: 'PC.16.1', code: 'PC.16.1', text: 'The radiation safety program covers all areas where ionizing radiation is used for either intraoral or extraoral x-rays.', activityType: 'DOC' },
+          { id: 'PC.16.2', code: 'PC.16.2', text: 'All areas where ionizing radiation is administered are tested and certified radiation leak-proof by the appropriate certifying local authority.', activityType: 'DOC' },
+          { id: 'PC.16.3', code: 'PC.16.3', text: 'Radiology equipment is periodically inspected, calibrated, and maintained for proper functioning.', activityType: 'DOC' },
+          { id: 'PC.16.4', code: 'PC.16.4', text: 'Safety warnings are posted in clear and appropriate locations on the doors.', activityType: 'OBS' },
+          { id: 'PC.16.5', code: 'PC.16.5', text: 'Women of childbearing age with missed menstruation are checked for the possibility of being pregnant prior to having X-ray tests.', activityType: 'INT' },
+          { id: 'PC.16.6', code: 'PC.16.6', text: 'Personnel are monitored for radiation exposure by thermoluminescence dosimeters (TLD) that are regularly checked.', activityType: 'DOC' },
+          { id: 'PC.16.7', code: 'PC.16.7', text: 'Personnel shielding devices, including radiation protection aprons, are available for patients and staff, and periodically inspected and tested for integrity and safety compliance as per the documentation.', activityType: 'DOC' }
+        ]
+      }
+    ];
+
+    // Chapter definitions for Surveyor 2 (A2)
+    const chapters_A2 = [
+      { id: 'LD', code: 'LD', name: 'Leadership of the Organization', standards: leadershipStandards_A2, active: true },
+      { id: 'PC', code: 'PC', name: 'Provision of Care', standards: provisionOfCareStandards_A2, active: provisionOfCareStandards_A2.length > 0, placeholder: provisionOfCareStandards_A2.length === 0 },
+      { id: 'MOI', code: 'MOI', name: 'Management of Information', standards: moiStandards, active: moiStandards.length > 0, placeholder: moiStandards.length === 0 },
+      { id: 'FMS', code: 'FMS', name: 'Facility Management and Safety', standards: fmsStandards, active: fmsStandards.length > 0, placeholder: fmsStandards.length === 0 }
+    ];
+
+    // ============================================
+    // CONFIGURATION B: Full Survey (All Domains Merged)
+    // ============================================
+
+    // Merge Leadership Standards (A1 + A2) - sorted by standard number
+    const leadershipStandards_B = [...leadershipStandards, ...leadershipStandards_A2].sort((a, b) => {
+      const numA = parseFloat(a.code.replace('LD.', ''));
+      const numB = parseFloat(b.code.replace('LD.', ''));
+      return numA - numB;
+    });
+
+    // Merge Provision of Care Standards (A1 + A2) - sorted by standard number
+    const provisionOfCareStandards_B = [...provisionOfCareStandards, ...provisionOfCareStandards_A2].sort((a, b) => {
+      const numA = parseFloat(a.code.replace('PC.', ''));
+      const numB = parseFloat(b.code.replace('PC.', ''));
+      return numA - numB;
+    });
+
+    // Domain color scheme for Configuration B (subtle, professional)
+    const domainColors = {
+      LD: { primary: '#1e3a5f', light: '#e8f4fc', accent: '#3498db', gradient: 'linear-gradient(135deg, #1e3a5f 0%, #2d5a8a 100%)' },
+      PC: { primary: '#0d6b4e', light: '#e6f5f0', accent: '#27ae60', gradient: 'linear-gradient(135deg, #0d6b4e 0%, #1a9d6c 100%)' },
+      DL: { primary: '#6b4e0d', light: '#fdf6e6', accent: '#f39c12', gradient: 'linear-gradient(135deg, #6b4e0d 0%, #9d7a1a 100%)' },
+      IPC: { primary: '#5e1e5e', light: '#f5e8f5', accent: '#9b59b6', gradient: 'linear-gradient(135deg, #5e1e5e 0%, #8a3d8a 100%)' },
+      MOI: { primary: '#1e5e5e', light: '#e8f5f5', accent: '#16a085', gradient: 'linear-gradient(135deg, #1e5e5e 0%, #3d8a8a 100%)' },
+      FMS: { primary: '#5e1e2d', light: '#f5e8ec', accent: '#e74c3c', gradient: 'linear-gradient(135deg, #5e1e2d 0%, #8a3d4d 100%)' }
+    };
+
+    // Chapter definitions for Full Survey (B) - All 6 Domains
+    const chapters_B = [
+      { id: 'LD', code: 'LD', name: 'Leadership of the Organization', standards: leadershipStandards_B, active: true, color: domainColors.LD, order: 1 },
+      { id: 'PC', code: 'PC', name: 'Provision of Care', standards: provisionOfCareStandards_B, active: true, color: domainColors.PC, order: 2 },
+      { id: 'DL', code: 'DL', name: 'Dental Laboratory', standards: dentalLaboratoryStandards, active: true, color: domainColors.DL, order: 3 },
+      { id: 'IPC', code: 'IPC', name: 'Infection Prevention and Control', standards: infectionControlStandards, active: true, color: domainColors.IPC, order: 4 },
+      { id: 'MOI', code: 'MOI', name: 'Management of Information', standards: moiStandards, active: true, color: domainColors.MOI, order: 5 },
+      { id: 'FMS', code: 'FMS', name: 'Facility Management and Safety', standards: fmsStandards, active: true, color: domainColors.FMS, order: 6 }
+    ];
+
+    // Default chapters (backwards compatible)
+    const chapters = chapters_A1;
+
+    // Function to get chapters by configuration
+    const getChaptersByConfig = (config) => {
+      switch(config) {
+        case 'A2': return chapters_A2;
+        case 'B': return chapters_B;
+        case 'A1':
+        default: return chapters_A1;
+      }
+    };
+
+    // Get domain color by chapter ID
+    const getDomainColor = (chapterId) => domainColors[chapterId] || domainColors.LD;
 
     const getAllSubstandards = (standardsList) => {
       const subs = [];
@@ -2612,6 +3374,44 @@
         <span>{saving ? 'Saving...' : 'All changes saved'}</span>
       </div>
     );
+
+    // Domain Separator Component for Full Survey Mode
+    const DomainSeparator = ({ chapter, stats }) => {
+      const domainClass = `domain-${chapter.code.toLowerCase()}`;
+      return (
+        <div className={`domain-separator ${domainClass}`}>
+          <div className="domain-separator-content">
+            <div className={`domain-icon ${domainClass}`}>{chapter.code}</div>
+            <div className="domain-info">
+              <div className="domain-title">{chapter.name}</div>
+              <div className="domain-subtitle">
+                <span>{chapter.standards.length} Standards</span>
+                <span>•</span>
+                <span>{stats.total} Sub-standards</span>
+              </div>
+            </div>
+            <div className="domain-stats">
+              <div className="domain-stat">
+                <div className="domain-stat-value" style={{color: 'var(--success)'}}>{stats.fullyMet}</div>
+                <div className="domain-stat-label">Fully Met</div>
+              </div>
+              <div className="domain-stat">
+                <div className="domain-stat-value" style={{color: 'var(--warning)'}}>{stats.partial}</div>
+                <div className="domain-stat-label">Partial</div>
+              </div>
+              <div className="domain-stat">
+                <div className="domain-stat-value" style={{color: 'var(--danger)'}}>{stats.notMet}</div>
+                <div className="domain-stat-label">Not Met</div>
+              </div>
+              <div className="domain-stat">
+                <div className="domain-stat-value">{stats.pending}</div>
+                <div className="domain-stat-label">Pending</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    };
 
     // Sub-standard Card
     const SubstandardCard = ({ substandard, score, onScoreChange }) => {
@@ -3133,9 +3933,9 @@
       const [errors, setErrors] = useState({});
 
       const configOptions = [
-        { value: 'A1', label: 'Configuration A • Surveyor 1', desc: 'LD, PC, DL, IPC (180 standards)' },
-        { value: 'A2', label: 'Configuration A • Surveyor 2', desc: 'LD, PC, MOI, FMS (Coming Soon)' },
-        { value: 'B', label: 'Configuration B • Full Survey', desc: 'All Standards (Coming Soon)' }
+        { value: 'A1', label: 'Configuration A • Surveyor 1', desc: 'LD, PC, DL, IPC (180 sub-standards)' },
+        { value: 'A2', label: 'Configuration A • Surveyor 2', desc: 'LD, PC, MOI, FMS (169 sub-standards)' },
+        { value: 'B', label: 'Configuration B • Full Survey', desc: 'All 6 Domains: LD, PC, DL, IPC, MOI, FMS (349 sub-standards)' }
       ];
 
       useEffect(() => {
@@ -3233,8 +4033,8 @@
                         background: formData.configuration === opt.value ? 'rgba(52, 152, 219, 0.1)' : 'var(--bg-secondary)',
                         border: formData.configuration === opt.value ? '2px solid var(--accent)' : '1px solid var(--border)',
                         borderRadius: '8px',
-                        cursor: opt.value === 'A1' ? 'pointer' : 'not-allowed',
-                        opacity: opt.value === 'A1' ? 1 : 0.5,
+                        cursor: 'pointer',
+                        opacity: 1,
                         transition: 'all 0.2s ease'
                       }}>
                         <input
@@ -3242,8 +4042,7 @@
                           name="configuration"
                           value={opt.value}
                           checked={formData.configuration === opt.value}
-                          onChange={e => opt.value === 'A1' && setFormData({...formData, configuration: e.target.value})}
-                          disabled={opt.value !== 'A1'}
+                          onChange={e => setFormData({...formData, configuration: e.target.value})}
                           style={{marginRight: '12px', accentColor: 'var(--accent)'}}
                         />
                         <div>
@@ -3423,6 +4222,12 @@
 
     // SCORING PAGE - PRIMARY VIEW
     const ScoringPage = ({ scores, setScores, saving, isFinalized, finalizedData, viewingMode, setViewingMode, onFinalize, onReset, showToast, assessmentDetails, onEditDetails, onNavigateToHistory }) => {
+      // Get chapters based on current configuration
+      const activeChapters = useMemo(() => {
+        const config = assessmentDetails?.configuration || 'A1';
+        return getChaptersByConfig(config);
+      }, [assessmentDetails?.configuration]);
+
       const [activeChapter, setActiveChapter] = useState('LD');
       const [activeStandard, setActiveStandard] = useState(null);
       const [activityFilter, setActivityFilter] = useState('ALL');
@@ -3435,7 +4240,24 @@
       const [isSubmitting, setIsSubmitting] = useState(false);
       const [completionShown, setCompletionShown] = useState(false);
 
-      const currentChapter = chapters.find(c => c.id === activeChapter);
+      // Expanded domains state for Configuration B sidebar (all expanded by default)
+      const [expandedDomains, setExpandedDomains] = useState({
+        LD: true, PC: true, DL: true, IPC: true, MOI: true, FMS: true
+      });
+
+      const toggleDomainExpanded = (domainId) => {
+        setExpandedDomains(prev => ({ ...prev, [domainId]: !prev[domainId] }));
+      };
+
+      const expandAllDomains = () => {
+        setExpandedDomains({ LD: true, PC: true, DL: true, IPC: true, MOI: true, FMS: true });
+      };
+
+      const collapseAllDomains = () => {
+        setExpandedDomains({ LD: false, PC: false, DL: false, IPC: false, MOI: false, FMS: false });
+      };
+
+      const currentChapter = activeChapters.find(c => c.id === activeChapter);
       const currentStandards = currentChapter?.standards || [];
       const allSubstandards = useMemo(() => getAllSubstandards(currentStandards), [currentStandards]);
 
@@ -3502,7 +4324,7 @@
       const overallPending = useMemo(() => {
         let totalSubs = 0;
         let scoredSubs = 0;
-        chapters.forEach(ch => {
+        activeChapters.forEach(ch => {
           if (!ch.placeholder) {
             const subs = getAllSubstandards(ch.standards);
             totalSubs += subs.length;
@@ -3514,12 +4336,12 @@
           }
         });
         return totalSubs - scoredSubs;
-      }, [scores, chapters]);
+      }, [scores, activeChapters]);
 
       // Calculate overall stats across ALL chapters
       const overallStats = useMemo(() => {
         let total = 0, scored = 0, fullyMet = 0, partial = 0, notMet = 0, na = 0;
-        chapters.forEach(ch => {
+        activeChapters.forEach(ch => {
           if (!ch.placeholder) {
             const subs = getAllSubstandards(ch.standards);
             total += subs.length;
@@ -3540,7 +4362,7 @@
         const earnedPoints = (fullyMet * 2) + (partial * 1);
         const percentage = maxPossible > 0 ? Math.round((earnedPoints / maxPossible) * 100 * 100) / 100 : 0;
         return { total, scored, fullyMet, partial, notMet, na, percentage, applicable };
-      }, [scores, chapters]);
+      }, [scores, activeChapters]);
 
       // Detect completion and show celebration modal
       useEffect(() => {
@@ -3755,16 +4577,47 @@
             <button className="sidebar-toggle" onClick={() => setSidebarOpen(!sidebarOpen)} title={sidebarOpen ? 'Hide sidebar' : 'Show sidebar'}>
               {sidebarOpen ? '◀' : '▶'}
             </button>
-            <div className="control-group">
-              <label className="control-label">Chapter:</label>
-              <select value={activeChapter} onChange={e => { setActiveChapter(e.target.value); setActiveStandard(null); }}>
-                {chapters.map(ch => (
-                  <option key={ch.id} value={ch.id} disabled={ch.placeholder}>
-                    {ch.name} {ch.placeholder ? '(Coming Soon)' : `(${ch.standards.length > 0 ? getAllSubstandards(ch.standards).length : 0})`}
-                  </option>
-                ))}
-              </select>
-            </div>
+            {assessmentDetails?.configuration === 'B' ? (
+              /* Full Survey Mode - Show domain indicator */
+              <div className="control-group" style={{display: 'flex', alignItems: 'center', gap: '12px'}}>
+                <div style={{
+                  background: 'linear-gradient(135deg, #1e3a5f 0%, #3498db 100%)',
+                  color: 'white',
+                  padding: '8px 16px',
+                  borderRadius: '20px',
+                  fontSize: '13px',
+                  fontWeight: '600',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px'
+                }}>
+                  <span style={{fontSize: '16px'}}>📋</span>
+                  Full Survey Mode
+                  <span style={{background: 'rgba(255,255,255,0.2)', padding: '2px 8px', borderRadius: '10px', fontSize: '11px'}}>
+                    6 Domains
+                  </span>
+                </div>
+                <select value={activeChapter} onChange={e => { setActiveChapter(e.target.value); setActiveStandard(null); }}
+                  style={{padding: '8px 12px', borderRadius: '8px', border: '1px solid var(--border)', fontSize: '13px'}}>
+                  <option value="ALL">All Domains</option>
+                  {activeChapters.map(ch => (
+                    <option key={ch.id} value={ch.id}>{ch.code} - {ch.name}</option>
+                  ))}
+                </select>
+              </div>
+            ) : (
+              /* Normal Mode - Show chapter dropdown */
+              <div className="control-group">
+                <label className="control-label">Chapter:</label>
+                <select value={activeChapter} onChange={e => { setActiveChapter(e.target.value); setActiveStandard(null); }}>
+                  {activeChapters.map(ch => (
+                    <option key={ch.id} value={ch.id} disabled={ch.placeholder}>
+                      {ch.name} {ch.placeholder ? '(Coming Soon)' : `(${ch.standards.length > 0 ? getAllSubstandards(ch.standards).length : 0})`}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
             <div className="control-group">
               <label className="control-label">Activity:</label>
               <select value={activityFilter} onChange={e => setActivityFilter(e.target.value)}>
@@ -3793,27 +4646,107 @@
 
           <div className="main-container">
             <aside className={`sidebar ${sidebarOpen ? '' : 'collapsed'}`}>
-              <div className="sidebar-section">
-                <div className="sidebar-title">Standards Navigation</div>
-                <div className={`standard-nav-item ${!activeStandard ? 'active' : ''}`} onClick={() => setActiveStandard(null)}>
-                  <span className="standard-nav-code">All Standards</span>
-                  <span className="standard-nav-count">{allSubstandards.length}</span>
-                </div>
-                {currentStandards.map(std => {
-                  const scoredCount = getScoredCountForStandard(std.id);
-                  const isComplete = scoredCount === std.substandards.length;
-                  return (
-                    <div key={std.id} className={`standard-nav-item ${activeStandard === std.id ? 'active' : ''}`}
-                      onClick={() => setActiveStandard(std.id)}>
-                      <span className="standard-nav-code">{std.code}</span>
-                      <div className="standard-nav-progress">
-                        {isComplete && <span className="standard-nav-check">✓</span>}
-                        <span className="standard-nav-count">{scoredCount}/{std.substandards.length}</span>
-                      </div>
+              {assessmentDetails?.configuration === 'B' ? (
+                /* Full Survey Mode - Domain-grouped navigation */
+                <div className="sidebar-section">
+                  <div className="sidebar-title" style={{marginBottom: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+                    <span style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
+                      📊 All Domains
+                      <span style={{fontSize: '11px', background: 'var(--bg-hover)', padding: '2px 8px', borderRadius: '10px', color: 'var(--text-muted)'}}>
+                        {activeChapters.reduce((sum, ch) => sum + getAllSubstandards(ch.standards).length, 0)} total
+                      </span>
+                    </span>
+                    <div style={{display: 'flex', gap: '4px'}}>
+                      <button
+                        onClick={expandAllDomains}
+                        title="Expand All"
+                        style={{
+                          background: 'var(--bg-hover)', border: 'none', borderRadius: '4px',
+                          padding: '4px 8px', cursor: 'pointer', fontSize: '11px', color: 'var(--text-secondary)'
+                        }}
+                      >⊞</button>
+                      <button
+                        onClick={collapseAllDomains}
+                        title="Collapse All"
+                        style={{
+                          background: 'var(--bg-hover)', border: 'none', borderRadius: '4px',
+                          padding: '4px 8px', cursor: 'pointer', fontSize: '11px', color: 'var(--text-secondary)'
+                        }}
+                      >⊟</button>
                     </div>
-                  );
-                })}
-              </div>
+                  </div>
+                  {activeChapters.map(chapter => {
+                    const chapterSubs = getAllSubstandards(chapter.standards);
+                    const chapterScoredCount = chapterSubs.filter(s => scores[s.id]?.value !== undefined && scores[s.id]?.value !== null).length;
+                    const isExpanded = expandedDomains[chapter.id] !== false;
+                    const domainClass = `domain-${chapter.code.toLowerCase()}`;
+
+                    return (
+                      <div key={chapter.id} className="sidebar-domain-group">
+                        <div
+                          className={`sidebar-domain-header ${activeChapter === chapter.id ? 'active' : ''}`}
+                          onClick={() => toggleDomainExpanded(chapter.id)}
+                          style={{cursor: 'pointer'}}
+                        >
+                          <span style={{
+                            fontSize: '10px', color: 'var(--text-muted)',
+                            transition: 'transform 0.2s ease',
+                            transform: isExpanded ? 'rotate(90deg)' : 'rotate(0deg)',
+                            display: 'inline-block'
+                          }}>▶</span>
+                          <div className={`sidebar-domain-badge ${domainClass}`}>{chapter.code}</div>
+                          <div className="sidebar-domain-count" style={{marginLeft: 'auto'}}>{chapterScoredCount}/{chapterSubs.length}</div>
+                        </div>
+                        {isExpanded && (
+                          <div className="sidebar-domain-standards">
+                            {chapter.standards.map(std => {
+                              const scoredCount = getScoredCountForStandard(std.id);
+                              const isComplete = scoredCount === std.substandards.length;
+                              return (
+                                <div key={std.id}
+                                  className={`standard-nav-item ${activeStandard === std.id ? 'active' : ''}`}
+                                  onClick={(e) => { e.stopPropagation(); setActiveChapter(chapter.id); setActiveStandard(std.id); }}
+                                  style={{padding: '6px 10px', fontSize: '12px'}}>
+                                  <span className="standard-nav-code">{std.code}</span>
+                                  <div className="standard-nav-progress">
+                                    {isComplete && <span className="standard-nav-check" style={{fontSize: '10px'}}>✓</span>}
+                                    <span className="standard-nav-count" style={{fontSize: '11px'}}>{scoredCount}/{std.substandards.length}</span>
+                                  </div>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                  {/* Bottom padding for score bar */}
+                  <div style={{height: '80px'}}></div>
+                </div>
+              ) : (
+                /* Normal Mode - Standard navigation */
+                <div className="sidebar-section">
+                  <div className="sidebar-title">Standards Navigation</div>
+                  <div className={`standard-nav-item ${!activeStandard ? 'active' : ''}`} onClick={() => setActiveStandard(null)}>
+                    <span className="standard-nav-code">All Standards</span>
+                    <span className="standard-nav-count">{allSubstandards.length}</span>
+                  </div>
+                  {currentStandards.map(std => {
+                    const scoredCount = getScoredCountForStandard(std.id);
+                    const isComplete = scoredCount === std.substandards.length;
+                    return (
+                      <div key={std.id} className={`standard-nav-item ${activeStandard === std.id ? 'active' : ''}`}
+                        onClick={() => setActiveStandard(std.id)}>
+                        <span className="standard-nav-code">{std.code}</span>
+                        <div className="standard-nav-progress">
+                          {isComplete && <span className="standard-nav-check">✓</span>}
+                          <span className="standard-nav-count">{scoredCount}/{std.substandards.length}</span>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
             </aside>
 
             <main className="content-area">
@@ -3843,8 +4776,43 @@
                     </div>
                   );
                 })()
+              ) : assessmentDetails?.configuration === 'B' && activeChapter === 'ALL' ? (
+                /* Full Survey Mode - All domains header */
+                <div className="content-header" style={{background: 'linear-gradient(135deg, rgba(30, 58, 95, 0.05) 0%, rgba(52, 152, 219, 0.08) 100%)', padding: '24px', borderRadius: '12px', marginBottom: '24px'}}>
+                  <div style={{display: 'flex', alignItems: 'center', gap: '16px'}}>
+                    <div style={{
+                      width: '56px', height: '56px', borderRadius: '14px',
+                      background: 'linear-gradient(135deg, #1e3a5f 0%, #3498db 100%)',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      boxShadow: '0 4px 12px rgba(30, 58, 95, 0.3)'
+                    }}>
+                      <span style={{color: 'white', fontSize: '24px'}}>📋</span>
+                    </div>
+                    <div>
+                      <h2 style={{margin: 0, fontSize: '22px', fontWeight: 700, color: 'var(--primary)'}}>Full Survey Assessment</h2>
+                      <p style={{margin: '4px 0 0 0', color: 'var(--text-secondary)', fontSize: '14px'}}>
+                        All 6 Domains • {activeChapters.reduce((sum, ch) => sum + getAllSubstandards(ch.standards).length, 0)} Sub-standards
+                      </p>
+                    </div>
+                  </div>
+                  <div style={{display: 'flex', gap: '8px', marginTop: '16px', flexWrap: 'wrap'}}>
+                    {activeChapters.map(ch => (
+                      <a key={ch.id} href={`#domain-${ch.code.toLowerCase()}`}
+                        style={{
+                          padding: '6px 14px', borderRadius: '20px', fontSize: '12px', fontWeight: 600,
+                          background: `linear-gradient(135deg, ${domainColors[ch.code]?.primary || '#1e3a5f'} 0%, ${domainColors[ch.code]?.accent || '#3498db'} 100%)`,
+                          color: 'white', textDecoration: 'none', cursor: 'pointer',
+                          boxShadow: '0 2px 8px rgba(0,0,0,0.15)', transition: 'transform 0.2s ease'
+                        }}
+                        onClick={(e) => { e.preventDefault(); document.getElementById(`domain-${ch.code.toLowerCase()}`)?.scrollIntoView({ behavior: 'smooth' }); }}
+                      >
+                        {ch.code}
+                      </a>
+                    ))}
+                  </div>
+                </div>
               ) : (
-                /* All standards view - show chapter header */
+                /* Standard chapter header */
                 <div className="content-header">
                   <h2>{currentChapter?.name}</h2>
                   <p className="substandard-count">
@@ -3871,8 +4839,51 @@
                       onScoreChange={handleScoreChange} />
                   ))}
                 </div>
+              ) : assessmentDetails?.configuration === 'B' && activeChapter === 'ALL' ? (
+                /* Full Survey Mode - All domains with beautiful separators */
+                <div className="full-survey-view">
+                  {activeChapters.map((chapter, chapterIndex) => {
+                    const chapterSubs = getAllSubstandards(chapter.standards);
+                    const chapterStats = {
+                      total: chapterSubs.length,
+                      fullyMet: chapterSubs.filter(s => scores[s.id]?.value === 2).length,
+                      partial: chapterSubs.filter(s => scores[s.id]?.value === 1).length,
+                      notMet: chapterSubs.filter(s => scores[s.id]?.value === 0).length,
+                      na: chapterSubs.filter(s => scores[s.id]?.value === 'NA').length,
+                      pending: chapterSubs.filter(s => scores[s.id]?.value === undefined || scores[s.id]?.value === null).length
+                    };
+
+                    return (
+                      <div key={chapter.id} className="domain-section" id={`domain-${chapter.code.toLowerCase()}`}>
+                        <DomainSeparator chapter={chapter} stats={chapterStats} />
+                        {chapter.standards.map(std => (
+                          <div key={std.id} className="mother-standard-section">
+                            <div className="mother-standard-header">
+                              <div className="mother-standard-code">{std.code}</div>
+                              <div className="mother-standard-content">
+                                <h3 className="mother-standard-title">{std.title}</h3>
+                                {std.intent && (
+                                  <p className="mother-standard-intent">{std.intent}</p>
+                                )}
+                              </div>
+                              <div className="mother-standard-badge">{std.substandards.length} sub-standard(s)</div>
+                            </div>
+                            <div className="mother-standard-substandards">
+                              {std.substandards.map(sub => (
+                                <SubstandardCard key={sub.id}
+                                  substandard={{...sub, standardId: std.id, standardTitle: std.title, standardIntent: std.intent, standardCode: std.code}}
+                                  score={scores[sub.id]}
+                                  onScoreChange={handleScoreChange} />
+                              ))}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    );
+                  })}
+                </div>
               ) : (
-                /* All Standards view - show grouped by mother standard */
+                /* Standard view - show grouped by mother standard */
                 groupedSubstandards.map(group => (
                   <div key={group.standardId} className="mother-standard-section">
                     <div className="mother-standard-header">
@@ -3962,7 +4973,7 @@
             isOpen={showSummary}
             onClose={() => setShowSummary(false)}
             scores={scores}
-            chapters={chapters}
+            chapters={activeChapters}
             onFinalize={handleFinalizeClick}
             isFinalized={isFinalized}
             overallPending={overallPending}
@@ -5687,9 +6698,43 @@
                   <span>Dental Center Accreditation</span>
                 </div>
               </div>
-              <div style={{color: 'rgba(255,255,255,0.7)', fontSize: '12px'}}>
-                Configuration A • Surveyor 1
-              </div>
+              <select
+                value={assessmentDetails?.configuration || 'A1'}
+                onChange={(e) => {
+                  const newConfig = e.target.value;
+                  const updatedDetails = { ...assessmentDetails, configuration: newConfig };
+                  setAssessmentDetails(updatedDetails);
+                  storage.set('cbahi_assessment_details', updatedDetails);
+
+                  // Update survey record if exists
+                  if (currentAssessmentId) {
+                    const updatedSurveys = surveys.map(s =>
+                      s.id === currentAssessmentId
+                        ? { ...s, assessmentDetails: updatedDetails, configuration: getConfigLabel(newConfig) }
+                        : s
+                    );
+                    setSurveys(updatedSurveys);
+                    storage.set(STORAGE_KEYS.SURVEYS, updatedSurveys);
+                  }
+                  showToast('success', 'Configuration Changed', `Switched to ${getConfigLabel(newConfig)}`);
+                }}
+                style={{
+                  background: 'rgba(255,255,255,0.15)',
+                  color: 'white',
+                  border: '1px solid rgba(255,255,255,0.3)',
+                  borderRadius: '6px',
+                  padding: '6px 12px',
+                  fontSize: '12px',
+                  fontWeight: 500,
+                  cursor: 'pointer',
+                  outline: 'none',
+                  minWidth: '200px'
+                }}
+              >
+                <option value="A1" style={{color: '#1e3a5f'}}>Configuration A • Surveyor 1</option>
+                <option value="A2" style={{color: '#1e3a5f'}}>Configuration A • Surveyor 2</option>
+                <option value="B" style={{color: '#1e3a5f'}}>Configuration B • Full Survey</option>
+              </select>
             </div>
             <div className="nav-tabs">
               <div className={`nav-tab ${currentPage === 'scoring' ? 'active' : ''}`}
@@ -5769,7 +6814,7 @@
             <ExecutiveSummaryModal
               survey={viewingSummary}
               onClose={() => setViewingSummary(null)}
-              chapters={chapters}
+              chapters={getChaptersByConfig(viewingSummary?.assessmentDetails?.configuration || 'A1')}
               onViewFullDetails={handleViewFullScoringInterface}
             />
           )}

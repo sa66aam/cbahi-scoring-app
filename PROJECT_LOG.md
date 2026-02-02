@@ -3,7 +3,7 @@
 ## Project Overview
 
 **Application Name:** CBAHI Dental Center Accreditation Scoring Application
-**Version:** 1.2.5
+**Version:** 1.3.0
 **Technology Stack:** React 18, Firebase (Firestore), HTML5, CSS3
 **Primary Purpose:** Digital scoring and assessment tool for CBAHI (Central Board for Accreditation of Healthcare Institutions) dental center accreditation surveys
 **Developer:** Jo
@@ -14,19 +14,20 @@
 ## Table of Contents
 
 1. [Development Log & Milestones](#development-log--milestones)
-2. [Design Principles](#design-principles)
-3. [Typography & Theme](#typography--theme)
-4. [Application Architecture](#application-architecture)
-5. [Core Features](#core-features)
-6. [Assessment Tracking System](#assessment-tracking-system)
-7. [Modern UI Components](#modern-ui-components)
-8. [Post-Finalization Flow](#post-finalization-flow)
-9. [Firebase Integration](#firebase-integration)
-10. [Data Persistence & Archiving](#data-persistence--archiving)
-11. [Known Issues & Fixes](#known-issues--fixes)
-12. [Future Development](#future-development)
-13. [Technical Specifications](#technical-specifications)
-14. [Commands Reference](#commands-reference)
+2. [Survey Configuration System](#survey-configuration-system)
+3. [Design Principles](#design-principles)
+4. [Typography & Theme](#typography--theme)
+5. [Application Architecture](#application-architecture)
+6. [Core Features](#core-features)
+7. [Assessment Tracking System](#assessment-tracking-system)
+8. [Modern UI Components](#modern-ui-components)
+9. [Post-Finalization Flow](#post-finalization-flow)
+10. [Firebase Integration](#firebase-integration)
+11. [Data Persistence & Archiving](#data-persistence--archiving)
+12. [Known Issues & Fixes](#known-issues--fixes)
+13. [Future Development](#future-development)
+14. [Technical Specifications](#technical-specifications)
+15. [Commands Reference](#commands-reference)
 
 ---
 
@@ -105,7 +106,7 @@
 
 ---
 
-### Phase 5: Additional Domains
+### Phase 5: Additional Domains for Surveyor 1
 **Status:** Completed
 
 **Provision of Care (PC):** 34 sub-standards
@@ -197,6 +198,193 @@
 
 ---
 
+### Phase 10: Executive Summary & History Enhancements
+**Status:** Completed
+
+**Features Added:**
+1. **Executive Summary Modal** - Clickable completed assessments show full summary dashboard
+2. **Resume Assessment** - Clicking in-progress assessments resumes from where user stopped
+3. **AI-Suggested Action Plan** - Automatic corrective action suggestions for findings
+4. **Configuration System Selection** - Support for A Surveyor 1, A Surveyor 2, and B configurations
+5. **Phone Field Enhancement** - Auto-prefix +966 for Saudi phone numbers
+6. **Edit Assessment Details** - Can modify center/coordinator info after starting
+
+**Executive Summary Components:**
+- Overall compliance score with visual badge
+- Score breakdown (Fully Met, Partial, Not Met, N/A)
+- Chapter-by-chapter performance with expandable details
+- All substandards with scores, findings, and recommendations visible
+- Action Plan section with AI-suggested corrective actions
+- Priority levels (High for Not Met = 30 days, Medium for Partial = 60 days)
+
+---
+
+### Phase 11: Configuration A Surveyor 2 Implementation
+**Status:** Completed
+
+**New Domains Added:**
+
+**Leadership (LD) - Surveyor 2 Extension:** 61 sub-standards
+| Standard | Sub-standards | Title |
+|----------|---------------|-------|
+| LD.13 | 3 | Leadership effectiveness |
+| LD.14 | 3 | Strategic planning |
+| LD.18 | 2 | Performance improvement |
+| LD.19 | 5 | Quality management |
+| LD.20 | 3 | Risk management |
+| LD.21 | 3 | Patient safety program |
+| LD.22 | 4 | Reporting systems |
+| LD.23 | 3 | Committee structure |
+| LD.24 | 4 | Medical staff oversight |
+| LD.25 | 5 | Contracted services |
+| LD.26 | 6 | Financial management |
+| LD.27 | 5 | Resource allocation |
+| LD.28 | 8 | Communication systems |
+| LD.29 | 7 | Ethics framework |
+
+**Provision of Care (PC) - Surveyor 2:** 31 sub-standards
+| Standard | Sub-standards | Title |
+|----------|---------------|-------|
+| PC.1 | 4 | Patient access |
+| PC.2 | 3 | Registration process |
+| PC.3 | 5 | Initial assessment |
+| PC.5 | 4 | Care planning |
+| PC.10 | 6 | Care coordination |
+| PC.15 | 5 | Discharge planning |
+| PC.16 | 4 | Follow-up care |
+
+**Management of Information (MOI):** 24 sub-standards
+| Standard | Sub-standards | Title |
+|----------|---------------|-------|
+| MOI.1 | 5 | Information management plan |
+| MOI.2 | 4 | Health information systems |
+| MOI.3 | 5 | Data integrity and security |
+| MOI.4 | 4 | Medical records management |
+| MOI.5 | 3 | Record retention policies |
+| MOI.6 | 3 | Information access and disclosure |
+
+**Facility Management and Safety (FMS):** 53 sub-standards
+| Standard | Sub-standards | Title |
+|----------|---------------|-------|
+| FMS.1 | 6 | Safety management plan |
+| FMS.2 | 6 | Security management |
+| FMS.3 | 8 | Hazardous materials |
+| FMS.4 | 7 | Emergency preparedness |
+| FMS.5 | 6 | Fire safety |
+| FMS.6 | 10 | Utility systems |
+| FMS.7 | 4 | Medical equipment |
+| FMS.8 | 3 | Physical environment |
+| FMS.9 | 3 | Construction safety |
+
+**Total Surveyor 2 Sub-standards:** 169 (LD: 61 + PC: 31 + MOI: 24 + FMS: 53)
+
+---
+
+### Phase 12: Configuration B - Full Survey Implementation
+**Status:** Completed
+
+**Objective:** Merge all Surveyor 1 and Surveyor 2 standards into a comprehensive full survey configuration.
+
+**Implementation Details:**
+
+**Domain Merging:**
+```javascript
+// Leadership: Surveyor 1 (58) + Surveyor 2 (61) = 119 sub-standards
+const leadershipStandards_B = [...leadershipStandards, ...leadershipStandards_A2].sort();
+
+// Provision of Care: Surveyor 1 (34) + Surveyor 2 (31) = 65 sub-standards
+const provisionOfCareStandards_B = [...provisionOfCareStandards, ...provisionOfCareStandards_A2].sort();
+```
+
+**Configuration B Domain Summary:**
+| Domain | Code | Sub-standards | Source |
+|--------|------|---------------|--------|
+| Leadership | LD | 119 | Surveyor 1 + Surveyor 2 |
+| Provision of Care | PC | 65 | Surveyor 1 + Surveyor 2 |
+| Dental Laboratory | DL | 25 | Surveyor 1 only |
+| Infection Prevention | IPC | 63 | Surveyor 1 only |
+| Management of Information | MOI | 24 | Surveyor 2 only |
+| Facility Management | FMS | 53 | Surveyor 2 only |
+| **TOTAL** | | **349** | |
+
+**Domain Color Scheme:**
+```javascript
+const domainColors = {
+  LD: { primary: '#1e3a5f', light: '#e8f4fc', accent: '#3498db', gradient: 'linear-gradient(135deg, #1e3a5f 0%, #2d5a8a 100%)' },
+  PC: { primary: '#0d6b4e', light: '#e6f5f0', accent: '#27ae60', gradient: 'linear-gradient(135deg, #0d6b4e 0%, #1a9d6c 100%)' },
+  DL: { primary: '#6b4e0d', light: '#fdf6e6', accent: '#f39c12', gradient: 'linear-gradient(135deg, #6b4e0d 0%, #9d7a1a 100%)' },
+  IPC: { primary: '#5e1e5e', light: '#f5e8f5', accent: '#9b59b6', gradient: 'linear-gradient(135deg, #5e1e5e 0%, #8a3d8a 100%)' },
+  MOI: { primary: '#1e5e5e', light: '#e8f5f5', accent: '#16a085', gradient: 'linear-gradient(135deg, #1e5e5e 0%, #3d8a8a 100%)' },
+  FMS: { primary: '#5e1e2d', light: '#f5e8ec', accent: '#e74c3c', gradient: 'linear-gradient(135deg, #5e1e2d 0%, #8a3d4d 100%)' }
+};
+```
+
+**New UI Components:**
+
+1. **DomainSeparator Component:** Visual separator between domains with real-time scoring statistics
+   - Domain icon with color-coded badge
+   - Full domain name and sub-standard count
+   - Live score breakdown (Fully Met, Partial, Not Met, Pending)
+
+2. **Collapsible Sidebar:** Domain-grouped navigation for Configuration B
+   - Click domain header to expand/collapse
+   - Abbreviation-only labels (LD, PC, DL, IPC, MOI, FMS)
+   - Progress indicator per domain
+   - 80px bottom padding to prevent cutoff by score bar
+
+---
+
+## Survey Configuration System
+
+### Available Configurations
+
+| Configuration | Name | Domains | Sub-standards | Use Case |
+|--------------|------|---------|---------------|----------|
+| A1 | Surveyor 1 | LD, PC, DL, IPC | 180 | First surveyor team |
+| A2 | Surveyor 2 | LD, PC, MOI, FMS | 169 | Second surveyor team |
+| B | Full Survey | All 6 domains | 349 | Complete assessment |
+
+### Configuration Selection
+- Dropdown in header (clickable to switch configurations)
+- Configuration badge displayed on assessment cards in History
+- Configuration saved with assessment data
+
+### Chapters by Configuration
+
+**Configuration A - Surveyor 1:**
+```javascript
+const chapters_A1 = [
+  { id: 'LD', code: 'LD', name: 'Leadership', standards: leadershipStandards, active: true },
+  { id: 'PC', code: 'PC', name: 'Provision of Care', standards: provisionOfCareStandards, active: true },
+  { id: 'DL', code: 'DL', name: 'Dental Laboratory', standards: dentalLaboratoryStandards, active: true },
+  { id: 'IPC', code: 'IPC', name: 'Infection Prevention', standards: infectionControlStandards, active: true }
+];
+```
+
+**Configuration A - Surveyor 2:**
+```javascript
+const chapters_A2 = [
+  { id: 'LD', code: 'LD', name: 'Leadership', standards: leadershipStandards_A2, active: true },
+  { id: 'PC', code: 'PC', name: 'Provision of Care', standards: provisionOfCareStandards_A2, active: true },
+  { id: 'MOI', code: 'MOI', name: 'Management of Information', standards: moiStandards, active: true },
+  { id: 'FMS', code: 'FMS', name: 'Facility Management', standards: fmsStandards, active: true }
+];
+```
+
+**Configuration B - Full Survey:**
+```javascript
+const chapters_B = [
+  { id: 'LD', code: 'LD', name: 'Leadership', standards: leadershipStandards_B, color: domainColors.LD, order: 1 },
+  { id: 'PC', code: 'PC', name: 'Provision of Care', standards: provisionOfCareStandards_B, color: domainColors.PC, order: 2 },
+  { id: 'DL', code: 'DL', name: 'Dental Laboratory', standards: dentalLaboratoryStandards, color: domainColors.DL, order: 3 },
+  { id: 'IPC', code: 'IPC', name: 'Infection Prevention', standards: infectionControlStandards, color: domainColors.IPC, order: 4 },
+  { id: 'MOI', code: 'MOI', name: 'Management of Information', standards: moiStandards, color: domainColors.MOI, order: 5 },
+  { id: 'FMS', code: 'FMS', name: 'Facility Management', standards: fmsStandards, color: domainColors.FMS, order: 6 }
+];
+```
+
+---
+
 ## Design Principles
 
 ### 1. User-Centric Design
@@ -247,12 +435,16 @@ App
 ├── Header (sticky navigation)
 │   ├── Logo
 │   ├── Navigation Tabs (Scoring | Dashboard | History)
+│   ├── Configuration Dropdown (clickable)
 │   └── AutosaveIndicator
 ├── ScoringPage
 │   ├── AssessmentInfoBar (center name, coordinator, contact links)
 │   ├── ControlsBar
 │   ├── Sidebar (Standards Navigation)
-│   ├── ContentArea (SubstandardCards)
+│   │   └── Collapsible Domain Groups (Config B)
+│   ├── ContentArea
+│   │   ├── DomainSeparator (Config B)
+│   │   └── SubstandardCards
 │   ├── BottomScorePanel
 │   └── FinalizedSuccessScreen (shown after finalization)
 ├── DashboardPage
@@ -261,6 +453,7 @@ App
 ├── CompletionModal
 ├── FinalizeConfirmDialog
 ├── AssessmentSetupModal
+├── ExecutiveSummaryModal
 ├── ModernConfirmDialog
 └── ToastNotification
 ```
@@ -273,6 +466,10 @@ const [isFinalized, setIsFinalized] = useState(false);
 const [finalizedData, setFinalizedData] = useState(null);
 const [surveys, setSurveys] = useState([]);
 
+// Configuration State
+const [selectedConfiguration, setSelectedConfiguration] = useState('A1');
+const [chapters, setChapters] = useState(chapters_A1);
+
 // Assessment Tracking
 const [assessmentDetails, setAssessmentDetails] = useState(null);
 const [currentAssessmentId, setCurrentAssessmentId] = useState(null);
@@ -282,6 +479,10 @@ const [showSetupModal, setShowSetupModal] = useState(false);
 const [toasts, setToasts] = useState([]);
 const [confirmDialog, setConfirmDialog] = useState({...});
 const [saving, setSaving] = useState(false);
+const [viewingMode, setViewingMode] = useState(false);
+const [expandedDomains, setExpandedDomains] = useState({
+  LD: true, PC: true, DL: true, IPC: true, MOI: true, FMS: true
+});
 ```
 
 ---
@@ -307,9 +508,10 @@ const [saving, setSaving] = useState(false);
     coordinatorPhone: "+966 50 123 4567",
     coordinatorEmail: "ahmed@alshifa.com"
   },
+  configuration: "A1", // A1, A2, or B
   status: "in_progress",  // not_started | in_progress | completed
   scoredCount: 45,
-  totalSubstandards: 180,
+  totalSubstandards: 180, // varies by configuration
   scores: { /* substandard scores */ },
   stats: null,  // Populated on completion
   createdAt: "2026-02-01T10:30:00Z",
@@ -326,18 +528,7 @@ Before scoring can begin, users must provide:
 2. **Coordinator Name** - Primary contact person
 3. **Phone Number** - With format validation
 4. **Email Address** - With format validation
-
-### Status Calculation Logic
-```javascript
-const getAssessmentStatus = useCallback(() => {
-  if (isFinalized) return 'completed';
-  const scoredCount = Object.keys(scores).filter(
-    id => scores[id]?.value !== undefined && scores[id]?.value !== null
-  ).length;
-  if (scoredCount === 0) return 'not_started';
-  return 'in_progress';
-}, [scores, isFinalized]);
-```
+5. **Configuration Selection** - A1, A2, or B
 
 ### WhatsApp Integration
 ```javascript
@@ -370,49 +561,55 @@ const showToast = (type, title, message) => {
 };
 ```
 
-### Modal Overlay Styling
-```css
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(15, 23, 42, 0.6);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 200;
-  animation: fadeIn 0.2s ease;
-}
-
-.modal {
-  background: var(--bg-card);
-  border-radius: 16px;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-  animation: modalSlideIn 0.3s ease;
-}
+### Domain Separator Component (Config B)
+```javascript
+const DomainSeparator = ({ chapter, stats }) => {
+  const domainClass = `domain-${chapter.code.toLowerCase()}`;
+  return (
+    <div className={`domain-separator ${domainClass}`}>
+      <div className="domain-separator-content">
+        <div className={`domain-icon ${domainClass}`}>{chapter.code}</div>
+        <div className="domain-info">
+          <div className="domain-title">{chapter.name}</div>
+          <div className="domain-subtitle">
+            <span>{chapter.standards.length} Standards</span>
+            <span>•</span>
+            <span>{stats.total} Sub-standards</span>
+          </div>
+        </div>
+        <div className="domain-stats">
+          <div className="domain-stat">
+            <div className="domain-stat-value" style={{color: 'var(--success)'}}>{stats.fullyMet}</div>
+            <div className="domain-stat-label">Fully Met</div>
+          </div>
+          <!-- More stat boxes for Partial, Not Met, Pending -->
+        </div>
+      </div>
+    </div>
+  );
+};
 ```
 
-### Status Badge CSS
-```css
-.status-badge.not-started {
-  background: linear-gradient(135deg, rgba(149, 165, 166, 0.15) 0%, rgba(149, 165, 166, 0.25) 100%);
-  color: #7f8c8d;
-  border: 2px solid rgba(149, 165, 166, 0.3);
-}
+### Collapsible Sidebar (Config B)
+```javascript
+const [expandedDomains, setExpandedDomains] = useState({
+  LD: true, PC: true, DL: true, IPC: true, MOI: true, FMS: true
+});
 
-.status-badge.in-progress {
-  background: linear-gradient(135deg, rgba(52, 152, 219, 0.15) 0%, rgba(41, 128, 185, 0.25) 100%);
-  color: #2980b9;
-  border: 2px solid rgba(52, 152, 219, 0.4);
-  animation: progressPulse 2s infinite;
-}
+const toggleDomainExpanded = (domainId) => {
+  setExpandedDomains(prev => ({ ...prev, [domainId]: !prev[domainId] }));
+};
 
-.status-badge.completed {
-  background: linear-gradient(135deg, rgba(39, 174, 96, 0.15) 0%, rgba(33, 154, 82, 0.25) 100%);
-  color: #27ae60;
-  border: 2px solid rgba(39, 174, 96, 0.4);
-}
+// Sidebar rendering - click entire header to collapse/expand
+<div
+  className={`sidebar-domain-header ${activeChapter === chapter.id ? 'active' : ''}`}
+  onClick={() => toggleDomainExpanded(chapter.id)}
+  style={{cursor: 'pointer'}}
+>
+  <span style={{transform: isExpanded ? 'rotate(90deg)' : 'rotate(0deg)'}}>▶</span>
+  <div className={`sidebar-domain-badge ${domainClass}`}>{chapter.code}</div>
+  <div className="sidebar-domain-count" style={{marginLeft: 'auto'}}>{chapterScoredCount}/{chapterSubs.length}</div>
+</div>
 ```
 
 ---
@@ -420,59 +617,17 @@ const showToast = (type, title, message) => {
 ## Post-Finalization Flow
 
 ### Success Screen
-After finalization, the scoring page displays a success screen instead of the scoring interface:
+After finalization, the scoring page displays a success screen instead of the scoring interface with:
+- Celebration header with percentage display
+- Stats summary grid (Fully Met, Partial, Not Met, N/A)
+- Submission ID
+- "View in History" and "Start New Assessment" buttons
 
-```javascript
-if (isFinalized && finalizedData) {
-  return (
-    <div className="page-container">
-      {/* Celebration Header */}
-      <div style={{background: 'linear-gradient(135deg, var(--success)...'}}>
-        <div>🎉</div>
-        <h1>Assessment Complete!</h1>
-        <p>{centerName} has been finalized and securely saved.</p>
-        <div>{percentage}%</div>
-      </div>
-
-      {/* Stats Summary Grid */}
-      <div>
-        <div>Fully Met: {fullyMet}</div>
-        <div>Partial: {partial}</div>
-        <div>Not Met: {notMet}</div>
-        <div>N/A: {naCount}</div>
-      </div>
-
-      {/* Submission Info */}
-      <div>Submission ID: {submissionId}</div>
-
-      {/* Action Buttons */}
-      <button onClick={onNavigateToHistory}>📋 View in History</button>
-      <button onClick={onReset}>➕ Start New Assessment</button>
-    </div>
-  );
-}
-```
-
-### Data Migration
-On app load, existing finalized data is automatically migrated to History:
-```javascript
-// MIGRATION: If there's finalized data but no survey record, create one
-if (savedFinalized && savedFinalizedData && savedFinalizedData.submissionId) {
-  const existingSurvey = savedSurveys.find(s =>
-    s.submissionId === savedFinalizedData.submissionId
-  );
-  if (!existingSurvey) {
-    const migratedSurvey = {
-      id: savedFinalizedData.submissionId,
-      centerName: savedFinalizedData.centerName,
-      status: 'completed',
-      // ... all other fields
-    };
-    savedSurveys = [...savedSurveys, migratedSurvey];
-    storage.set(STORAGE_KEYS.SURVEYS, savedSurveys);
-  }
-}
-```
+### View Full Scoring Interface
+From Executive Summary, users can view the complete scoring interface for completed assessments:
+- Blue banner indicates viewing mode
+- All chapters, standards, findings visible
+- "Back to History" button to exit
 
 ---
 
@@ -488,15 +643,6 @@ const firebaseConfig = {
   messagingSenderId: "YOUR_SENDER_ID",
   appId: "YOUR_APP_ID"
 };
-```
-
-### Helper Functions
-```javascript
-firebaseHelpers.submitAssessment(assessmentData)
-// Returns: { success: boolean, id: string, local: boolean }
-
-firebaseHelpers.getSubmissions()
-// Returns: Array of all submissions (Firebase + local)
 ```
 
 ### Fallback Mechanism
@@ -523,271 +669,80 @@ const STORAGE_KEYS = {
 'cbahi_finalized'               // Finalization status
 'cbahi_finalized_data'          // Completed assessment data
 'cbahi_submissions'             // Firebase fallback submissions
-```
-
-### Data Integrity Flow
-```
-User enters center details
-        ↓
-Assessment record created (status: not_started)
-        ↓
-User scores first item
-        ↓
-Status updates to "in_progress"
-        ↓
-Progress tracked in real-time
-        ↓
-All items scored → Completion modal appears
-        ↓
-User confirms finalization
-        ↓
-Data submitted to Firebase (or localStorage)
-        ↓
-Status updates to "completed"
-        ↓
-Success screen shown with options
-        ↓
-Assessment archived with full audit trail
+'cbahi_selected_configuration'  // Current configuration selection
 ```
 
 ---
 
 ## Known Issues & Fixes
 
-### Issue 1: Button Font Inconsistency
-- **Problem:** CHAPTERS SUMMARY button not using Lora font
-- **Fix:** Added `font-family: inherit;`
-- **Status:** RESOLVED
-
-### Issue 2: Prominent "Not Scored" Bars
-- **Problem:** Solid purple bars too visually distracting
-- **Fix:** Changed to subtle floating badges
-- **Status:** RESOLVED
-
-### Issue 3: Pending Counter Scope
-- **Problem:** "Pending" showed only current chapter
-- **Fix:** Calculated across ALL chapters
-- **Status:** RESOLVED
-
-### Issue 4: Native Browser Dialogs
-- **Problem:** Native `alert()` and `confirm()` looked outdated
-- **Fix:** Custom React modal components
-- **Status:** RESOLVED
-
-### Issue 5: Assessment Data Not Persisting
-- **Problem:** Submitted assessments not appearing in history
-- **Fix:** Comprehensive assessment tracking system
-- **Status:** RESOLVED
-
-### Issue 6: Missing Center Details
-- **Problem:** Assessments started without identifying dental center
-- **Fix:** Mandatory AssessmentSetupModal
-- **Status:** RESOLVED
-
-### Issue 7: Stuck on Scoring Page After Finalization
-- **Problem:** After finalizing, user stuck on same page with just "Finalized" badge
-- **Fix:** Success screen with celebration UI and navigation options
-- **Status:** RESOLVED
-
-### Issue 8: Legacy Finalized Data Not in History
-- **Problem:** Assessments completed before tracking system don't appear
-- **Fix:** Automatic migration on app load
-- **Status:** RESOLVED
+### Issue 1-8: Previous Fixes
+See earlier documentation for resolved issues including:
+- Button font inconsistency
+- Prominent "Not Scored" bars
+- Pending counter scope
+- Native browser dialogs replacement
+- Assessment data persistence
+- Missing center details requirement
+- Post-finalization stuck screen
+- Legacy finalized data migration
 
 ### Issue 9: Working in Wrong Folder (Critical Lesson)
-- **Problem:** Changes were being made to `CBAHI Scoring Application/index.html` but the actual working folder was `CBAHI Scoring Application /index.html` (WITH trailing space in folder name)
-- **Symptoms:** All code changes appeared correct but application didn't reflect updates
-- **Root Cause:** Folder name had an invisible trailing space that wasn't immediately obvious
-- **Fix:** Identified correct path and ensured all edits target the folder WITH trailing space
-- **Lesson Learned:** Always verify the exact folder/file path, including checking for hidden characters or spaces
+- **Problem:** Folder name had invisible trailing space
+- **Fix:** Identified correct path and verified all edits target correct folder
 - **Status:** RESOLVED
 
 ### Issue 10: JSX Syntax Error - Adjacent JSX Elements
-- **Problem:** Application crashed with error "Adjacent JSX elements must be wrapped in an enclosing tag" at line 2808
-- **Symptoms:** App wouldn't load, showed Babel transpilation error
-- **Root Cause:** Unbalanced `<div>` tags - the file had 2 EXTRA closing `</div>` tags
-- **Detailed Analysis:**
-  - ExecutiveSummaryModal: Had 81 `<div` opens (1 self-closing with `/>`) but 81 `</div>` closes = 1 extra close
-  - CentersPage: Had 39 `<div` opens (1 self-closing) but 39 `</div>` closes = 1 extra close
-  - Self-closing divs like `<div style={{...}} />` count as OPEN+CLOSE, not needing `</div>`
-- **Fix:** Removed extra `</div>` from:
-  1. ExecutiveSummaryModal line ~4474 (after "Detailed Scoring" section)
-  2. CentersPage line ~4816 (between card body and footer)
-- **Verification Method:** Created Node.js script to count `<div` opens, self-closing `/>`, and `</div>` closes
-- **Final Balance:** 409 opens - 3 self-closing = 406 regular opens = 406 closes ✓
+- **Problem:** Unbalanced `<div>` tags causing React crash
+- **Fix:** Removed extra closing `</div>` tags
 - **Status:** RESOLVED
 
-### Issue 11: WhatsApp Icon Not Official Logo
-- **Problem:** WhatsApp links used generic phone icon instead of official WhatsApp logo
-- **Fix:** Added official WhatsApp SVG logo to Icons object with proper brand color (#25D366)
-- **Status:** RESOLVED
-
-### Issue 12: Emojis in Professional Application
-- **Problem:** Application used emojis (🏢, 📋, ✅, etc.) which don't render consistently across devices
-- **Fix:** Replaced all emojis with professional SVG icons throughout the application
-- **Icons Added:** building, clipboard, checkCircle, award, mail, user, edit, plus, barChart, settings, search, filter, chevronDown, chevronRight, x, alertCircle, info, whatsapp
-- **Status:** RESOLVED
-
-### Issue 13: Executive Summary Showing All Zeros
-- **Problem:** When clicking on completed assessments, the Executive Summary modal showed all zeros instead of actual scored data
-- **Root Cause:** Case mismatch - code used `std.subStandards` (camelCase) but data structure used `std.substandards` (lowercase)
-- **Fix:** Changed `subStandards` to `substandards` in ExecutiveSummaryModal's getChapterBreakdown function
-- **Status:** RESOLVED
-
-### Issue 14: Configuration Not Displayed in History
-- **Problem:** History cards didn't show which survey configuration (A Surveyor 1, A Surveyor 2, or B) was used
-- **Fix:**
-  1. Added configuration selector to AssessmentSetupModal with radio button options
-  2. Save configuration when creating new assessment
-  3. Display configuration badge on History cards
-  4. Show configuration in Executive Summary
-- **Status:** RESOLVED
-
-### Issue 15: Cannot View Full Scoring Interface from Executive Summary
-- **Problem:** User wanted to see the full web scoring interface (all substandards, findings, etc.) from a completed assessment, not just the summary
-- **Fix:** Added "View Full Scoring Interface" button to Executive Summary footer that:
-  1. Loads the survey's scores into the scoring view
-  2. Sets assessment details from the survey
-  3. Navigates to the Scoring page
-  4. Shows all substandards with their saved scores, findings, and recommendations
-- **Status:** RESOLVED
-
-### Issue 16: Dashboard Inconsistent with History Page (Configuration & Edit)
-- **Problem:** Dashboard's "Recent Assessments" cards were missing:
-  1. Configuration badge (showing A Surveyor 1, A Surveyor 2, or B)
-  2. Edit button for modifying assessment details
-  - User wanted consistency across all views
-- **Root Cause:** DashboardPage component was not receiving `onEditSurvey` handler and had no configuration display
-- **Fix:**
-  1. Updated DashboardPage signature to accept `onEditSurvey` prop
-  2. Added App component to pass `handleEditSurveyDetails` to DashboardPage
-  3. Added configuration badge to Dashboard survey cards (styled with primary color)
-  4. Added edit button with hover effects to Dashboard survey cards
-- **Files Modified:** `/index.html`
-  - Line ~3924: Added `onEditSurvey` to DashboardPage props
-  - Line ~4027-4037: Added configuration badge after date
-  - Line ~4045-4063: Added edit button with styling
-  - Line ~5381: Updated App to pass handler to DashboardPage
-- **Status:** RESOLVED
-
-### Issue 17: Dashboard Cards - Better Utilization of White Space
-- **Problem:** Dashboard assessment cards had excessive white space between left and right sections
-- **Initial Fix:** 3-column layout with contacts in middle (rejected by user - too vertical)
-- **Final Fix:** Clean horizontal row layout:
-  - Icon | Center Name | Date (with calendar icon & weekday) | Configuration Badge | → Score | Status | Edit | Expand
-- **Key Changes:**
-  - All elements in single horizontal row using flex spacer
-  - Date now prominent with calendar icon and weekday display
-  - Configuration badge in solid primary color (more visible)
-  - Contacts remain hidden, revealed only when expanding
-  - Added calendar icon to Icons object
-- **Status:** RESOLVED
-
-### Issue 18: View Full Scoring Interface Shows Success Screen Instead of Details
-- **Problem:** When clicking "View Full Scoring Interface" from Executive Summary, user saw "Assessment Complete!" success screen instead of full scoring interface with all chapters, substandards, findings, etc.
-- **Root Cause:** `isFinalized` state triggered success screen render in ScoringPage
-- **Fix:** Added `viewingMode` state to bypass success screen while keeping finalized badge
-  1. Added `viewingMode` state to App component
-  2. Modified success screen condition: `if (isFinalized && finalizedData && !viewingMode)`
-  3. `handleViewFullScoringInterface` now sets `viewingMode=true`
-  4. Added "Viewing Completed Assessment" banner with "Back to History" button
-  5. Reset `viewingMode` when starting new assessment
-- **User Experience:**
-  - Blue banner shows when viewing a completed assessment
-  - Displays compliance score percentage
-  - "Back to History" button to exit viewing mode
-  - Full scoring interface with all chapters, standards, findings visible
-- **Status:** RESOLVED
-
----
-
-## Phase 10: Executive Summary & History Enhancements
-**Status:** Completed
-
-**Features Added:**
-1. **Executive Summary Modal** - Clickable completed assessments show full summary dashboard
-2. **Resume Assessment** - Clicking in-progress assessments resumes from where user stopped
-3. **AI-Suggested Action Plan** - Automatic corrective action suggestions for findings
-4. **Configuration System Selection** - Support for A Surveyor 1, A Surveyor 2, and B configurations
-5. **Phone Field Enhancement** - Auto-prefix +966 for Saudi phone numbers
-6. **Edit Assessment Details** - Can modify center/coordinator info after starting
-
-**Executive Summary Components:**
-- Overall compliance score with visual badge
-- Score breakdown (Fully Met, Partial, Not Met, N/A)
-- Chapter-by-chapter performance with expandable details
-- All substandards with scores, findings, and recommendations visible
-- Action Plan section with AI-suggested corrective actions
-- Priority levels (High for Not Met = 30 days, Medium for Partial = 60 days)
-
-**Code Structure:**
-```javascript
-const ExecutiveSummaryModal = ({ survey, onClose, chapters }) => {
-  // Calculates chapter breakdown from saved scores
-  // Generates AI-suggested action plan
-  // Expandable chapter sections to view all substandards
-};
-```
-
----
-
-## JSX/React Development Best Practices (Lessons Learned)
-
-### 1. Div Tag Balance Validation
-**Always verify div balance before testing:**
-```javascript
-// Count opens (including multi-line)
-const opens = (jsx.match(/<div(?=\s|>)/g) || []).length;
-// Count self-closing
-const selfCloses = /* count <div ... /> patterns */;
-// Count closes
-const closes = (jsx.match(/<\/div>/g) || []).length;
-// Balance: (opens - selfCloses) should equal closes
-```
-
-### 2. Self-Closing Divs in JSX
-- `<div style={{...}} />` is valid JSX (self-closing)
-- These count as OPEN+CLOSE, don't need separate `</div>`
-- Common in styled components with no children
-
-### 3. Multi-Line JSX Elements
-When a `<div` spans multiple lines:
-```jsx
-<div
-  className="foo"
-  style={{ ... }}
->
-```
-The opening `>` may be on a different line - simple grep won't catch this properly.
-
-### 4. File Path Verification
-Always verify exact paths, especially for:
-- Spaces at end of folder names
-- Unicode characters that look like regular characters
-- Case sensitivity on Linux systems
+### Issue 11-18: UI Improvements
+Multiple UI fixes including:
+- WhatsApp icon replacement with official SVG
+- Emoji replacement with professional SVG icons
+- Executive Summary data loading fix
+- Configuration display in History
+- View Full Scoring Interface feature
+- Dashboard consistency improvements
+- Horizontal card layout
+- Success screen bypass for viewing mode
 
 ---
 
 ## Future Development
 
-### Surveyor 2 Domains
-- [ ] LD.13, LD.14, LD.18-LD.29
-- [ ] PC - Provision of Care (partial)
-- [ ] MOI - Management of Information (all)
-- [ ] FMS - Facility Management and Safety (all)
+### Phase 13: Action Plan Report Generation (PLANNED)
+**Objective:** Generate professional action plan reports from completed assessments
 
-### Planned Features
+**Framework:**
+- Sub-standard as headline → Action plan with coaching language
+- Apply Pareto 80/20 principle for prioritization
+- Priority matrix classification:
+  - High priority: Not Met items (30-day deadline)
+  - Medium priority: Partial Met items (60-day deadline)
+- Quick wins vs long-term investments analysis
+
+**Mock Data Creation:**
+10 mock completed assessments will be created for testing:
+- Different center names and contact details
+- Various scoring patterns and compliance levels
+- Different configurations (A1, A2, B)
+- Realistic findings and recommendations
+
+**Report Components:**
+1. Executive Summary with overall compliance score
+2. Domain-by-domain breakdown
+3. Prioritized action items
+4. Timeline recommendations
+5. Resource allocation suggestions
+
+### Other Planned Features
 - [ ] User authentication
 - [ ] Multi-center dashboard for consultants
 - [ ] PDF/Markdown report export
 - [ ] Offline support (PWA)
-- [ ] Configuration B (Full Survey Mode)
 - [ ] Auto-generated reports with infographics
-
-### Report Types Planned
-1. **Executive Summary Report** - High-level overview for leadership
-2. **Detailed Findings Report** - Comprehensive documentation
-3. **Action Plan Report** - Remediation planning for non-compliant items
 
 ---
 
@@ -802,6 +757,8 @@ Always verify exact paths, especially for:
 | `AssessmentSetupModal` | Center details form |
 | `CentersPage` | Assessment history (History tab) |
 | `FinalizedSuccessScreen` | Post-finalization UI |
+| `ExecutiveSummaryModal` | Detailed view of completed assessments |
+| `DomainSeparator` | Visual domain separator for Config B |
 
 ### CSS Classes
 
@@ -810,10 +767,10 @@ Always verify exact paths, especially for:
 | `.status-badge.not-started` | Gray inactive state |
 | `.status-badge.in-progress` | Blue with pulse animation |
 | `.status-badge.completed` | Green success state |
-| `.assessment-card` | History card container |
-| `.toast` | Notification styling |
-| `.modern-confirm` | Confirm dialog styling |
-| `.contact-link.whatsapp` | WhatsApp link styling |
+| `.domain-separator` | Domain separator styling |
+| `.domain-ld`, `.domain-pc`, etc. | Domain-specific colors |
+| `.sidebar-domain-header` | Collapsible sidebar header |
+| `.sidebar-domain-badge` | Domain abbreviation badge |
 
 ---
 
@@ -841,7 +798,7 @@ http://localhost:5173  (vite dev server)
 ## File Structure
 ```
 CBAHI Scoring Application/
-├── index.html          # Main application (self-contained React)
+├── index.html          # Main application (~6,800 lines, self-contained React)
 ├── package.json        # NPM configuration
 ├── PROJECT_LOG.md      # This file
 └── src/
@@ -868,12 +825,20 @@ CBAHI Scoring Application/
 | 0.9.0 | Feb 2026 | Finalize buttons in all strategic locations |
 | 1.0.0 | Feb 2026 | Firebase integration with secure cloud storage |
 | 1.1.0 | Feb 2026 | Modern UI, Assessment Tracking, Post-Finalization Flow |
-| 1.2.0 | Feb 2026 | Executive Summary Modal, AI Action Plan, SVG Icons, JSX Bug Fixes |
-| 1.2.1 | Feb 2026 | Fixed Executive Summary data loading, Added configuration selector |
-| 1.2.2 | Feb 2026 | Added "View Full Scoring Interface" button in Executive Summary |
-| 1.2.3 | Feb 2026 | Dashboard consistency: Added configuration badge & edit button |
-| 1.2.4 | Feb 2026 | Dashboard cards: Horizontal layout with date & config prominent |
-| 1.2.5 | Feb 2026 | View Full Scoring Interface now shows all chapters & details |
+| 1.2.0 | Feb 2026 | Executive Summary Modal, AI Action Plan, SVG Icons |
+| 1.2.1 | Feb 2026 | Fixed Executive Summary data loading, Configuration selector |
+| 1.2.2 | Feb 2026 | Added "View Full Scoring Interface" in Executive Summary |
+| 1.2.3 | Feb 2026 | Dashboard consistency: Configuration badge & edit button |
+| 1.2.4 | Feb 2026 | Dashboard cards: Horizontal layout with date & config |
+| 1.2.5 | Feb 2026 | View Full Scoring Interface shows all chapters & details |
+| 1.3.0 | Feb 2026 | **Configuration System Complete** |
+| | | - Configuration A Surveyor 2: LD (61), PC (31), MOI (24), FMS (53) = 169 sub-standards |
+| | | - Configuration B Full Survey: All 6 domains merged = 349 sub-standards |
+| | | - Domain color scheme with professional gradients |
+| | | - Domain separator components with real-time stats |
+| | | - Collapsible sidebar with abbreviation-only labels |
+| | | - Clickable configuration dropdown in header |
+| | | - Fixed sidebar bottom cutoff (80px padding) |
 
 ---
 
@@ -884,8 +849,9 @@ CBAHI Scoring Application/
 3. **Styling:** Custom professional design, NOT copying official CBAHI
 4. **Data Structure:** Firebase-ready schema implemented in localStorage first
 5. **Surveyor Split:** Following Configuration A mapping from SOP document
+6. **Domain Colors:** Each domain has unique color scheme for visual distinction in Config B
 
 ---
 
-*Document Last Updated: February 1, 2026*
-*Application Version: 1.2.5*
+*Document Last Updated: February 2, 2026*
+*Application Version: 1.3.0*
