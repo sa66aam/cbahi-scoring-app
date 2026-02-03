@@ -2,12 +2,25 @@
 
 ## Project Overview
 
-**Application Name:** CBAHI Dental Center Accreditation Scoring Application
-**Version:** 1.3.0
-**Technology Stack:** React 18, Firebase (Firestore), HTML5, CSS3
-**Primary Purpose:** Digital scoring and assessment tool for CBAHI (Central Board for Accreditation of Healthcare Institutions) dental center accreditation surveys
+**Application Name:** StandardsHub (formerly CBAHI Dental Center Accreditation Scoring Application)
+**Public Brand:** StandardsHub
+**Firebase Project ID:** standards-hub
+**Live URL:** https://standards-hub.web.app
+**Version:** 1.3.1
+**Technology Stack:** React 18, Firebase Hosting, HTML5, CSS3
+**Primary Purpose:** Digital scoring and assessment tool for healthcare accreditation surveys
 **Developer:** Jo
 **Started:** February 1, 2026
+
+**Local Development Path:**
+```
+/Users/jo/Projects/CBAHI Scoring Application
+```
+
+**GitHub Repository:**
+```
+https://github.com/sa66aam/cbahi-scoring-app.git
+```
 
 ---
 
@@ -1106,6 +1119,261 @@ CBAHI Scoring Application/
 | | | - Added `findings` fallback in SubstandardCard component |
 | | | - Documented lessons learned for future survey applications |
 | | | - Added Ambulatory Care Services application roadmap |
+| 1.4.0 | Feb 2026 | **Firebase Hosting Deployment & Rebranding** |
+| | | - Rebranded to "StandardsHub" for market protection |
+| | | - Created dedicated Firebase project: standards-hub |
+| | | - Deployed to https://standards-hub.web.app |
+| | | - Resolved Firebase alias conflicts |
+| | | - Added Mock Assessment #7 (High-Intensity Set, 32 findings) |
+
+---
+
+## Phase 14: Firebase Hosting Deployment (CRITICAL DOCUMENTATION)
+
+### The Rebranding Decision
+
+**Date:** February 2, 2026
+
+**Context:** Before deploying to Firebase, a strategic decision was made to rebrand the application from "CBAHI Dental Center Accreditation Scoring Application" to **"StandardsHub"**.
+
+**Reasoning:**
+- Market protection: Avoid potential conflicts with CBAHI as the official accreditation body
+- Generic branding allows the application to serve multiple accreditation frameworks
+- Professional naming suitable for sharing with future customers
+- Domain-friendly: standards-hub.web.app
+
+**Alternative Names Considered:**
+
+| Name | Pros | Decision |
+|------|------|----------|
+| AccredScore | Short, implies scoring | Not selected |
+| SurveyorPro | Targets surveyors | Not selected |
+| ComplianceEdge | Implies competitive advantage | Not selected |
+| AccreditAssist | Helpful positioning | Not selected |
+| **StandardsHub** | Universal, professional, hub concept | **SELECTED** |
+
+---
+
+### Firebase Deployment Journey
+
+#### Step 1: Initial Setup Attempt
+
+**Command:**
+```bash
+cd "/Users/jo/Projects/CBAHI Scoring Application"
+firebase init hosting
+```
+
+**Issue Encountered:**
+Firebase CLI automatically detected and used an existing project (`thamar-alnakheel`) from a previous session, instead of creating the new `standards-hub` project.
+
+**What Happened:**
+```
+=== Project Setup
+i  Using project thamar-alnakheel (Thamar Al-Nakheel) .
+```
+
+This created local configuration files (`.firebaserc`, `firebase.json`) that pointed to the wrong project.
+
+---
+
+#### Step 2: Creating the Dedicated Project
+
+**Critical Concern:** The developer was concerned about accidentally deploying to or affecting the existing `thamar-alnakheel` project.
+
+**Solution - Create New Project:**
+```bash
+firebase projects:create standards-hub --display-name "StandardsHub"
+```
+
+**Output:**
+```
+✔ Creating Google Cloud Platform project
+✔ Adding Firebase resources to Google Cloud Platform project
+🎉🎉🎉 Your Firebase project is ready! 🎉🎉🎉
+
+Project information:
+  - Project ID: standards-hub
+  - Project Name: StandardsHub
+
+Firebase console is available at
+https://console.firebase.google.com/project/standards-hub/overview
+```
+
+---
+
+#### Step 3: The Alias Conflict
+
+**Problem:** After creating the new project and running `firebase use standards-hub`, checking the configuration revealed:
+
+```bash
+firebase use
+```
+
+**Output:**
+```
+Active Project: standards-hub
+
+Project aliases for /Users/jo/Projects/CBAHI Scoring Application :
+    default (thamar-alnakheel)
+```
+
+**Developer's Concern:**
+> "Still showing but active project is standards-hub. But I'm afraid why he still? Maybe aliases. I don't want even aliases."
+
+> "This will be also used in any future Firebase communication through terminal... anything related to future project will be also connected to this default project?"
+
+**Technical Explanation Provided:**
+
+Firebase aliases are **LOCAL to each project folder**. They are stored in the `.firebaserc` file inside the specific folder. Key points:
+
+1. **Folder-Scoped:** Setting an alias in one folder does NOT affect other folders
+2. **File-Based:** Each project folder has its own `.firebaserc` with its own aliases
+3. **No Global Impact:** Other Firebase projects (thamar-alnakheel, pharmacy-satisfaction-survey, etc.) remain completely separate
+4. **Safe to Override:** Changing the default alias only affects the current folder
+
+---
+
+#### Step 4: Removing the Stale Alias
+
+**Command to Remove:**
+```bash
+firebase use --unalias default
+```
+
+**Output:**
+```
+Removed alias default
+```
+
+---
+
+#### Step 5: Setting the Correct Default
+
+**Command:**
+```bash
+firebase use --add
+```
+
+**Interactive Prompts:**
+```
+? Which project do you want to add? standards-hub
+? What alias do you want to use for this project? (e.g. staging) default
+```
+
+**Output:**
+```
+Created alias default for standards-hub.
+Now using alias default (standards-hub)
+```
+
+---
+
+#### Step 6: Verification Before Deploy
+
+**Final Check:**
+```bash
+firebase use
+```
+
+**Expected Output:**
+```
+Active Project: standards-hub
+
+Project aliases for /Users/jo/Projects/CBAHI Scoring Application :
+    default (standards-hub)
+```
+
+**Confirmation:** No trace of `thamar-alnakheel` - safe to deploy!
+
+---
+
+### Firebase Configuration Files
+
+**`.firebaserc` (Final State):**
+```json
+{
+  "projects": {
+    "default": "standards-hub"
+  }
+}
+```
+
+**`firebase.json`:**
+```json
+{
+  "hosting": {
+    "public": ".",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  }
+}
+```
+
+---
+
+### Deployment Command
+
+```bash
+firebase deploy --only hosting
+```
+
+**Expected Result:**
+- Application deployed to: `https://standards-hub.web.app`
+- Firebase Console: `https://console.firebase.google.com/project/standards-hub`
+
+---
+
+### Lessons Learned: Firebase Project Management
+
+**1. Always Verify Active Project Before Deploy**
+```bash
+firebase use  # Check current project
+```
+
+**2. Create Dedicated Projects for Important Applications**
+```bash
+firebase projects:create [project-id] --display-name "[Display Name]"
+```
+
+**3. Understand Alias Scope**
+- Aliases are LOCAL to each folder (`.firebaserc`)
+- Changing an alias in one project does NOT affect others
+- Use `firebase use --unalias [name]` to remove unwanted aliases
+
+**4. Clean Alias Setup for New Projects**
+```bash
+firebase use --unalias default        # Remove old alias
+firebase use --add                    # Add new project as default
+# Select project → Enter alias name "default"
+```
+
+**5. Protect Critical Applications**
+- Create dedicated Firebase projects (not shared)
+- Use clear, branded project IDs
+- Document the project ID and URL for reference
+
+---
+
+### Firebase Project Summary
+
+| Property | Value |
+|----------|-------|
+| **Project ID** | `standards-hub` |
+| **Display Name** | StandardsHub |
+| **Hosting URL** | https://standards-hub.web.app |
+| **Console URL** | https://console.firebase.google.com/project/standards-hub |
+| **Local Alias** | `default` |
+| **Configuration File** | `.firebaserc` |
 
 ---
 
@@ -1120,6 +1388,825 @@ CBAHI Scoring Application/
 
 ---
 
-*Document Last Updated: February 2, 2026*
-*Application Version: 1.3.1*
-*Training Phase: Mock Assessment System Completed*
+## Phase 15: Export Feature Development (PDF & Excel)
+
+**Date:** February 3, 2026
+**Status:** PDF Complete, Excel Functional (Visual Enhancements Pending)
+
+### Overview
+
+Developed comprehensive export functionality for the Executive Summary Modal, allowing users to generate professional PDF reports and Excel spreadsheets from completed assessments.
+
+### Technology Stack
+
+**PDF Export:**
+- jsPDF library for PDF generation
+- jsPDF-AutoTable plugin for table rendering
+- Custom drawing functions for pie charts and visual elements
+
+**Excel Export:**
+- SheetJS (XLSX) library for multi-sheet workbook creation
+- Unicode characters for visual bar charts
+- Proper worksheet separation (not HTML page-breaks)
+
+---
+
+### PDF Export Development Journey
+
+#### Initial Version (v1)
+**Features:**
+- Basic layout with score display
+- Domain breakdown table
+- Action plan listing
+
+**User Feedback (Challenges Identified):**
+1. "Green color is too bright/annoying" → Needed darker, professional tones
+2. "Gradients are square/rectangular" → Wanted organic, diffused effects
+3. "Score breakdown cards look grouped" → Needed independent card styling
+4. "Target days logic too rigid (fixed 30/60)" → Should be complexity-based
+
+---
+
+#### Version 2: Geometric Shape Attempts
+**Changes Made:**
+- Added ellipse shapes for "organic diffusion"
+- Attempted gradient backgrounds
+
+**User Feedback:**
+> "This oval? It is very ugly... The organic design is good but this is geometrical engineering design... Everything should be smooth"
+
+**Lesson:** Geometric shapes (rectangles, ellipses, ovals) are NOT organic. User wanted subtle, spray-paint-like diffusion.
+
+---
+
+#### Version 3: Solid Color Boxes
+**Changes Made:**
+- Replaced ellipses with solid color rectangles behind domain headers
+- Added thin accent lines
+
+**User Feedback:**
+> "Still the squares are there. I don't want the square to be gradient. I don't want the existence of those squares beside each domain headline."
+
+**Lesson:** ANY geometric shape (even with gradients) was unwanted. User preferred clean text with colored underlines or no visual decoration.
+
+---
+
+#### Version 4: Horizontal Gradient Backgrounds
+**Implementation:**
+```javascript
+// Helper: Draw horizontal diffused background behind title
+const drawTitleGradientBg = (x, y, height, color) => {
+  const gradientWidth = (pageWidth - 40) * 0.35;
+  const steps = 25;
+  for (let i = 0; i < steps; i++) {
+    const ratio = 0.10 + (0.50 * (i / steps));
+    const r = Math.round(color[0] + (255 - color[0]) * ratio);
+    // ... draw rectangles with fading colors
+  }
+};
+```
+
+**User Feedback:**
+> "You transferred the subtle square to... a huge square, which is not what I want... It looks like the printer out of ink."
+
+**Lesson:** Even horizontal gradients that span significant width look like "printer out of ink" - not professional.
+
+---
+
+#### Version 5: Clean Text Only (FINAL APPROVED)
+**Solution:**
+- Removed ALL geometric shapes and gradients from domain headers
+- Domain headers now use only colored text (domain's primary color)
+- No underlines, no backgrounds, no visual decorations
+
+**Implementation:**
+```javascript
+// Helper function for domain headers - clean colored text only
+const drawDomainHeader = (x, y, domainColor, text, percentage) => {
+  doc.setTextColor(...domainColor.primary);
+  doc.setFontSize(11);
+  doc.setFont('times', 'bold');
+  doc.text(text, x, y + 5);
+  doc.text(`${percentage}%`, pageWidth - 25, y + 5, { align: 'right' });
+};
+```
+
+**User Response:** ✅ Approved
+
+---
+
+### PDF Design Decisions (What User Liked)
+
+| Element | User Preference | Implementation |
+|---------|-----------------|----------------|
+| Domain Headers | Clean colored text only | `doc.setTextColor(...domainColor.primary)` |
+| Cover Page Header | Minimalist navy gradient | Horizontal gradient at top of first page |
+| Action Plan Items | Subtle gray header row | Light gray background `[245, 247, 250]` |
+| Timeframe | Weeks instead of days | `${Math.ceil(days / 7)} weeks` |
+| Priority Labels | Simple "HIGH" or "MEDIUM" text | No special characters or symbols |
+| Compliance Summary | Separate dedicated page | `doc.addPage()` before pie chart |
+| Pie Chart | Donut style with center score | White circle in center showing % |
+
+---
+
+### PDF Features Implemented
+
+#### 1. Cover Page
+- Minimalist navy gradient header (12px height, fades to white)
+- StandardsHub branding
+- Center name, coordinator info, assessment date
+- Large compliance score with status label
+
+#### 2. Domain Performance Analysis
+- Each domain with colored title (no decorations)
+- Statistics row: Total, Fully Met, Partial, Not Met
+- Progress bar showing compliance percentage
+
+#### 3. Corrective Action Plan
+- Timeline guide: "HIGH = 1-4 weeks", "MEDIUM = 2-5 weeks"
+- Domain sections with colored headers
+- Each item with:
+  - Subtle gray header row (ID, Priority, Timeframe)
+  - Full sub-standard text (no truncation)
+  - Finding (if entered)
+  - Smart corrective action (auto-generated if not provided)
+
+#### 4. Smart Corrective Action Generator
+```javascript
+const generateCorrectiveAction = (item) => {
+  const text = item.text.toLowerCase();
+  const isNotMet = item.score === 0;
+
+  // Policy/Procedure related
+  if (text.includes('policy') || text.includes('procedure')) {
+    return isNotMet
+      ? 'Develop and approve written policy/procedure...'
+      : 'Review existing policy for completeness...';
+  }
+  // Training/Education
+  else if (text.includes('train') || text.includes('educat')) {
+    return isNotMet
+      ? 'Develop training curriculum and schedule...'
+      : 'Enhance training program...';
+  }
+  // ... more keyword detection
+};
+```
+
+#### 5. Compliance Summary (Separate Page)
+- Centered page title
+- Donut pie chart with:
+  - Deep green for Fully Met `[46, 125, 50]`
+  - Warm amber for Partial `[245, 166, 35]`
+  - Deep red for Not Met `[198, 40, 40]`
+- White center showing overall compliance %
+- Horizontal legend below pie
+- Summary statistics box
+
+#### 6. Orphan Word Prevention
+```javascript
+// If text block won't fit but we'd leave orphan, move entire block
+if (yPos + textBlockHeight > pageHeight - 25 && yPos + 15 < pageHeight - 25) {
+  doc.addPage();
+  yPos = 25;
+}
+```
+
+---
+
+### PDF Issues Fixed
+
+| Issue | Problem | Solution |
+|-------|---------|----------|
+| Strange character `%ï` | Unicode bullet `●` not rendering | Replaced with plain "HIGH" text |
+| Title touching gradient | Insufficient spacing | Moved title down, reduced gradient height to 12px |
+| Single word orphans | Words like "activity." jumping to new page alone | Added orphan prevention logic |
+| Repeated appendix data | Not Met/Partial lists duplicated after pie chart | Removed duplicate listings |
+| Lines everywhere | Underlines on all section titles | Removed all underlines except cover page |
+| Timeframe confusion | Numbers like "10-21" looked like standard IDs | Changed to "2 weeks", "3 weeks" format |
+
+---
+
+### Excel Export Development
+
+#### Initial Challenge: Multi-Sheet Creation
+
+**Problem:** HTML-based Excel export using `<!--[if gte mso 9]>` and page-breaks did NOT create actual separate worksheets. All content appeared on a single sheet.
+
+**User Feedback:**
+> "Sheets weren't properly separated"
+
+**Solution:** Switched to XLSX library's proper multi-sheet API:
+
+```javascript
+const wb = XLSX.utils.book_new();
+
+// Sheet 1: Executive Summary
+const ws1 = XLSX.utils.aoa_to_sheet(summaryData);
+XLSX.utils.book_append_sheet(wb, ws1, 'Executive Summary');
+
+// Sheet 2: Complete Assessment
+const ws2 = XLSX.utils.aoa_to_sheet(assessmentData);
+XLSX.utils.book_append_sheet(wb, ws2, 'Complete Assessment');
+
+// Sheet 3: Action Plan
+const ws3 = XLSX.utils.aoa_to_sheet(actionData);
+XLSX.utils.book_append_sheet(wb, ws3, 'Action Plan');
+
+XLSX.writeFile(wb, filename);
+```
+
+---
+
+#### Excel Features Implemented
+
+**Sheet 1: Executive Summary**
+- Assessment information (center, coordinator, date)
+- Overall compliance score with visual bar
+- Gap/Deficiency analysis
+- Quick statistics
+- Compliance breakdown with visual distribution
+- Domain performance analysis with gap percentages
+- Domain gap comparison chart using Unicode bars
+
+**Sheet 2: Complete Assessment**
+- Domain summary with gap analysis
+- Detailed sub-standard listing
+- Score, Finding, Recommendation, Priority, Days columns
+
+**Sheet 3: Action Plan**
+- Deficiency overview with percentages
+- Priority breakdown with visual distribution
+- Deficiency by domain chart
+- Remediation timeline (Gantt-style with Unicode)
+- Detailed action items
+
+**Visual Bar Charts (Unicode):**
+```javascript
+const barChart = (pct, style = 'standard') => {
+  const filled = Math.round(pct / 5);
+  if (style === 'compliance') return '▓'.repeat(filled) + '░'.repeat(20 - filled);
+  if (style === 'gap') return '▒'.repeat(filled) + '░'.repeat(20 - filled);
+  return '█'.repeat(filled) + '░'.repeat(20 - filled);
+};
+```
+
+---
+
+### Excel: Future Improvements Needed
+
+**User Feedback:**
+> "We didn't reach the optimum of Excel sheet yet as I am focusing on visual designs that is engaging not only text that is boring and not formatted."
+
+**Planned Enhancements:**
+1. **Cell Formatting:**
+   - Bold headers with background colors
+   - Proper column width auto-sizing
+   - Number formatting for percentages
+   - Conditional formatting for scores
+
+2. **Visual Charts:**
+   - Actual Excel charts (not Unicode approximations)
+   - Pie charts for compliance breakdown
+   - Bar charts for domain comparison
+
+3. **Professional Styling:**
+   - Merged cells for headers
+   - Borders and cell styling
+   - Print area configuration
+   - Page headers/footers
+
+4. **Data Organization:**
+   - Freeze panes for headers
+   - Filter dropdowns
+   - Data validation for better readability
+
+---
+
+### Code References
+
+**PDF Export Function Location:**
+```
+index.html, lines ~6340-7000
+Function: exportToPDF()
+```
+
+**Excel Export Function Location:**
+```
+index.html, lines ~5720-6220
+Function: exportExecutiveSummaryExcel()
+```
+
+**Key Helper Functions:**
+```javascript
+// PDF - Gradient header
+for (let i = 0; i < steps; i++) {
+  const ratio = i / steps;
+  // ... gradient calculation
+}
+
+// PDF - Domain header (clean text only)
+const drawDomainHeader = (x, y, domainColor, text, percentage) => {
+  doc.setTextColor(...domainColor.primary);
+  doc.text(text, x, y + 5);
+};
+
+// PDF - Pie chart slice
+const drawPieSlice = (cx, cy, r, startAngle, endAngle, color) => {
+  doc.setFillColor(...color);
+  for (let i = 0; i < steps; i++) {
+    doc.triangle(cx, cy, ...);
+  }
+};
+
+// Excel - Gap analysis calculation
+const domainGapAnalysis = chapterData.map(ch => {
+  const gapPct = scored > 0 ? Math.round((gapItems / scored) * 100) : 0;
+  return { name, compliance, gapPct, partialPct, notMetPct, ... };
+});
+```
+
+---
+
+### Design Philosophy Summary
+
+**What Works (User Approved):**
+- Clean typography with proper hierarchy
+- Colored text for domain differentiation (no shapes)
+- Subtle gray backgrounds for table-like separation
+- Minimalist branding elements (gradient only on cover)
+- Weeks-based timeframes
+- Donut pie chart with center score
+- Full text display (no truncation)
+- Smart auto-generated corrective actions
+
+**What Doesn't Work (User Rejected):**
+- Geometric shapes (rectangles, ovals, ellipses)
+- Gradient backgrounds on domain headers
+- Underlines on section titles (too many lines)
+- Days-only timeframes (confusing numbers)
+- Unicode special characters (rendering issues)
+- Truncated text in tables
+- Repeated data across sections
+
+---
+
+### Version History (Export Feature)
+
+| Version | Changes |
+|---------|---------|
+| 1.4.1 | Initial PDF/Excel export with basic layout |
+| 1.4.2 | Added domain colors, fixed ellipse shapes |
+| 1.4.3 | Removed geometric shapes, added gradient backgrounds |
+| 1.4.4 | Removed gradient backgrounds, clean text only |
+| 1.4.5 | Fixed multi-sheet Excel export using XLSX library |
+| 1.4.6 | Added gap percentages and visual charts to Excel |
+| 1.4.7 | Fixed orphan words, added gray header rows |
+| 1.4.8 | Changed timeframe to weeks, fixed strange characters |
+| 1.4.9 | Added Compliance Summary on separate page with donut chart |
+| **1.5.0** | **Export Feature Complete (PDF production-ready)** |
+
+---
+
+## Notes & Decisions
+
+1. **Scoring Method:** Equal weight for all sub-standards, NA excluded from calculation
+2. **Activity Types:** Exact wording from CBAHI without modification
+3. **Styling:** Custom professional design, NOT copying official CBAHI
+4. **Data Structure:** Firebase-ready schema implemented in localStorage first
+5. **Surveyor Split:** Following Configuration A mapping from SOP document
+6. **Domain Colors:** Each domain has unique color scheme for visual distinction in Config B
+7. **Export Design:** Minimalist, consultant-grade PDFs with no geometric decorations
+
+---
+
+## Phase 15.1: Excel Export Visual Enhancement Journey
+
+**Date:** February 3, 2026
+**Status:** COMPLETED ✅
+**Version:** 1.5.1
+
+### Overview
+
+After completing the basic Excel export functionality, the user requested visual improvements to match the professional quality of the PDF export. This phase documents the iterative process of achieving a polished, executive-grade Excel spreadsheet.
+
+---
+
+### The Challenge
+
+**Initial State (Before Enhancement):**
+- Basic data export working with 3 sheets
+- No cell styling or formatting
+- Unicode characters for bar charts (looked unprofessional)
+- Cramped tables with no spacing
+- Text overflowing cells
+- Quick Statistics cards bunched together
+
+**User Feedback:**
+> "We didn't reach the optimum of Excel sheet yet as I am focusing on visual designs that is engaging not only text that is boring and not formatted."
+
+---
+
+### Issue 1: Library Limitation - SheetJS Cannot Style Cells
+
+**Problem:** The SheetJS (XLSX) library used for Excel generation does NOT support cell styling (colors, fonts, borders, etc.) without additional paid plugins.
+
+**Solution:** Switched to **ExcelJS** library which provides full cell formatting capabilities.
+
+**Code Change - Added CDN:**
+```html
+<!-- Line 12 in index.html -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js"></script>
+```
+
+**Code Change - New Export Function:**
+```javascript
+// Lines ~5725-6090
+const exportToExcel = async () => {
+  const ExcelJS = window.ExcelJS;
+  if (!ExcelJS) {
+    alert('Excel export library not loaded. Please refresh and try again.');
+    return;
+  }
+
+  const workbook = new ExcelJS.Workbook();
+  workbook.creator = 'StandardsHub';
+  workbook.created = new Date();
+  // ... rest of implementation
+};
+```
+
+---
+
+### Issue 2: Tables Squeezed - Insufficient Column Widths
+
+**Problem:** Text was overflowing cells, columns were too narrow for content.
+
+**Initial Column Widths:**
+```javascript
+// OLD - Too narrow
+ws1.columns = [
+  { width: 28 },  // A - Labels
+  { width: 32 },  // B - Values
+  { width: 14 },  // C - Count
+  { width: 14 },  // D - Percentage
+  // ... bar cells at 3 width each
+];
+```
+
+**Solution - Wider Columns:**
+```javascript
+// NEW - Lines ~5788-5799
+ws1.columns = [
+  { width: 32 },   // A - Labels/Domain names (wider)
+  { width: 22 },   // B - Status labels (wider for "Partially Met")
+  { width: 12 },   // C - Count
+  { width: 18 },   // D - Percentage/text
+  { width: 2.5 },  // Bar cells (narrower for grid effect)
+  // ... 20 bar cells at 2.5 width each
+  { width: 8 }     // Percentage label
+];
+```
+
+---
+
+### Issue 3: Green Bar Indicator Looks Like One Solid Block
+
+**Problem:** The performance bar charts used cell fills but looked like a single solid rectangle instead of individual grid squares.
+
+**User Feedback:**
+> "The green indicator, I prefer grids, squares... grading in colors or same color, but now it looks like it is a one block."
+
+**Initial Implementation (No Borders):**
+```javascript
+// OLD - No visual separation between bar cells
+for (let i = 0; i < totalBars; i++) {
+  const cell = ws.getCell(row, startCol + i);
+  cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: barColor } };
+  // No borders - cells blend together
+}
+```
+
+**Solution - Added White Grid Borders:**
+```javascript
+// NEW - Lines ~5759-5782
+const createBarCells = (ws, row, startCol, percentage, barColor) => {
+  const totalBars = 20;
+  const filledBars = Math.round(percentage / 5);
+  for (let i = 0; i < totalBars; i++) {
+    const cell = ws.getCell(row, startCol + i);
+    if (i < filledBars) {
+      cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: barColor } };
+    } else {
+      cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFE8E8E8' } };
+    }
+    // ADD WHITE BORDERS for grid/square appearance
+    cell.border = {
+      top: { style: 'thin', color: { argb: 'FFFFFFFF' } },
+      bottom: { style: 'thin', color: { argb: 'FFFFFFFF' } },
+      left: { style: 'thin', color: { argb: 'FFFFFFFF' } },
+      right: { style: 'thin', color: { argb: 'FFFFFFFF' } }
+    };
+  }
+  // Percentage label with bold font
+  const labelCell = ws.getCell(row, startCol + totalBars);
+  labelCell.value = `${percentage}%`;
+  labelCell.font = { size: 10, bold: true };
+};
+```
+
+---
+
+### Issue 4: Quick Statistics Cards Cramped Together
+
+**Problem:** The three Quick Statistics cards (Total Sub-Standards, Items with Findings, Accreditation Status) were using single columns and text was cut off.
+
+**User Feedback:**
+> "Quick statistic, the details are squeezed and not extended to contain or horizontally make the text appear."
+
+**Initial Implementation (Single Columns):**
+```javascript
+// OLD - Cards used single columns, text cut off
+ws1.getCell(statsHeaderRow, 1).value = 'Total Sub-Standards';  // Column A only
+ws1.getCell(statsHeaderRow, 3).value = 'Items with Findings';   // Column C only
+```
+
+**Solution - Merged Cells Across Multiple Columns:**
+```javascript
+// NEW - Lines ~6051-6096
+// Card 1: Total Sub-Standards (Columns A-C merged)
+ws1.mergeCells(statsHeaderRow, 1, statsHeaderRow, 3);
+ws1.getCell(statsHeaderRow, 1).value = 'Total Sub-Standards';
+ws1.getCell(statsHeaderRow, 1).font = { name: 'Lora', size: 11, bold: true, color: { argb: 'FF1565C0' } };
+ws1.getCell(statsHeaderRow, 1).border = {
+  top: { style: 'medium', color: { argb: 'FF1565C0' } },
+  // ... colored borders matching card theme
+};
+ws1.mergeCells(statsValueRow, 1, statsValueRow, 3);
+ws1.getCell(statsValueRow, 1).value = stats.total || 0;
+ws1.getCell(statsValueRow, 1).font = { name: 'Lora', size: 36, bold: true, color: { argb: 'FF1565C0' } };
+
+// Card 2: Items with Findings (Columns 5-12 merged - MUCH WIDER)
+ws1.mergeCells(statsHeaderRow, 5, statsHeaderRow, 12);
+// ... similar styling with amber/orange theme
+
+// Card 3: Accreditation Status (Columns 14-24 merged - WIDEST for "LIKELY TO PASS" text)
+ws1.mergeCells(statsHeaderRow, 14, statsHeaderRow, 24);
+```
+
+---
+
+### Issue 5: "LIKELY TO PASS" Text Cut Off
+
+**Problem:** The Accreditation Status card showing "✓ LIKELY TO PASS" was too narrow and text was truncated.
+
+**Solution:** Extended merge range from columns 10-16 to columns 14-24 (11 columns merged):
+```javascript
+// Lines ~6083-6096
+ws1.mergeCells(statsValueRow, 14, statsValueRow, 24);
+ws1.getCell(statsValueRow, 14).value = stats.percentage >= 70 ? '✓ LIKELY TO PASS' : '⚠ AT RISK';
+ws1.getCell(statsValueRow, 14).font = { name: 'Lora', size: 18, bold: true, ... };
+```
+
+---
+
+### Issue 6: Title Not Centered and Too Small
+
+**Problem:** The "StandardsHub" title was left-aligned and not prominent enough.
+
+**Initial Implementation:**
+```javascript
+// OLD - Small merge, left-aligned
+ws1.mergeCells(`A${currentRow}:B${currentRow}`);
+titleCell.font = { size: 22, bold: true };
+titleCell.alignment = { horizontal: 'left' };
+```
+
+**Solution - Full-Width Centered Title:**
+```javascript
+// NEW - Lines ~5804-5821
+ws1.mergeCells(`A${currentRow}:Y${currentRow}`);  // Full width
+titleCell.value = '📊 StandardsHub';
+titleCell.font = { name: 'Lora', size: 26, bold: true, color: { argb: 'FF1E3A5F' } };
+titleCell.alignment = { horizontal: 'center', vertical: 'middle' };
+titleCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFF8FAFC' } };
+ws1.getRow(currentRow).height = 45;
+```
+
+---
+
+### Issue 7: Section Headers Inconsistent Styling
+
+**Problem:** Section headers (Assessment Information, Overall Compliance Score, Domain Performance, Quick Statistics) had inconsistent styling.
+
+**Solution - Unified Navy Blue Header Style:**
+```javascript
+// Pattern applied to ALL section headers
+// Example: Assessment Information header - Lines ~5826-5834
+ws1.mergeCells(`A${currentRow}:Y${currentRow}`);
+infoHeader.value = '📋 Assessment Information';
+infoHeader.font = { name: 'Lora', size: 14, bold: true, color: { argb: 'FFFFFFFF' } };  // White text
+infoHeader.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1E3A5F' } };  // Navy background
+infoHeader.alignment = { horizontal: 'left', vertical: 'middle' };
+ws1.getRow(currentRow).height = 28;
+```
+
+---
+
+### Issue 8: Numbers Too Small for Readability
+
+**Problem:** Numbers in table cells were default size and hard to read.
+
+**User Feedback:**
+> "Maybe just the numbers to increase their size for readability inside the cells."
+
+**Solution - Increased Number Font Sizes:**
+```javascript
+// Score breakdown table - Count column (Lines ~5929-5932)
+ws1.getCell(currentRow, 3).value = row.count;
+ws1.getCell(currentRow, 3).font = { name: 'Lora', size: 14, bold: true, color: { argb: row.color } };
+
+// Percentage column
+ws1.getCell(currentRow, 4).font = { name: 'Lora', size: 12, bold: true, color: { argb: row.color } };
+
+// Domain performance - Score percentage
+ws1.getCell(currentRow, 2).font = { name: 'Lora', size: 13, bold: true, color: { argb: scoreColor } };
+
+// Domain performance - Fully Met count
+ws1.getCell(currentRow, 3).font = { name: 'Lora', size: 13, bold: true, color: { argb: 'FF2E7D32' } };
+
+// Quick Statistics numbers
+ws1.getCell(statsValueRow, 1).font = { name: 'Lora', size: 36, bold: true, ... };
+```
+
+---
+
+### Issue 9: Duplicate Assessment Details Section
+
+**Problem:** The Complete Assessment Details section was appearing in both the Executive Summary sheet AND the All Scored Items sheet (Sheet 2), creating redundancy.
+
+**User Feedback:**
+> "Remove the all assessment below as it is already in the second sheet."
+
+**Solution:** Removed the Complete Assessment Details section entirely from Sheet 1 (Executive Summary), keeping it only in Sheet 2.
+
+**Code Removed (Lines ~6089-6158 deleted):**
+```javascript
+// REMOVED from Executive Summary sheet:
+// - "Complete Assessment Details - All 349 Sub-Standards" header
+// - Table headers (Domain, ID, Sub-Standard Description, Score, Finding, Recommendation, Priority)
+// - All sub-standard rows loop
+```
+
+---
+
+### Issue 10: Missing Lora Font Throughout
+
+**Problem:** Most cells were using default Excel font instead of the application's signature Lora font.
+
+**User Feedback:**
+> "Use Lora Font."
+
+**Solution - Applied Lora Font to All Text Elements:**
+```javascript
+// Title
+titleCell.font = { name: 'Lora', size: 26, bold: true, ... };
+
+// Section headers
+infoHeader.font = { name: 'Lora', size: 14, bold: true, ... };
+
+// Table headers
+cell.font = { name: 'Lora', bold: true, ... };
+
+// Data cells
+ws1.getCell(currentRow, 1).font = { name: 'Lora', size: 11, bold: true, ... };
+ws1.getCell(currentRow, 2).font = { name: 'Lora', size: 11, ... };
+
+// Score display
+ws1.getCell(currentRow, 1).font = { name: 'Lora', size: 42, bold: true, ... };
+```
+
+---
+
+### Final Excel Export Structure (v1.5.1)
+
+**Sheet 1: Executive Summary**
+- Full-width centered "StandardsHub" title (Lora 26pt, navy)
+- Centered subtitle
+- Navy blue section headers (white text)
+- Assessment Information table (Lora 11pt)
+- Overall Compliance Score (Lora 42pt) with status label
+- Score breakdown table with colored bar charts (grid appearance)
+- Domain Performance Analysis with bar charts
+- Quick Statistics cards (wide merged cells, colored borders)
+
+**Sheet 2: All Scored Items** (Unchanged)
+- Complete list of all sub-standards
+- Domain, ID, Description, Score, Finding, Recommendation, Priority
+
+**Sheet 3: Action Plan** (Unchanged)
+- Priority summary
+- Items requiring corrective action
+- Timeframe recommendations
+
+---
+
+### Code Location Reference
+
+| Component | Function/Location | Lines |
+|-----------|-------------------|-------|
+| ExcelJS CDN | `<script>` tag | Line 12 |
+| Export function | `exportToExcel()` | ~5725-6090 |
+| Bar chart helper | `createBarCells()` | ~5759-5782 |
+| Column widths | `ws1.columns = [...]` | ~5788-5799 |
+| Title styling | Title section | ~5804-5821 |
+| Section headers | Various | Throughout |
+| Quick Statistics | Cards section | ~6037-6096 |
+
+---
+
+### Design Principles Established
+
+**Typography:**
+- Font: Lora throughout (professional serif)
+- Title: 26pt bold
+- Section headers: 14pt bold white on navy
+- Table headers: Bold white on navy
+- Data numbers: 13-14pt for readability
+- Quick Stats numbers: 36pt bold
+
+**Colors:**
+- Primary: `FF1E3A5F` (Navy)
+- Success: `FF2E7D32` (Green)
+- Warning: `FFD68910` (Amber)
+- Danger: `FFC62828` (Red)
+- Light backgrounds: `FFF8FAFC`, `FFF0F4F8`
+- Bar chart empty: `FFE8E8E8`
+
+**Spacing:**
+- Section headers: 28px row height
+- Data rows: 22-24px row height
+- Quick Stats value rows: 45px row height
+- Title row: 45px row height
+
+**Visual Elements:**
+- Grid-style bar charts with white borders between cells
+- Colored card borders matching card theme
+- Navy section headers spanning full width
+- Centered alignment for numbers and titles
+
+---
+
+### Version History (Excel Enhancement)
+
+| Version | Changes |
+|---------|---------|
+| 1.5.0 | Basic Excel export with SheetJS (no styling) |
+| 1.5.1a | Switched to ExcelJS library |
+| 1.5.1b | Added white grid borders to bar charts |
+| 1.5.1c | Widened columns for text containment |
+| 1.5.1d | Expanded Quick Statistics card merges |
+| 1.5.1e | Centered and enlarged title |
+| 1.5.1f | Unified navy section headers |
+| 1.5.1g | Removed duplicate assessment details |
+| 1.5.1h | Applied Lora font throughout |
+| 1.5.1i | Increased number font sizes |
+| **1.5.1** | **Excel Export Complete - Production Ready** |
+
+---
+
+## Phase 16: Next Development Steps (PLANNED)
+
+**Status:** Not Started
+**Priority:** High
+
+### 1. Landing Page Development
+- Marketing-focused landing page for StandardsHub
+- Feature highlights
+- Call-to-action for starting assessment
+- Professional branding
+
+### 2. Home Page Redesign
+- Dashboard improvements
+- Quick access to assessments
+- Statistics overview
+- Recent activity
+
+### 3. Mobile Interface Enhancement
+- Responsive design improvements
+- Touch-friendly scoring interface
+- Mobile-optimized navigation
+- Focus on visual information display (icons, charts) over text
+- Arabic language support consideration: "سنتحدث دايما عن التقنية"
+
+### Design Philosophy for Mobile
+- **Visual-first approach:** Icons and visual indicators over text descriptions
+- **Minimal text:** Information conveyed through colors, shapes, progress indicators
+- **Touch targets:** Large buttons and tap areas
+- **Gesture support:** Swipe navigation between sub-standards
+
+---
+
+*Document Last Updated: February 3, 2026*
+*Application Version: 1.5.1*
+*Export Features: PDF Complete ✅, Excel Complete ✅*

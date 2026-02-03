@@ -7,6 +7,11 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
+  <!-- Export Libraries -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.1/jspdf.plugin.autotable.min.js"></script>
   <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
@@ -4938,6 +4943,34 @@
                 <div className="full-survey-view">
                   {activeChapters.map((chapter, chapterIndex) => {
                     const chapterSubs = getAllSubstandards(chapter.standards);
+
+                    // Apply filters to this chapter's substandards
+                    const applyFilters = (subs) => {
+                      let filtered = subs;
+                      if (activityFilter !== 'ALL') filtered = filtered.filter(s => s.activityType === activityFilter);
+                      if (searchQuery) {
+                        const query = searchQuery.toLowerCase();
+                        filtered = filtered.filter(s => s.code.toLowerCase().includes(query) || s.text.toLowerCase().includes(query));
+                      }
+                      if (scoreFilter) {
+                        filtered = filtered.filter(s => {
+                          const score = scores[s.id];
+                          if (scoreFilter === 'full') return score?.value === 2;
+                          if (scoreFilter === 'partial') return score?.value === 1;
+                          if (scoreFilter === 'not-met') return score?.value === 0;
+                          if (scoreFilter === 'na') return score?.value === 'NA';
+                          if (scoreFilter === 'unscored') return score?.value === undefined || score?.value === null;
+                          return true;
+                        });
+                      }
+                      return filtered;
+                    };
+
+                    const filteredChapterSubs = applyFilters(chapterSubs);
+
+                    // Skip this domain if no substandards match the filter
+                    if (filteredChapterSubs.length === 0) return null;
+
                     const chapterStats = {
                       total: chapterSubs.length,
                       fullyMet: chapterSubs.filter(s => scores[s.id]?.value === 2).length,
@@ -4950,28 +4983,38 @@
                     return (
                       <div key={chapter.id} className="domain-section" id={`domain-${chapter.code.toLowerCase()}`}>
                         <DomainSeparator chapter={chapter} stats={chapterStats} />
-                        {chapter.standards.map(std => (
-                          <div key={std.id} className="mother-standard-section">
-                            <div className="mother-standard-header">
-                              <div className="mother-standard-code">{std.code}</div>
-                              <div className="mother-standard-content">
-                                <h3 className="mother-standard-title">{std.title}</h3>
-                                {std.intent && (
-                                  <p className="mother-standard-intent">{std.intent}</p>
-                                )}
+                        {chapter.standards.map(std => {
+                          // Apply filters to this standard's substandards
+                          const filteredStdSubs = applyFilters(std.substandards.map(sub => ({
+                            ...sub, standardId: std.id, standardTitle: std.title, standardIntent: std.intent, standardCode: std.code
+                          })));
+
+                          // Skip this standard if no substandards match the filter
+                          if (filteredStdSubs.length === 0) return null;
+
+                          return (
+                            <div key={std.id} className="mother-standard-section">
+                              <div className="mother-standard-header">
+                                <div className="mother-standard-code">{std.code}</div>
+                                <div className="mother-standard-content">
+                                  <h3 className="mother-standard-title">{std.title}</h3>
+                                  {std.intent && (
+                                    <p className="mother-standard-intent">{std.intent}</p>
+                                  )}
+                                </div>
+                                <div className="mother-standard-badge">{filteredStdSubs.length} sub-standard(s)</div>
                               </div>
-                              <div className="mother-standard-badge">{std.substandards.length} sub-standard(s)</div>
+                              <div className="mother-standard-substandards">
+                                {filteredStdSubs.map(sub => (
+                                  <SubstandardCard key={sub.id}
+                                    substandard={sub}
+                                    score={scores[sub.id]}
+                                    onScoreChange={handleScoreChange} />
+                                ))}
+                              </div>
                             </div>
-                            <div className="mother-standard-substandards">
-                              {std.substandards.map(sub => (
-                                <SubstandardCard key={sub.id}
-                                  substandard={{...sub, standardId: std.id, standardTitle: std.title, standardIntent: std.intent, standardCode: std.code}}
-                                  score={scores[sub.id]}
-                                  onScoreChange={handleScoreChange} />
-                              ))}
-                            </div>
-                          </div>
-                        ))}
+                          );
+                        })}
                       </div>
                     );
                   })}
@@ -5601,18 +5644,54 @@
             if (!suggestedAction) {
               // AI-suggested default actions based on score
               if (f.score === 0) {
-                suggestedAction = `Immediate action required: Develop and implement a comprehensive policy/procedure to address ${f.id}. Assign responsible person, set target date within 30 days, and establish monitoring mechanism.`;
+                suggestedAction = `Immediate action required: Develop and implement a comprehensive policy/procedure to address ${f.id}. Assign responsible person, establish monitoring mechanism.`;
               } else {
                 suggestedAction = `Enhancement needed: Review current practices for ${f.id} and identify gaps. Update documentation, provide staff training, and ensure consistent implementation.`;
               }
             }
+
+            // Smart target days based on complexity analysis
+            const textLength = (f.text || '').length;
+            const hasMultipleComponents = (f.text || '').includes(' and ') || (f.text || '').includes(', ');
+            const isDocumentationRelated = /document|record|policy|procedure|log|form/i.test(f.text || '');
+            const isTrainingRelated = /train|competen|educat|orient/i.test(f.text || '');
+            const isInfrastructure = /equipment|facility|install|construct/i.test(f.text || '');
+
+            let targetDays, targetRange;
+            if (f.score === 0) {
+              // Not Met - more urgent, but still depends on complexity
+              if (textLength < 80 && !hasMultipleComponents && isDocumentationRelated) {
+                targetDays = 10; targetRange = '7-14';  // Quick win - simple documentation
+              } else if (textLength < 120 || isDocumentationRelated) {
+                targetDays = 14; targetRange = '10-21'; // Medium quick
+              } else if (isTrainingRelated || hasMultipleComponents) {
+                targetDays = 21; targetRange = '14-28'; // Needs planning
+              } else if (isInfrastructure) {
+                targetDays = 30; targetRange = '21-45'; // Infrastructure needs time
+              } else {
+                targetDays = 21; targetRange = '14-30'; // Default urgent
+              }
+            } else {
+              // Partial - enhancement, more flexibility
+              if (textLength < 80 && isDocumentationRelated) {
+                targetDays = 14; targetRange = '10-21'; // Quick enhancement
+              } else if (textLength < 120) {
+                targetDays = 21; targetRange = '14-28'; // Standard improvement
+              } else if (isTrainingRelated) {
+                targetDays = 28; targetRange = '21-35'; // Training takes time
+              } else {
+                targetDays = 21; targetRange = '14-30'; // Default medium
+              }
+            }
+
             actions.push({
               ...f,
               chapter: ch.name,
               priority: f.score === 0 ? 'High' : 'Medium',
               priorityColor: f.score === 0 ? 'var(--danger)' : 'var(--warning)',
               suggestedAction,
-              targetDays: f.score === 0 ? 30 : 60
+              targetDays,
+              targetRange
             });
           });
         });
@@ -5641,6 +5720,1264 @@
       };
 
       const compliance = getComplianceLevel(stats.percentage || 0);
+
+      // Export to Excel function - Professional formatting with ExcelJS (Enhanced Spacing)
+      const exportToExcel = async () => {
+        const ExcelJS = window.ExcelJS;
+        if (!ExcelJS) {
+          alert('Excel export library not loaded. Please refresh and try again.');
+          return;
+        }
+
+        // Generate filename
+        const centerName = (details.centerName || 'Assessment').replace(/[^a-zA-Z0-9]/g, '_');
+        const date = new Date().toISOString().split('T')[0];
+        const filename = `StandardsHub_${centerName}_${date}.xlsx`;
+
+        // Count findings by domain
+        const findingsByDomain = {};
+        let highCount = 0, medCount = 0;
+        chapterData.forEach(ch => {
+          const findings = ch.substandards.filter(s => s.score === 0 || s.score === 1);
+          if (findings.length > 0) findingsByDomain[ch.name] = findings.length;
+          highCount += ch.substandards.filter(s => s.score === 0).length;
+          medCount += ch.substandards.filter(s => s.score === 1).length;
+        });
+        const maxFindings = Math.max(...Object.values(findingsByDomain), 1);
+
+        // Score status determination
+        const scoreStatus = stats.percentage >= 90 ? { text: 'Excellent', color: '155724' } :
+                          stats.percentage >= 80 ? { text: 'Good', color: '155724' } :
+                          stats.percentage >= 70 ? { text: 'Needs Improvement', color: '856404' } :
+                          { text: 'Critical', color: '721C24' };
+
+        // Create workbook with ExcelJS for professional formatting
+        const workbook = new ExcelJS.Workbook();
+        workbook.creator = 'StandardsHub';
+        workbook.created = new Date();
+
+        // Helper function to create colored bar cells with GRID appearance (individual squares)
+        const createBarCells = (ws, row, startCol, percentage, barColor) => {
+          const totalBars = 20;
+          const filledBars = Math.round(percentage / 5);
+          for (let i = 0; i < totalBars; i++) {
+            const cell = ws.getCell(row, startCol + i);
+            if (i < filledBars) {
+              cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: barColor } };
+            } else {
+              cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFE8E8E8' } };
+            }
+            // Add thin white borders to create grid/square appearance
+            cell.border = {
+              top: { style: 'thin', color: { argb: 'FFFFFFFF' } },
+              bottom: { style: 'thin', color: { argb: 'FFFFFFFF' } },
+              left: { style: 'thin', color: { argb: 'FFFFFFFF' } },
+              right: { style: 'thin', color: { argb: 'FFFFFFFF' } }
+            };
+          }
+          // Add percentage label after bar
+          const labelCell = ws.getCell(row, startCol + totalBars);
+          labelCell.value = `${percentage}%`;
+          labelCell.font = { size: 10, bold: true };
+          labelCell.alignment = { horizontal: 'left', vertical: 'middle' };
+        };
+
+        // ===================== SHEET 1: EXECUTIVE SUMMARY =====================
+        const ws1 = workbook.addWorksheet('Executive Summary');
+
+        // Set column widths - WIDER columns for better text containment and extended tables
+        // A=Domain/Label, B=Status/Value, C=Count, D=Percentage, E onwards=Bar cells
+        ws1.columns = [
+          { width: 32 },  // A - Labels/Domain names (wider)
+          { width: 22 },  // B - Status labels (wider for "Partially Met")
+          { width: 12 },  // C - Count
+          { width: 18 },  // D - Percentage/text
+          { width: 2.5 }, { width: 2.5 }, { width: 2.5 }, { width: 2.5 }, { width: 2.5 },  // E-I - Bar cells
+          { width: 2.5 }, { width: 2.5 }, { width: 2.5 }, { width: 2.5 }, { width: 2.5 },  // J-N - Bar cells
+          { width: 2.5 }, { width: 2.5 }, { width: 2.5 }, { width: 2.5 }, { width: 2.5 },  // O-S - Bar cells
+          { width: 2.5 }, { width: 2.5 }, { width: 2.5 }, { width: 2.5 }, { width: 2.5 },  // T-X - Bar cells
+          { width: 8 }    // Y - Percentage label
+        ];
+
+        let currentRow = 1;
+
+        // ===== ROW 1: Title - WIDE AND CENTERED =====
+        ws1.mergeCells(`A${currentRow}:Y${currentRow}`);
+        const titleCell = ws1.getCell(`A${currentRow}`);
+        titleCell.value = '📊 StandardsHub';
+        titleCell.font = { name: 'Lora', size: 26, bold: true, color: { argb: 'FF1E3A5F' } };
+        titleCell.alignment = { horizontal: 'center', vertical: 'middle' };
+        titleCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFF8FAFC' } };
+        ws1.getRow(currentRow).height = 45;
+        currentRow++;
+
+        // ===== ROW 2: Subtitle - CENTERED =====
+        ws1.mergeCells(`A${currentRow}:Y${currentRow}`);
+        const subtitleCell = ws1.getCell(`A${currentRow}`);
+        subtitleCell.value = 'Healthcare Accreditation Assessment Report';
+        subtitleCell.font = { name: 'Lora', size: 13, italic: true, color: { argb: 'FF666666' } };
+        subtitleCell.alignment = { horizontal: 'center', vertical: 'middle' };
+        ws1.getRow(currentRow).height = 22;
+        currentRow++;
+
+        // ===== SPACER ROWS (2 empty rows after header) =====
+        currentRow += 2;
+
+        // ===== ASSESSMENT INFORMATION SECTION =====
+        ws1.mergeCells(`A${currentRow}:Y${currentRow}`);
+        const infoHeader = ws1.getCell(`A${currentRow}`);
+        infoHeader.value = '📋 Assessment Information';
+        infoHeader.font = { name: 'Lora', size: 14, bold: true, color: { argb: 'FFFFFFFF' } };
+        infoHeader.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1E3A5F' } };
+        infoHeader.alignment = { horizontal: 'left', vertical: 'middle' };
+        ws1.getRow(currentRow).height = 28;
+        currentRow++;
+
+        // Assessment info rows with proper layout and alignment
+        const infoData = [
+          ['Center Name', details.centerName || '-', 'Configuration', `${survey.configuration || '-'} - Full Survey`],
+          ['Coordinator', details.coordinatorName || '-', 'Assessment Date', new Date(survey.completedAt || survey.createdAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: '2-digit' })],
+          ['Phone', details.coordinatorPhone || '-', 'Email', details.coordinatorEmail || '-']
+        ];
+
+        infoData.forEach((row) => {
+          ws1.getCell(currentRow, 1).value = row[0];
+          ws1.getCell(currentRow, 1).font = { name: 'Lora', size: 11, bold: true, color: { argb: 'FF1E3A5F' } };
+          ws1.getCell(currentRow, 1).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFF0F4F8' } };
+          ws1.getCell(currentRow, 1).alignment = { horizontal: 'left', vertical: 'middle' };
+          ws1.getCell(currentRow, 1).border = { top: { style: 'thin' }, bottom: { style: 'thin' }, left: { style: 'thin' }, right: { style: 'thin' } };
+          ws1.getCell(currentRow, 2).value = row[1];
+          ws1.getCell(currentRow, 2).font = { name: 'Lora', size: 11 };
+          ws1.getCell(currentRow, 2).alignment = { horizontal: 'left', vertical: 'middle' };
+          ws1.getCell(currentRow, 2).border = { top: { style: 'thin' }, bottom: { style: 'thin' }, left: { style: 'thin' }, right: { style: 'thin' } };
+          ws1.getCell(currentRow, 3).value = row[2];
+          ws1.getCell(currentRow, 3).font = { name: 'Lora', size: 11, bold: true, color: { argb: 'FF1E3A5F' } };
+          ws1.getCell(currentRow, 3).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFF0F4F8' } };
+          ws1.getCell(currentRow, 3).alignment = { horizontal: 'left', vertical: 'middle' };
+          ws1.getCell(currentRow, 3).border = { top: { style: 'thin' }, bottom: { style: 'thin' }, left: { style: 'thin' }, right: { style: 'thin' } };
+          ws1.getCell(currentRow, 4).value = row[3];
+          ws1.getCell(currentRow, 4).font = { name: 'Lora', size: 11 };
+          ws1.getCell(currentRow, 4).alignment = { horizontal: 'left', vertical: 'middle' };
+          ws1.getCell(currentRow, 4).border = { top: { style: 'thin' }, bottom: { style: 'thin' }, left: { style: 'thin' }, right: { style: 'thin' } };
+          ws1.getRow(currentRow).height = 22;
+          currentRow++;
+        });
+
+        // ===== SPACER (2 empty rows) =====
+        currentRow += 2;
+
+        // ===== OVERALL COMPLIANCE SCORE SECTION =====
+        ws1.mergeCells(`A${currentRow}:Y${currentRow}`);
+        const scoreHeader = ws1.getCell(`A${currentRow}`);
+        scoreHeader.value = '🏆 Overall Compliance Score';
+        scoreHeader.font = { name: 'Lora', size: 14, bold: true, color: { argb: 'FFFFFFFF' } };
+        scoreHeader.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1E3A5F' } };
+        scoreHeader.alignment = { horizontal: 'left', vertical: 'middle' };
+        ws1.getRow(currentRow).height = 28;
+        currentRow++;
+
+        // Score gauge display - larger and more prominent
+        ws1.mergeCells(currentRow, 1, currentRow, 2);
+        ws1.getCell(currentRow, 1).value = `${stats.percentage || 0}%`;
+        ws1.getCell(currentRow, 1).font = { name: 'Lora', size: 42, bold: true, color: { argb: 'FF1E3A5F' } };
+        ws1.getCell(currentRow, 1).alignment = { horizontal: 'center', vertical: 'middle' };
+        ws1.mergeCells(currentRow, 3, currentRow, 4);
+        ws1.getCell(currentRow, 3).value = scoreStatus.text;
+        ws1.getCell(currentRow, 3).font = { name: 'Lora', size: 20, bold: true, color: { argb: 'FF' + scoreStatus.color } };
+        ws1.getCell(currentRow, 3).alignment = { horizontal: 'left', vertical: 'middle' };
+        ws1.getRow(currentRow).height = 50;
+        currentRow++;
+
+        // ===== SPACER =====
+        currentRow++;
+
+        // Score breakdown table headers
+        const scoreTableHeaderRow = currentRow;
+        ws1.getCell(currentRow, 2).value = 'Status';
+        ws1.getCell(currentRow, 3).value = 'Count';
+        ws1.getCell(currentRow, 4).value = 'Percentage';
+        ws1.mergeCells(currentRow, 5, currentRow, 25);
+        ws1.getCell(currentRow, 5).value = 'Visual';
+
+        [2, 3, 4, 5].forEach(col => {
+          const cell = ws1.getCell(currentRow, col);
+          cell.font = { name: 'Lora', bold: true, color: { argb: 'FFFFFFFF' } };
+          cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1E3A5F' } };
+          cell.alignment = { horizontal: 'center', vertical: 'middle' };
+          cell.border = { top: { style: 'thin' }, bottom: { style: 'thin' }, left: { style: 'thin' }, right: { style: 'thin' } };
+        });
+        ws1.getRow(currentRow).height = 22;
+        currentRow++;
+
+        // Score breakdown data rows
+        const fmPct = stats.scored ? Math.round((stats.fullyMet / stats.scored) * 100) : 0;
+        const pmPct = stats.scored ? Math.round((stats.partial / stats.scored) * 100) : 0;
+        const nmPct = stats.scored ? Math.round((stats.notMet / stats.scored) * 100) : 0;
+
+        const scoreRowsData = [
+          { status: '✓ Fully Met', count: stats.fullyMet || 0, pct: fmPct, color: 'FF2E7D32', bgColor: 'FFD4EDDA', barColor: 'FF2E7D32' },
+          { status: '◐ Partially Met', count: stats.partial || 0, pct: pmPct, color: 'FFD68910', bgColor: 'FFFFF3CD', barColor: 'FFF5A623' },
+          { status: '✗ Not Met', count: stats.notMet || 0, pct: nmPct, color: 'FFC62828', bgColor: 'FFF8D7DA', barColor: 'FFC62828' },
+          { status: '— N/A', count: stats.na || 0, pct: null, color: 'FF6C757D', bgColor: 'FFE9ECEF', barColor: null }
+        ];
+
+        scoreRowsData.forEach((row) => {
+          ws1.getCell(currentRow, 2).value = row.status;
+          ws1.getCell(currentRow, 2).font = { name: 'Lora', size: 11, bold: true, color: { argb: row.color } };
+          ws1.getCell(currentRow, 2).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: row.bgColor } };
+          ws1.getCell(currentRow, 2).alignment = { horizontal: 'center', vertical: 'middle' };
+          ws1.getCell(currentRow, 2).border = { top: { style: 'thin' }, bottom: { style: 'thin' }, left: { style: 'thin' }, right: { style: 'thin' } };
+
+          ws1.getCell(currentRow, 3).value = row.count;
+          ws1.getCell(currentRow, 3).font = { name: 'Lora', size: 14, bold: true, color: { argb: row.color } };
+          ws1.getCell(currentRow, 3).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: row.bgColor } };
+          ws1.getCell(currentRow, 3).alignment = { horizontal: 'center', vertical: 'middle' };
+          ws1.getCell(currentRow, 3).border = { top: { style: 'thin' }, bottom: { style: 'thin' }, left: { style: 'thin' }, right: { style: 'thin' } };
+
+          ws1.getCell(currentRow, 4).value = row.pct !== null ? `${row.pct}%` : 'Excluded';
+          ws1.getCell(currentRow, 4).font = { name: 'Lora', size: 12, bold: true, color: { argb: row.color } };
+          ws1.getCell(currentRow, 4).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: row.bgColor } };
+          ws1.getCell(currentRow, 4).alignment = { horizontal: 'center', vertical: 'middle' };
+          ws1.getCell(currentRow, 4).border = { top: { style: 'thin' }, bottom: { style: 'thin' }, left: { style: 'thin' }, right: { style: 'thin' } };
+
+          if (row.barColor && row.pct !== null) {
+            createBarCells(ws1, currentRow, 5, row.pct, row.barColor);
+          }
+          ws1.getRow(currentRow).height = 24;
+          currentRow++;
+        });
+
+        // Total Scored row
+        ws1.getCell(currentRow, 2).value = 'TOTAL SCORED';
+        ws1.getCell(currentRow, 2).font = { name: 'Lora', size: 11, bold: true, color: { argb: 'FFFFFFFF' } };
+        ws1.getCell(currentRow, 2).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1E3A5F' } };
+        ws1.getCell(currentRow, 2).alignment = { horizontal: 'center', vertical: 'middle' };
+        ws1.getCell(currentRow, 2).border = { top: { style: 'thin' }, bottom: { style: 'thin' }, left: { style: 'thin' }, right: { style: 'thin' } };
+        ws1.getCell(currentRow, 3).value = stats.scored || 0;
+        ws1.getCell(currentRow, 3).font = { name: 'Lora', size: 14, bold: true, color: { argb: 'FFFFFFFF' } };
+        ws1.getCell(currentRow, 3).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1E3A5F' } };
+        ws1.getCell(currentRow, 3).alignment = { horizontal: 'center' };
+        ws1.getCell(currentRow, 3).border = { top: { style: 'thin' }, bottom: { style: 'thin' }, left: { style: 'thin' }, right: { style: 'thin' } };
+        ws1.mergeCells(currentRow, 4, currentRow, 6);
+        ws1.getCell(currentRow, 4).value = `of ${stats.total || 0} sub-standards`;
+        ws1.getCell(currentRow, 4).font = { color: { argb: 'FFFFFFFF' } };
+        ws1.getCell(currentRow, 4).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1E3A5F' } };
+        ws1.getCell(currentRow, 4).border = { top: { style: 'thin' }, bottom: { style: 'thin' }, left: { style: 'thin' }, right: { style: 'thin' } };
+        ws1.getRow(currentRow).height = 22;
+        currentRow++;
+
+        // ===== SPACER (3 empty rows) =====
+        currentRow += 3;
+
+        // ===== DOMAIN PERFORMANCE ANALYSIS SECTION =====
+        ws1.mergeCells(`A${currentRow}:Y${currentRow}`);
+        const domainHeader = ws1.getCell(`A${currentRow}`);
+        domainHeader.value = '📈 Domain Performance Analysis';
+        domainHeader.font = { name: 'Lora', size: 14, bold: true, color: { argb: 'FFFFFFFF' } };
+        domainHeader.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1E3A5F' } };
+        domainHeader.alignment = { horizontal: 'left', vertical: 'middle' };
+        ws1.getRow(currentRow).height = 28;
+        currentRow++;
+
+        // Domain table headers
+        ws1.getCell(currentRow, 1).value = 'Domain';
+        ws1.getCell(currentRow, 2).value = 'Score';
+        ws1.getCell(currentRow, 3).value = 'Fully Met';
+        ws1.getCell(currentRow, 4).value = 'Partial';
+        ws1.mergeCells(currentRow, 5, currentRow, 25);
+        ws1.getCell(currentRow, 5).value = 'Performance Bar';
+
+        [1, 2, 3, 4, 5].forEach(col => {
+          const cell = ws1.getCell(currentRow, col);
+          cell.font = { name: 'Lora', bold: true, color: { argb: 'FFFFFFFF' } };
+          cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1E3A5F' } };
+          cell.alignment = { horizontal: 'center', vertical: 'middle' };
+          cell.border = { top: { style: 'thin' }, bottom: { style: 'thin' }, left: { style: 'thin' }, right: { style: 'thin' } };
+        });
+        ws1.getRow(currentRow).height = 22;
+        currentRow++;
+
+        // Domain performance rows
+        chapterData.forEach((ch, idx) => {
+          const altBg = idx % 2 === 1 ? 'FFF8F9FA' : 'FFFFFFFF';
+          const scoreColor = ch.percentage >= 90 ? 'FF2E7D32' : ch.percentage >= 70 ? 'FFD68910' : 'FFC62828';
+
+          ws1.getCell(currentRow, 1).value = ch.name;
+          ws1.getCell(currentRow, 1).font = { name: 'Lora', size: 11, bold: true };
+          ws1.getCell(currentRow, 1).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: altBg } };
+          ws1.getCell(currentRow, 1).alignment = { horizontal: 'left', vertical: 'middle' };
+          ws1.getCell(currentRow, 1).border = { top: { style: 'thin' }, bottom: { style: 'thin' }, left: { style: 'thin' }, right: { style: 'thin' } };
+
+          ws1.getCell(currentRow, 2).value = `${ch.percentage}%`;
+          ws1.getCell(currentRow, 2).font = { name: 'Lora', size: 13, bold: true, color: { argb: scoreColor } };
+          ws1.getCell(currentRow, 2).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: altBg } };
+          ws1.getCell(currentRow, 2).alignment = { horizontal: 'center', vertical: 'middle' };
+          ws1.getCell(currentRow, 2).border = { top: { style: 'thin' }, bottom: { style: 'thin' }, left: { style: 'thin' }, right: { style: 'thin' } };
+
+          ws1.getCell(currentRow, 3).value = ch.fullyMet;
+          ws1.getCell(currentRow, 3).font = { name: 'Lora', size: 13, bold: true, color: { argb: 'FF2E7D32' } };
+          ws1.getCell(currentRow, 3).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: altBg } };
+          ws1.getCell(currentRow, 3).alignment = { horizontal: 'center', vertical: 'middle' };
+          ws1.getCell(currentRow, 3).border = { top: { style: 'thin' }, bottom: { style: 'thin' }, left: { style: 'thin' }, right: { style: 'thin' } };
+
+          ws1.getCell(currentRow, 4).value = ch.notMet;
+          ws1.getCell(currentRow, 4).font = { name: 'Lora', size: 13, bold: true, color: { argb: 'FFC62828' } };
+          ws1.getCell(currentRow, 4).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: altBg } };
+          ws1.getCell(currentRow, 4).alignment = { horizontal: 'center', vertical: 'middle' };
+          ws1.getCell(currentRow, 4).border = { top: { style: 'thin' }, bottom: { style: 'thin' }, left: { style: 'thin' }, right: { style: 'thin' } };
+
+          createBarCells(ws1, currentRow, 5, ch.percentage, 'FF2E7D32');
+          ws1.getRow(currentRow).height = 24;
+          currentRow++;
+        });
+
+        // ===== SPACER (3 empty rows) =====
+        currentRow += 3;
+
+        // ===== QUICK STATISTICS SECTION (with WIDER cards using merged cells) =====
+        ws1.mergeCells(`A${currentRow}:Y${currentRow}`);
+        const quickHeader = ws1.getCell(`A${currentRow}`);
+        quickHeader.value = '📊 Quick Statistics';
+        quickHeader.font = { name: 'Lora', size: 14, bold: true, color: { argb: 'FFFFFFFF' } };
+        quickHeader.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1E3A5F' } };
+        quickHeader.alignment = { horizontal: 'left', vertical: 'middle' };
+        ws1.getRow(currentRow).height = 28;
+        currentRow++;
+
+        // Stats cards - WIDER MERGED CELLS with proper spacing
+        const statsHeaderRow = currentRow;
+        const statsValueRow = currentRow + 1;
+
+        // Card 1: Total Sub-Standards (Columns A-C merged for wider display)
+        ws1.mergeCells(statsHeaderRow, 1, statsHeaderRow, 3);
+        ws1.getCell(statsHeaderRow, 1).value = 'Total Sub-Standards';
+        ws1.getCell(statsHeaderRow, 1).font = { name: 'Lora', size: 11, bold: true, color: { argb: 'FF1565C0' } };
+        ws1.getCell(statsHeaderRow, 1).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFE3F2FD' } };
+        ws1.getCell(statsHeaderRow, 1).alignment = { horizontal: 'center', vertical: 'middle' };
+        ws1.getCell(statsHeaderRow, 1).border = { top: { style: 'medium', color: { argb: 'FF1565C0' } }, bottom: { style: 'thin' }, left: { style: 'medium', color: { argb: 'FF1565C0' } }, right: { style: 'medium', color: { argb: 'FF1565C0' } } };
+        ws1.mergeCells(statsValueRow, 1, statsValueRow, 3);
+        ws1.getCell(statsValueRow, 1).value = stats.total || 0;
+        ws1.getCell(statsValueRow, 1).font = { name: 'Lora', size: 36, bold: true, color: { argb: 'FF1565C0' } };
+        ws1.getCell(statsValueRow, 1).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFE3F2FD' } };
+        ws1.getCell(statsValueRow, 1).alignment = { horizontal: 'center', vertical: 'middle' };
+        ws1.getCell(statsValueRow, 1).border = { top: { style: 'thin' }, bottom: { style: 'medium', color: { argb: 'FF1565C0' } }, left: { style: 'medium', color: { argb: 'FF1565C0' } }, right: { style: 'medium', color: { argb: 'FF1565C0' } } };
+
+        // Column 4 is EMPTY SPACER
+
+        // Card 2: Items with Findings (Columns 5-12 merged for wider display)
+        ws1.mergeCells(statsHeaderRow, 5, statsHeaderRow, 12);
+        ws1.getCell(statsHeaderRow, 5).value = 'Items with Findings';
+        ws1.getCell(statsHeaderRow, 5).font = { name: 'Lora', size: 11, bold: true, color: { argb: 'FFFF8F00' } };
+        ws1.getCell(statsHeaderRow, 5).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFFF8E1' } };
+        ws1.getCell(statsHeaderRow, 5).alignment = { horizontal: 'center', vertical: 'middle' };
+        ws1.getCell(statsHeaderRow, 5).border = { top: { style: 'medium', color: { argb: 'FFFF8F00' } }, bottom: { style: 'thin' }, left: { style: 'medium', color: { argb: 'FFFF8F00' } }, right: { style: 'medium', color: { argb: 'FFFF8F00' } } };
+        ws1.mergeCells(statsValueRow, 5, statsValueRow, 12);
+        ws1.getCell(statsValueRow, 5).value = totalFindings;
+        ws1.getCell(statsValueRow, 5).font = { name: 'Lora', size: 36, bold: true, color: { argb: 'FFFF8F00' } };
+        ws1.getCell(statsValueRow, 5).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFFF8E1' } };
+        ws1.getCell(statsValueRow, 5).alignment = { horizontal: 'center', vertical: 'middle' };
+        ws1.getCell(statsValueRow, 5).border = { top: { style: 'thin' }, bottom: { style: 'medium', color: { argb: 'FFFF8F00' } }, left: { style: 'medium', color: { argb: 'FFFF8F00' } }, right: { style: 'medium', color: { argb: 'FFFF8F00' } } };
+
+        // Column 13 is EMPTY SPACER
+
+        // Card 3: Accreditation Status (Columns 14-24 merged for MUCH WIDER display)
+        ws1.mergeCells(statsHeaderRow, 14, statsHeaderRow, 24);
+        ws1.getCell(statsHeaderRow, 14).value = 'Accreditation Status';
+        ws1.getCell(statsHeaderRow, 14).font = { name: 'Lora', size: 11, bold: true, color: { argb: 'FF2E7D32' } };
+        ws1.getCell(statsHeaderRow, 14).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFE8F5E9' } };
+        ws1.getCell(statsHeaderRow, 14).alignment = { horizontal: 'center', vertical: 'middle' };
+        ws1.getCell(statsHeaderRow, 14).border = { top: { style: 'medium', color: { argb: 'FF2E7D32' } }, bottom: { style: 'thin' }, left: { style: 'medium', color: { argb: 'FF2E7D32' } }, right: { style: 'medium', color: { argb: 'FF2E7D32' } } };
+        ws1.mergeCells(statsValueRow, 14, statsValueRow, 24);
+        ws1.getCell(statsValueRow, 14).value = stats.percentage >= 70 ? '✓ LIKELY TO PASS' : '⚠ AT RISK';
+        ws1.getCell(statsValueRow, 14).font = { name: 'Lora', size: 18, bold: true, color: { argb: stats.percentage >= 70 ? 'FF2E7D32' : 'FFC62828' } };
+        ws1.getCell(statsValueRow, 14).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFE8F5E9' } };
+        ws1.getCell(statsValueRow, 14).alignment = { horizontal: 'center', vertical: 'middle' };
+        ws1.getCell(statsValueRow, 14).border = { top: { style: 'thin' }, bottom: { style: 'medium', color: { argb: 'FF2E7D32' } }, left: { style: 'medium', color: { argb: 'FF2E7D32' } }, right: { style: 'medium', color: { argb: 'FF2E7D32' } } };
+
+        ws1.getRow(statsHeaderRow).height = 25;
+        ws1.getRow(statsValueRow).height = 45;
+
+        // ===================== SHEET 2: ALL SCORED ITEMS =====================
+        const ws2 = workbook.addWorksheet('All Scored Items');
+        ws2.columns = [
+          { width: 28 }, { width: 12 }, { width: 65 }, { width: 14 }, { width: 40 }, { width: 40 }, { width: 12 }
+        ];
+
+        // Header
+        ws2.mergeCells('A1:G1');
+        ws2.getCell('A1').value = `Complete Assessment - All ${stats.total || 0} Sub-Standards`;
+        ws2.getCell('A1').font = { size: 16, bold: true, color: { argb: 'FF1E3A5F' } };
+        ws2.getRow(1).height = 30;
+
+        // Table headers
+        const ws2Headers = ['Domain', 'ID', 'Sub-Standard Description', 'Score', 'Finding', 'Recommendation', 'Priority'];
+        ws2Headers.forEach((header, idx) => {
+          const cell = ws2.getCell(2, idx + 1);
+          cell.value = header;
+          cell.font = { bold: true, color: { argb: 'FFFFFFFF' } };
+          cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1E3A5F' } };
+          cell.alignment = { horizontal: 'center', vertical: 'middle' };
+          cell.border = { top: { style: 'thin' }, bottom: { style: 'thin' }, left: { style: 'thin' }, right: { style: 'thin' } };
+        });
+        ws2.getRow(2).height = 22;
+
+        // All items with text wrapping
+        let ws2Row = 3;
+        chapterData.forEach(ch => {
+          ch.substandards.forEach((sub) => {
+            const altBg = (ws2Row - 3) % 2 === 1 ? 'FFF8F9FA' : 'FFFFFFFF';
+            const scoreLabel = sub.score === 2 ? 'Fully Met' : sub.score === 1 ? 'Partially Met' : sub.score === 0 ? 'Not Met' : 'N/A';
+            const scoreColor = sub.score === 2 ? 'FF2E7D32' : sub.score === 1 ? 'FFD68910' : sub.score === 0 ? 'FFC62828' : 'FF6C757D';
+
+            ws2.getCell(ws2Row, 1).value = ch.name;
+            ws2.getCell(ws2Row, 1).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: altBg } };
+            ws2.getCell(ws2Row, 1).border = { top: { style: 'thin' }, bottom: { style: 'thin' }, left: { style: 'thin' }, right: { style: 'thin' } };
+            ws2.getCell(ws2Row, 1).alignment = { wrapText: true, vertical: 'top' };
+
+            ws2.getCell(ws2Row, 2).value = sub.id;
+            ws2.getCell(ws2Row, 2).font = { bold: true, color: { argb: 'FF1E3A5F' } };
+            ws2.getCell(ws2Row, 2).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: altBg } };
+            ws2.getCell(ws2Row, 2).border = { top: { style: 'thin' }, bottom: { style: 'thin' }, left: { style: 'thin' }, right: { style: 'thin' } };
+
+            ws2.getCell(ws2Row, 3).value = sub.text;
+            ws2.getCell(ws2Row, 3).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: altBg } };
+            ws2.getCell(ws2Row, 3).border = { top: { style: 'thin' }, bottom: { style: 'thin' }, left: { style: 'thin' }, right: { style: 'thin' } };
+            ws2.getCell(ws2Row, 3).alignment = { wrapText: true, vertical: 'top' };
+
+            ws2.getCell(ws2Row, 4).value = scoreLabel;
+            ws2.getCell(ws2Row, 4).font = { bold: true, color: { argb: scoreColor } };
+            ws2.getCell(ws2Row, 4).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: altBg } };
+            ws2.getCell(ws2Row, 4).border = { top: { style: 'thin' }, bottom: { style: 'thin' }, left: { style: 'thin' }, right: { style: 'thin' } };
+            ws2.getCell(ws2Row, 4).alignment = { horizontal: 'center' };
+
+            ws2.getCell(ws2Row, 5).value = sub.findings || '-';
+            ws2.getCell(ws2Row, 5).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: altBg } };
+            ws2.getCell(ws2Row, 5).border = { top: { style: 'thin' }, bottom: { style: 'thin' }, left: { style: 'thin' }, right: { style: 'thin' } };
+            ws2.getCell(ws2Row, 5).alignment = { wrapText: true, vertical: 'top' };
+
+            ws2.getCell(ws2Row, 6).value = sub.recommendations || '-';
+            ws2.getCell(ws2Row, 6).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: altBg } };
+            ws2.getCell(ws2Row, 6).border = { top: { style: 'thin' }, bottom: { style: 'thin' }, left: { style: 'thin' }, right: { style: 'thin' } };
+            ws2.getCell(ws2Row, 6).alignment = { wrapText: true, vertical: 'top' };
+
+            ws2.getCell(ws2Row, 7).value = sub.score === 0 ? 'High' : sub.score === 1 ? 'Medium' : '-';
+            ws2.getCell(ws2Row, 7).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: altBg } };
+            ws2.getCell(ws2Row, 7).border = { top: { style: 'thin' }, bottom: { style: 'thin' }, left: { style: 'thin' }, right: { style: 'thin' } };
+
+            ws2Row++;
+          });
+        });
+
+        // ===================== SHEET 3: ACTION PLAN =====================
+        const ws3 = workbook.addWorksheet('Action Plan');
+        ws3.columns = [
+          { width: 6 }, { width: 28 }, { width: 12 }, { width: 55 }, { width: 14 }, { width: 35 }, { width: 40 }, { width: 10 }
+        ];
+
+        // Header
+        ws3.mergeCells('A1:H1');
+        ws3.getCell('A1').value = `⚠️ Corrective Action Plan - ${totalFindings} Items Requiring Attention`;
+        ws3.getCell('A1').font = { size: 16, bold: true, color: { argb: 'FFFFFFFF' } };
+        ws3.getCell('A1').fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFE65100' } };
+        ws3.getRow(1).height = 30;
+
+        // Priority summary
+        ws3.getCell('A3').value = 'Priority Summary:';
+        ws3.getCell('A3').font = { bold: true };
+        ws3.mergeCells('B3:D3');
+        ws3.getCell('B3').value = `🔴 High Priority (Not Met): ${highCount} items - Address within 30 days`;
+        ws3.getCell('B3').font = { color: { argb: 'FFC62828' } };
+        ws3.mergeCells('B4:D4');
+        ws3.getCell('B4').value = `🟡 Medium Priority (Partial): ${medCount} items - Address within 60 days`;
+        ws3.getCell('B4').font = { color: { argb: 'FFD68910' } };
+
+        // Table headers
+        const ws3Headers = ['#', 'Domain', 'ID', 'Sub-Standard', 'Score', 'Finding', 'Recommended Action', 'Days'];
+        ws3Headers.forEach((header, idx) => {
+          const cell = ws3.getCell(6, idx + 1);
+          cell.value = header;
+          cell.font = { bold: true, color: { argb: 'FFFFFFFF' } };
+          cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFE65100' } };
+          cell.alignment = { horizontal: 'center', vertical: 'middle' };
+          cell.border = { top: { style: 'thin' }, bottom: { style: 'thin' }, left: { style: 'thin' }, right: { style: 'thin' } };
+        });
+        ws3.getRow(6).height = 22;
+
+        // Action items with text wrapping
+        let ws3Row = 7;
+        let itemNum = 0;
+        chapterData.forEach(ch => {
+          ch.substandards.filter(sub => sub.score === 0 || sub.score === 1).forEach(sub => {
+            itemNum++;
+            const isHigh = sub.score === 0;
+            const rowBg = isHigh ? 'FFFDE8E8' : 'FFFEF3E2';
+            const scoreColor = isHigh ? 'FFC62828' : 'FFD68910';
+            const action = sub.recommendations || (isHigh ? 'Develop and implement policy/procedure. Assign responsible person.' : 'Review practices, update documentation, provide training.');
+
+            ws3.getCell(ws3Row, 1).value = itemNum;
+            ws3.getCell(ws3Row, 1).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: rowBg } };
+            ws3.getCell(ws3Row, 1).alignment = { horizontal: 'center' };
+            ws3.getCell(ws3Row, 1).border = { top: { style: 'thin' }, bottom: { style: 'thin' }, left: { style: 'thin' }, right: { style: 'thin' } };
+
+            ws3.getCell(ws3Row, 2).value = ch.name;
+            ws3.getCell(ws3Row, 2).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: rowBg } };
+            ws3.getCell(ws3Row, 2).border = { top: { style: 'thin' }, bottom: { style: 'thin' }, left: { style: 'thin' }, right: { style: 'thin' } };
+            ws3.getCell(ws3Row, 2).alignment = { wrapText: true, vertical: 'top' };
+
+            ws3.getCell(ws3Row, 3).value = sub.id;
+            ws3.getCell(ws3Row, 3).font = { bold: true, color: { argb: 'FF1E3A5F' } };
+            ws3.getCell(ws3Row, 3).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: rowBg } };
+            ws3.getCell(ws3Row, 3).border = { top: { style: 'thin' }, bottom: { style: 'thin' }, left: { style: 'thin' }, right: { style: 'thin' } };
+
+            ws3.getCell(ws3Row, 4).value = sub.text;
+            ws3.getCell(ws3Row, 4).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: rowBg } };
+            ws3.getCell(ws3Row, 4).border = { top: { style: 'thin' }, bottom: { style: 'thin' }, left: { style: 'thin' }, right: { style: 'thin' } };
+            ws3.getCell(ws3Row, 4).alignment = { wrapText: true, vertical: 'top' };
+
+            ws3.getCell(ws3Row, 5).value = isHigh ? 'Not Met' : 'Partially Met';
+            ws3.getCell(ws3Row, 5).font = { bold: true, color: { argb: scoreColor } };
+            ws3.getCell(ws3Row, 5).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: rowBg } };
+            ws3.getCell(ws3Row, 5).border = { top: { style: 'thin' }, bottom: { style: 'thin' }, left: { style: 'thin' }, right: { style: 'thin' } };
+            ws3.getCell(ws3Row, 5).alignment = { horizontal: 'center' };
+
+            ws3.getCell(ws3Row, 6).value = sub.findings || '-';
+            ws3.getCell(ws3Row, 6).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: rowBg } };
+            ws3.getCell(ws3Row, 6).border = { top: { style: 'thin' }, bottom: { style: 'thin' }, left: { style: 'thin' }, right: { style: 'thin' } };
+            ws3.getCell(ws3Row, 6).alignment = { wrapText: true, vertical: 'top' };
+
+            ws3.getCell(ws3Row, 7).value = action;
+            ws3.getCell(ws3Row, 7).font = { color: { argb: 'FF2E7D32' } };
+            ws3.getCell(ws3Row, 7).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFE8F5E9' } };
+            ws3.getCell(ws3Row, 7).border = { top: { style: 'thin' }, bottom: { style: 'thin' }, left: { style: 'thin' }, right: { style: 'thin' } };
+            ws3.getCell(ws3Row, 7).alignment = { wrapText: true, vertical: 'top' };
+
+            ws3.getCell(ws3Row, 8).value = isHigh ? '30' : '60';
+            ws3.getCell(ws3Row, 8).font = { bold: true, color: { argb: scoreColor } };
+            ws3.getCell(ws3Row, 8).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: rowBg } };
+            ws3.getCell(ws3Row, 8).alignment = { horizontal: 'center' };
+            ws3.getCell(ws3Row, 8).border = { top: { style: 'thin' }, bottom: { style: 'thin' }, left: { style: 'thin' }, right: { style: 'thin' } };
+
+            ws3Row++;
+          });
+        });
+
+        // Download the workbook
+        const buffer = await workbook.xlsx.writeBuffer();
+        const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      };
+
+      // Export to PDF function - Enhanced with domain colors, executive narrative, and Lora styling
+      const exportToPDF = () => {
+        const { jsPDF } = window.jspdf;
+        if (!jsPDF) {
+          alert('PDF export library not loaded. Please refresh and try again.');
+          return;
+        }
+
+        const doc = new jsPDF('p', 'mm', 'a4');
+        const pageWidth = doc.internal.pageSize.getWidth();
+        const pageHeight = doc.internal.pageSize.getHeight();
+        let yPos = 20;
+
+        // Domain color palette - professional, consistent tones
+        const domainColors = {
+          'Leadership': { primary: [40, 60, 90], light: [245, 248, 252], name: 'LD' },
+          'Leadership of the Organization': { primary: [40, 60, 90], light: [245, 248, 252], name: 'LD' },
+          'Provision of Care': { primary: [22, 90, 58], light: [242, 250, 246], name: 'PC' },
+          'Dental Laboratory': { primary: [140, 105, 25], light: [253, 250, 242], name: 'DL' },
+          'Infection Prevention': { primary: [90, 50, 100], light: [250, 245, 252], name: 'IPC' },
+          'Infection Prevention and Control': { primary: [90, 50, 100], light: [250, 245, 252], name: 'IPC' },
+          'Management of Information': { primary: [35, 90, 95], light: [242, 250, 252], name: 'MOI' },
+          'Facility Management': { primary: [130, 55, 60], light: [252, 245, 246], name: 'FMS' },
+          'Facility Management and Safety': { primary: [130, 55, 60], light: [252, 245, 246], name: 'FMS' }
+        };
+
+        const getDomainColor = (domainName) => {
+          return domainColors[domainName] || { primary: [30, 58, 95], light: [240, 240, 240], name: '?' };
+        };
+
+        // Helper function to add new page if needed
+        const checkNewPage = (requiredSpace = 30) => {
+          if (yPos + requiredSpace > pageHeight - 20) {
+            doc.addPage();
+            yPos = 20;
+            return true;
+          }
+          return false;
+        };
+
+        // Helper to wrap text
+        const wrapText = (text, maxWidth) => {
+          return doc.splitTextToSize(text, maxWidth);
+        };
+
+        // Generate Smart Corrective Action based on sub-standard text and score
+        const generateCorrectiveAction = (item) => {
+          // If user provided a recommendation, use it
+          if (item.recommendations && item.recommendations.trim()) {
+            return item.recommendations;
+          }
+
+          const text = item.text.toLowerCase();
+          const isNotMet = item.score === 0;
+          const domain = item.chapter.toLowerCase();
+
+          // Analyze sub-standard text to generate specific actions
+          let action = '';
+
+          // Policy/Procedure related
+          if (text.includes('policy') || text.includes('procedure') || text.includes('guideline')) {
+            action = isNotMet
+              ? 'Develop and approve written policy/procedure. Assign owner, set review date, and distribute to all relevant staff.'
+              : 'Review existing policy for completeness. Update gaps, obtain approval, and ensure staff acknowledgment.';
+          }
+          // Documentation/Records
+          else if (text.includes('document') || text.includes('record') || text.includes('log') || text.includes('register')) {
+            action = isNotMet
+              ? 'Create standardized documentation template. Implement tracking system and assign responsibility for maintenance.'
+              : 'Audit current records for completeness. Address gaps and implement regular review schedule.';
+          }
+          // Training/Education
+          else if (text.includes('train') || text.includes('educat') || text.includes('orient') || text.includes('competenc')) {
+            action = isNotMet
+              ? 'Develop training curriculum and schedule. Document attendance and competency verification for all staff.'
+              : 'Enhance training program. Add practical assessments and update training materials.';
+          }
+          // Evaluation/Assessment/Monitoring
+          else if (text.includes('evaluat') || text.includes('assess') || text.includes('monitor') || text.includes('audit')) {
+            action = isNotMet
+              ? 'Establish evaluation criteria and schedule. Create assessment tools and assign responsible personnel.'
+              : 'Strengthen monitoring frequency. Improve documentation of findings and follow-up actions.';
+          }
+          // Communication/Reporting
+          else if (text.includes('communicat') || text.includes('report') || text.includes('inform') || text.includes('notify')) {
+            action = isNotMet
+              ? 'Establish formal communication channels and reporting protocols. Document all communications.'
+              : 'Improve communication timeliness and documentation. Verify receipt and understanding.';
+          }
+          // Safety/Infection Control
+          else if (text.includes('safety') || text.includes('infect') || text.includes('steril') || text.includes('hygiene')) {
+            action = isNotMet
+              ? 'Implement comprehensive safety/infection control program. Train all staff and establish monitoring system.'
+              : 'Review current practices against standards. Address gaps and increase compliance monitoring.';
+          }
+          // Equipment/Maintenance
+          else if (text.includes('equipment') || text.includes('maintain') || text.includes('calibrat') || text.includes('device')) {
+            action = isNotMet
+              ? 'Create equipment inventory and maintenance schedule. Document all maintenance activities and calibrations.'
+              : 'Update maintenance logs. Ensure scheduled maintenance is completed and documented.';
+          }
+          // Patient Care/Rights
+          else if (text.includes('patient') || text.includes('consent') || text.includes('right') || text.includes('care plan')) {
+            action = isNotMet
+              ? 'Develop patient-centered protocols. Train staff on rights and documentation requirements.'
+              : 'Audit patient records for compliance. Improve documentation consistency.';
+          }
+          // Leadership/Governance
+          else if (domain.includes('leadership') || text.includes('leader') || text.includes('govern') || text.includes('committee')) {
+            action = isNotMet
+              ? 'Establish governance structure with clear roles. Document meeting minutes and decisions.'
+              : 'Strengthen leadership oversight. Improve documentation of decisions and follow-through.';
+          }
+          // Quality/Performance Indicators
+          else if (text.includes('quality') || text.includes('indicator') || text.includes('performance') || text.includes('benchmark')) {
+            action = isNotMet
+              ? 'Define quality indicators with targets. Implement data collection and analysis system.'
+              : 'Review indicator definitions and targets. Improve data accuracy and reporting frequency.';
+          }
+          // Default action based on score
+          else {
+            action = isNotMet
+              ? 'Develop implementation plan with clear objectives, responsible persons, and timeline. Document all activities.'
+              : 'Review current practices, identify gaps, and implement improvements. Monitor compliance.';
+          }
+
+          return action;
+        };
+
+        // Generate Executive Narrative based on findings
+        const generateExecutiveNarrative = () => {
+          const strongDomains = chapterData.filter(ch => ch.percentage >= 90);
+          const goodDomains = chapterData.filter(ch => ch.percentage >= 75 && ch.percentage < 90);
+          const concernDomains = chapterData.filter(ch => ch.percentage < 75);
+          const criticalFindings = actionPlanItems.filter(item => item.score === 0);
+          const partialFindings = actionPlanItems.filter(item => item.score === 1);
+
+          let narrative = '';
+
+          // Opening - Overall assessment
+          if (stats.percentage >= 90) {
+            narrative += `${details.centerName || 'The center'} has demonstrated exceptional commitment to quality and patient safety, achieving an outstanding compliance score of ${stats.percentage}%. This remarkable achievement reflects the dedication of the entire team to maintaining the highest standards of healthcare delivery. `;
+          } else if (stats.percentage >= 75) {
+            narrative += `${details.centerName || 'The center'} has shown strong performance in this accreditation assessment, achieving a compliance score of ${stats.percentage}%. The center demonstrates solid foundations in quality management with some areas identified for further enhancement. `;
+          } else if (stats.percentage >= 60) {
+            narrative += `${details.centerName || 'The center'} achieved a compliance score of ${stats.percentage}% in this assessment. While the center meets fundamental requirements, several areas require focused attention to achieve full accreditation readiness. `;
+          } else {
+            narrative += `This assessment identified significant opportunities for improvement at ${details.centerName || 'the center'}, with a current compliance score of ${stats.percentage}%. Immediate action is recommended to address critical gaps before the next survey. `;
+          }
+
+          // Strengths section
+          if (strongDomains.length > 0) {
+            narrative += `\n\nAreas of Excellence: The center excels in ${strongDomains.map(d => d.name).join(', ')}, demonstrating robust policies, well-trained staff, and consistent implementation of best practices. `;
+          }
+
+          if (goodDomains.length > 0) {
+            narrative += `Strong performance was also noted in ${goodDomains.map(d => d.name).join(', ')}. `;
+          }
+
+          // Areas for improvement
+          if (concernDomains.length > 0) {
+            narrative += `\n\nPriority Focus Areas: ${concernDomains.map(d => `${d.name} (${d.percentage}%)`).join(', ')} require immediate attention to meet accreditation standards. `;
+          }
+
+          // Critical findings summary
+          if (criticalFindings.length > 0) {
+            narrative += `\n\nCritical Findings: ${criticalFindings.length} standards were scored as "Not Met" and require immediate corrective action within 30 days. Key areas include `;
+            const criticalAreas = [...new Set(criticalFindings.map(f => f.chapter))];
+            narrative += criticalAreas.slice(0, 3).join(', ') + '. ';
+          }
+
+          // Partial findings
+          if (partialFindings.length > 0) {
+            narrative += `Additionally, ${partialFindings.length} standards were partially met and should be addressed within 60 days. `;
+          }
+
+          // Closing encouragement
+          narrative += `\n\nWith focused effort on the identified areas, ${details.centerName || 'the center'} is well-positioned to achieve and maintain full accreditation status. The action plan provided in this report outlines specific steps and timelines for improvement.`;
+
+          return narrative;
+        };
+
+        // ==================== PAGE 1: COVER & EXECUTIVE SUMMARY ====================
+
+        // Helper: Draw diffused gradient (horizontal fade from color to white)
+        const drawDiffusedGradient = (x, y, width, height, color, direction = 'right') => {
+          const steps = 12;
+          const stepWidth = width / steps;
+          for (let i = 0; i < steps; i++) {
+            const ratio = direction === 'right' ? i / steps : (steps - i) / steps;
+            const r = Math.round(color[0] + (255 - color[0]) * ratio);
+            const g = Math.round(color[1] + (255 - color[1]) * ratio);
+            const b = Math.round(color[2] + (255 - color[2]) * ratio);
+            doc.setFillColor(r, g, b);
+            doc.rect(x + (i * stepWidth), y, stepWidth + 0.5, height, 'F');
+          }
+        };
+
+        // Minimalist navy gradient header for branding
+        const headerHeight = 12;
+        const steps = 30;
+        for (let i = 0; i < steps; i++) {
+          const ratio = i / steps;
+          const r = Math.round(30 + (255 - 30) * ratio * 1.2);
+          const g = Math.round(58 + (255 - 58) * ratio * 1.2);
+          const b = Math.round(95 + (255 - 95) * ratio * 0.8);
+          doc.setFillColor(Math.min(255, r), Math.min(255, g), Math.min(255, b));
+          doc.rect((i / steps) * pageWidth * 0.7, 0, (pageWidth * 0.7 / steps) + 1, headerHeight, 'F');
+        }
+
+        // Title - with proper spacing below gradient
+        doc.setTextColor(30, 58, 95);
+        doc.setFontSize(32);
+        doc.setFont('times', 'bold');
+        doc.text('StandardsHub', 20, 32);
+
+        // Subtitle
+        doc.setFontSize(12);
+        doc.setFont('times', 'normal');
+        doc.setTextColor(100, 105, 115);
+        doc.text('Healthcare Accreditation Assessment Report', 20, 44);
+
+        // Date
+        doc.setFontSize(10);
+        doc.text(new Date(survey.completedAt || survey.createdAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }), 20, 54);
+        doc.setDrawColor(200, 205, 210);
+        doc.setLineWidth(0.3);
+        doc.line(20, 58, pageWidth - 20, 58);
+
+        yPos = 70;
+
+        // Center name - prominent but not boxed
+        doc.setTextColor(30, 58, 95);
+        doc.setFontSize(22);
+        doc.setFont('times', 'bold');
+        doc.text(details.centerName || 'Assessment Report', 20, yPos);
+        yPos += 10;
+
+        // Coordinator info
+        doc.setFontSize(10);
+        doc.setFont('times', 'normal');
+        doc.setTextColor(100, 105, 115);
+        doc.text(`Quality Coordinator: ${details.coordinatorName || '-'}   ·   Configuration: ${survey.configuration || '-'}`, 20, yPos);
+        yPos += 20;
+
+        // Score Display - clean, no box, just the numbers
+        const scoreColor = stats.percentage >= 90 ? [22, 90, 55] : stats.percentage >= 75 ? [30, 100, 60] : stats.percentage >= 60 ? [160, 95, 10] : [150, 45, 35];
+
+        doc.setTextColor(...scoreColor);
+        doc.setFontSize(52);
+        doc.setFont('times', 'bold');
+        doc.text(`${stats.percentage || 0}%`, pageWidth / 2, yPos + 15, { align: 'center' });
+
+        doc.setFontSize(11);
+        doc.setFont('times', 'normal');
+        doc.setTextColor(100, 105, 115);
+        doc.text('Overall Compliance Score', pageWidth / 2, yPos + 26, { align: 'center' });
+
+        doc.setTextColor(...scoreColor);
+        doc.setFont('times', 'bold');
+        doc.text(compliance.label, pageWidth / 2, yPos + 35, { align: 'center' });
+
+        // Subtle underline below score
+        doc.setDrawColor(...scoreColor.map(c => Math.round(c + (255 - c) * 0.7)));
+        doc.setLineWidth(0.5);
+        doc.line(pageWidth / 2 - 40, yPos + 40, pageWidth / 2 + 40, yPos + 40);
+
+        yPos += 55;
+
+        // Score breakdown - minimal cards with left accent only
+        const cardGap = 8;
+        const cardWidth = (pageWidth - 40 - (cardGap * 3)) / 4;
+        const boxData = [
+          { label: 'Fully Met', value: stats.fullyMet || 0, color: [22, 90, 55] },
+          { label: 'Partial', value: stats.partial || 0, color: [160, 100, 15] },
+          { label: 'Not Met', value: stats.notMet || 0, color: [150, 45, 35] },
+          { label: 'N/A', value: stats.na || 0, color: [110, 115, 125] }
+        ];
+
+        boxData.forEach((box, idx) => {
+          const x = 20 + (idx * (cardWidth + cardGap));
+
+          // Thin left accent line only
+          doc.setFillColor(...box.color);
+          doc.rect(x, yPos, 2, 20, 'F');
+
+          // Value
+          doc.setTextColor(...box.color);
+          doc.setFontSize(18);
+          doc.setFont('times', 'bold');
+          doc.text(String(box.value), x + 12, yPos + 10);
+
+          // Label
+          doc.setFontSize(8);
+          doc.setFont('times', 'normal');
+          doc.setTextColor(110, 115, 125);
+          doc.text(box.label.toUpperCase(), x + 12, yPos + 17);
+        });
+        yPos += 32;
+
+        // Executive Summary - title with underline, no box
+        doc.setTextColor(30, 58, 95);
+        doc.setFontSize(14);
+        doc.setFont('times', 'bold');
+        doc.text('Executive Summary', 20, yPos);
+        doc.setDrawColor(30, 58, 95);
+        doc.setLineWidth(0.4);
+        doc.line(20, yPos + 2, 75, yPos + 2);
+        yPos += 10;
+
+        // Executive narrative text
+        doc.setTextColor(60, 65, 70);
+        doc.setFontSize(10);
+        doc.setFont('times', 'normal');
+        const narrative = generateExecutiveNarrative();
+        const narrativeLines = wrapText(narrative, pageWidth - 40);
+        narrativeLines.forEach(line => {
+          checkNewPage(8);
+          doc.text(line, 20, yPos);
+          yPos += 5;
+        });
+
+        // ==================== PAGE 2: DOMAIN PERFORMANCE ====================
+        doc.addPage();
+        yPos = 25;
+
+        // Section title - clean, no underline
+        doc.setTextColor(30, 58, 95);
+        doc.setFontSize(16);
+        doc.setFont('times', 'bold');
+        doc.text('Domain Performance Analysis', 20, yPos);
+        yPos += 12;
+
+        // Helper function for domain headers - clean colored text only (no underlines)
+        const drawDomainHeader = (x, y, domainColor, text, percentage) => {
+          // Domain text in domain color
+          doc.setTextColor(...domainColor.primary);
+          doc.setFontSize(11);
+          doc.setFont('times', 'bold');
+          doc.text(text, x, y + 5);
+
+          // Percentage on right in same color
+          doc.text(`${percentage}%`, pageWidth - 25, y + 5, { align: 'right' });
+        };
+
+        // Domain cards
+        chapterData.forEach((ch, idx) => {
+          checkNewPage(35);
+          const domainColor = getDomainColor(ch.name);
+
+          // Domain header
+          drawDomainHeader(20, yPos, domainColor, `${domainColor.name} – ${ch.name}`, ch.percentage);
+          yPos += 14;
+
+          // Stats row - clean text, no background
+          doc.setFontSize(9);
+          doc.setFont('times', 'normal');
+          doc.setTextColor(80, 85, 90);
+          doc.text(`Total: ${ch.total}`, 28, yPos);
+
+          doc.setTextColor(22, 90, 55);
+          doc.text(`Fully Met: ${ch.fullyMet}`, 65, yPos);
+
+          doc.setTextColor(160, 100, 15);
+          doc.text(`Partial: ${ch.partial}`, 110, yPos);
+
+          doc.setTextColor(150, 45, 35);
+          doc.text(`Not Met: ${ch.notMet}`, 145, yPos);
+          yPos += 6;
+
+          // Progress bar - subtle
+          const barWidth = pageWidth - 60;
+          doc.setFillColor(235, 238, 242);
+          doc.roundedRect(28, yPos, barWidth, 3, 1, 1, 'F');
+
+          const fillWidth = (ch.percentage / 100) * barWidth;
+          const fillColor = ch.percentage >= 90 ? [22, 90, 55] : ch.percentage >= 75 ? [30, 100, 60] : ch.percentage >= 60 ? [160, 100, 15] : [150, 45, 35];
+          doc.setFillColor(...fillColor);
+          doc.roundedRect(28, yPos, fillWidth, 3, 1, 1, 'F');
+
+          yPos += 15;
+        });
+
+        // ==================== PAGE 3+: ACTION PLAN ====================
+        if (actionPlanItems.length > 0) {
+          doc.addPage();
+          yPos = 25;
+
+          // Section title
+          doc.setTextColor(140, 70, 20);
+          doc.setFontSize(16);
+          doc.setFont('times', 'bold');
+          doc.text(`Corrective Action Plan`, 20, yPos);
+          doc.setFontSize(11);
+          doc.setFont('times', 'normal');
+          doc.setTextColor(100, 105, 115);
+          doc.text(`${actionPlanItems.length} items requiring attention`, 115, yPos);
+          yPos += 10;
+
+          // Timeline guide - weeks format
+          doc.setFontSize(9);
+          doc.setFont('times', 'italic');
+          doc.setTextColor(100, 105, 115);
+          doc.text('Timeline:  ', 20, yPos);
+          doc.setFont('times', 'normal');
+          doc.setTextColor(150, 45, 35);
+          doc.text('HIGH = 1-4 weeks', 45, yPos);
+          doc.setTextColor(160, 100, 15);
+          doc.text('MEDIUM = 2-5 weeks', 95, yPos);
+          yPos += 12;
+
+          // Group action items by domain
+          const findingsByDomainPDF = {};
+          actionPlanItems.forEach(item => {
+            if (!findingsByDomainPDF[item.chapter]) {
+              findingsByDomainPDF[item.chapter] = [];
+            }
+            findingsByDomainPDF[item.chapter].push(item);
+          });
+
+          // Render each domain's findings with full text and proper spacing
+          Object.entries(findingsByDomainPDF).forEach(([domainName, findings]) => {
+            checkNewPage(50);
+            const domainColor = getDomainColor(domainName);
+
+            // Domain header - clean colored text only (no underlines)
+            doc.setTextColor(...domainColor.primary);
+            doc.setFontSize(11);
+            doc.setFont('times', 'bold');
+            doc.text(`${domainColor.name} – ${domainName} (${findings.length} findings)`, 20, yPos);
+            yPos += 10;
+
+            // Findings list - full text with proper hierarchy and spacing
+            findings.forEach((item, idx) => {
+              checkNewPage(35);
+
+              // ---- ITEM HEADER ROW with subtle gray background ----
+              const isHigh = item.score === 0;
+
+              // Subtle gray background for header row (table-like, no frames)
+              doc.setFillColor(245, 247, 250);
+              doc.rect(20, yPos - 4, pageWidth - 40, 10, 'F');
+
+              // Item number and ID
+              doc.setFontSize(10);
+              doc.setFont('times', 'bold');
+              doc.setTextColor(30, 58, 95);
+              doc.text(`${idx + 1}. ${item.id}`, 25, yPos + 2);
+
+              // Priority - clean text
+              doc.setFontSize(9);
+              doc.setTextColor(isHigh ? 180 : 160, isHigh ? 50 : 100, isHigh ? 40 : 20);
+              doc.text(isHigh ? 'HIGH' : 'MEDIUM', 65, yPos + 2);
+
+              // Timeframe in weeks on right
+              const days = item.targetDays || (isHigh ? 21 : 45);
+              const weeks = Math.ceil(days / 7);
+              doc.setFont('times', 'normal');
+              doc.setTextColor(100, 105, 115);
+              doc.text(`${weeks} week${weeks > 1 ? 's' : ''}`, pageWidth - 25, yPos + 2, { align: 'right' });
+
+              yPos += 10;
+
+              // ---- STANDARD TEXT (with orphan prevention) ----
+              doc.setFont('times', 'normal');
+              doc.setTextColor(50, 55, 60);
+              doc.setFontSize(9);
+              const wrappedText = wrapText(item.text, pageWidth - 50);
+              // Calculate total height needed for this text block
+              const textBlockHeight = wrappedText.length * 4.5;
+              // If text block won't fit but we'd leave orphan, move entire block to next page
+              if (yPos + textBlockHeight > pageHeight - 25 && yPos + 15 < pageHeight - 25) {
+                doc.addPage();
+                yPos = 25;
+              }
+              wrappedText.forEach((line) => {
+                checkNewPage(5);
+                doc.text(line, 30, yPos);
+                yPos += 4.5;
+              });
+
+              yPos += 4;
+
+              // ---- FINDING (if available, with orphan prevention) ----
+              if (item.findings && item.findings.trim()) {
+                const findingText = wrapText(item.findings, pageWidth - 55);
+                const findingHeight = 4 + (findingText.length * 4);
+                // Prevent orphan - if only 1-2 lines would fit, move entire finding to next page
+                if (yPos + findingHeight > pageHeight - 25 && yPos + 10 < pageHeight - 25) {
+                  doc.addPage();
+                  yPos = 25;
+                }
+                doc.setFont('times', 'bold');
+                doc.setFontSize(8);
+                doc.setTextColor(140, 90, 30);
+                doc.text('Finding:', 30, yPos);
+                yPos += 4;
+                doc.setFont('times', 'italic');
+                doc.setTextColor(120, 80, 40);
+                findingText.forEach((line) => {
+                  checkNewPage(5);
+                  doc.text(line, 35, yPos);
+                  yPos += 4;
+                });
+                yPos += 3;
+              }
+
+              // ---- CORRECTIVE ACTION (always shown, with orphan prevention) ----
+              const correctiveAction = generateCorrectiveAction(item);
+              const actionText = wrapText(correctiveAction, pageWidth - 55);
+              const actionHeight = 4 + (actionText.length * 4);
+              // Prevent orphan
+              if (yPos + actionHeight > pageHeight - 25 && yPos + 10 < pageHeight - 25) {
+                doc.addPage();
+                yPos = 25;
+              }
+              doc.setFont('times', 'bold');
+              doc.setFontSize(8);
+              doc.setTextColor(25, 100, 50);
+              doc.text('Corrective Action:', 30, yPos);
+              yPos += 4;
+              doc.setFont('times', 'normal');
+              doc.setTextColor(35, 90, 55);
+              actionText.forEach((line) => {
+                checkNewPage(5);
+                doc.text(line, 35, yPos);
+                yPos += 4;
+              });
+
+              yPos += 8;
+            });
+
+            yPos += 10;
+          });
+        }
+
+        // ==================== COMPLIANCE SUMMARY - SEPARATE PAGE ====================
+        doc.addPage();
+        yPos = 30;
+
+        // Page title
+        doc.setTextColor(30, 58, 95);
+        doc.setFontSize(18);
+        doc.setFont('times', 'bold');
+        doc.text('Compliance Summary', pageWidth / 2, yPos, { align: 'center' });
+        yPos += 25;
+
+        // Calculate percentages
+        const fullyMetPct = stats.scored > 0 ? (stats.fullyMet / stats.scored) * 100 : 0;
+        const partialPct = stats.scored > 0 ? (stats.partial / stats.scored) * 100 : 0;
+        const notMetPct = stats.scored > 0 ? (stats.notMet / stats.scored) * 100 : 0;
+
+        // Modern color palette
+        const pieColors = {
+          fullyMet: [46, 125, 50],      // Deep green
+          partial: [245, 166, 35],       // Warm amber
+          notMet: [198, 40, 40]          // Deep red
+        };
+
+        // PIE CHART - larger and centered
+        const pieRadius = 40;
+        const pieCenterX = pageWidth / 2;
+        const pieCenterY = yPos + pieRadius + 10;
+
+        // Draw pie slices with improved colors
+        const drawPieSlice = (cx, cy, r, startAngle, endAngle, color) => {
+          doc.setFillColor(...color);
+          const steps = Math.max(20, Math.ceil((endAngle - startAngle) * 40));
+          for (let i = 0; i < steps; i++) {
+            const a1 = startAngle + (endAngle - startAngle) * (i / steps);
+            const a2 = startAngle + (endAngle - startAngle) * ((i + 1) / steps);
+            doc.triangle(cx, cy,
+              cx + r * Math.cos(a1), cy + r * Math.sin(a1),
+              cx + r * Math.cos(a2), cy + r * Math.sin(a2), 'F');
+          }
+        };
+
+        // Draw slices (start from top: -90 degrees)
+        let startAngle = -Math.PI / 2;
+
+        // Fully Met (green)
+        if (fullyMetPct > 0) {
+          const endAngle = startAngle + (fullyMetPct / 100) * 2 * Math.PI;
+          drawPieSlice(pieCenterX, pieCenterY, pieRadius, startAngle, endAngle, pieColors.fullyMet);
+          startAngle = endAngle;
+        }
+
+        // Partially Met (amber)
+        if (partialPct > 0) {
+          const endAngle = startAngle + (partialPct / 100) * 2 * Math.PI;
+          drawPieSlice(pieCenterX, pieCenterY, pieRadius, startAngle, endAngle, pieColors.partial);
+          startAngle = endAngle;
+        }
+
+        // Not Met (red)
+        if (notMetPct > 0) {
+          const endAngle = startAngle + (notMetPct / 100) * 2 * Math.PI;
+          drawPieSlice(pieCenterX, pieCenterY, pieRadius, startAngle, endAngle, pieColors.notMet);
+        }
+
+        // Center score display in pie
+        doc.setFillColor(255, 255, 255);
+        doc.circle(pieCenterX, pieCenterY, 22, 'F');
+        doc.setTextColor(30, 58, 95);
+        doc.setFontSize(20);
+        doc.setFont('times', 'bold');
+        doc.text(`${stats.percentage}%`, pieCenterX, pieCenterY + 3, { align: 'center' });
+        doc.setFontSize(7);
+        doc.setFont('times', 'normal');
+        doc.setTextColor(100, 105, 115);
+        doc.text('Compliance', pieCenterX, pieCenterY + 10, { align: 'center' });
+
+        yPos = pieCenterY + pieRadius + 25;
+
+        // Legend - horizontal layout centered below pie
+        const legendStartX = pageWidth / 2 - 70;
+        let legendX = legendStartX;
+
+        // Fully Met legend
+        doc.setFillColor(...pieColors.fullyMet);
+        doc.roundedRect(legendX, yPos - 3, 8, 8, 1, 1, 'F');
+        doc.setTextColor(50, 55, 60);
+        doc.setFontSize(9);
+        doc.setFont('times', 'normal');
+        doc.text(`Fully Met`, legendX + 12, yPos + 3);
+        doc.setFont('times', 'bold');
+        doc.text(`${stats.fullyMet}`, legendX + 12, yPos + 10);
+        doc.setFont('times', 'normal');
+        doc.setTextColor(100, 105, 115);
+        doc.text(`(${Math.round(fullyMetPct)}%)`, legendX + 22, yPos + 10);
+
+        legendX += 50;
+
+        // Partially Met legend
+        doc.setFillColor(...pieColors.partial);
+        doc.roundedRect(legendX, yPos - 3, 8, 8, 1, 1, 'F');
+        doc.setTextColor(50, 55, 60);
+        doc.setFont('times', 'normal');
+        doc.text(`Partial`, legendX + 12, yPos + 3);
+        doc.setFont('times', 'bold');
+        doc.text(`${stats.partial}`, legendX + 12, yPos + 10);
+        doc.setFont('times', 'normal');
+        doc.setTextColor(100, 105, 115);
+        doc.text(`(${Math.round(partialPct)}%)`, legendX + 20, yPos + 10);
+
+        legendX += 45;
+
+        // Not Met legend
+        doc.setFillColor(...pieColors.notMet);
+        doc.roundedRect(legendX, yPos - 3, 8, 8, 1, 1, 'F');
+        doc.setTextColor(50, 55, 60);
+        doc.setFont('times', 'normal');
+        doc.text(`Not Met`, legendX + 12, yPos + 3);
+        doc.setFont('times', 'bold');
+        doc.text(`${stats.notMet}`, legendX + 12, yPos + 10);
+        doc.setFont('times', 'normal');
+        doc.setTextColor(100, 105, 115);
+        doc.text(`(${Math.round(notMetPct)}%)`, legendX + 20, yPos + 10);
+
+        yPos += 30;
+
+        // Summary statistics in clean layout
+        doc.setFillColor(248, 250, 252);
+        doc.roundedRect(30, yPos, pageWidth - 60, 35, 3, 3, 'F');
+
+        doc.setTextColor(30, 58, 95);
+        doc.setFontSize(10);
+        doc.setFont('times', 'bold');
+        doc.text('Assessment Overview', pageWidth / 2, yPos + 10, { align: 'center' });
+
+        doc.setFont('times', 'normal');
+        doc.setFontSize(9);
+        doc.setTextColor(60, 65, 70);
+        doc.text(`Total Sub-Standards: ${stats.total}`, 50, yPos + 22);
+        doc.text(`Scored: ${stats.scored}`, pageWidth / 2 - 20, yPos + 22);
+        doc.text(`N/A: ${stats.na}`, pageWidth - 70, yPos + 22);
+
+        doc.setTextColor(100, 50, 30);
+        doc.setFont('times', 'bold');
+        doc.text(`Deficiency Rate: ${Math.round(partialPct + notMetPct)}%`, pageWidth / 2, yPos + 30, { align: 'center' });
+
+        // ==================== FOOTER ON ALL PAGES ====================
+        const pageCount = doc.internal.getNumberOfPages();
+        for (let i = 1; i <= pageCount; i++) {
+          doc.setPage(i);
+
+          // Footer line
+          doc.setDrawColor(200, 200, 200);
+          doc.line(15, pageHeight - 15, pageWidth - 15, pageHeight - 15);
+
+          // Footer text
+          doc.setFontSize(8);
+          doc.setFont('times', 'italic');
+          doc.setTextColor(150, 150, 150);
+          doc.text(`Generated by StandardsHub`, 15, pageHeight - 10);
+          doc.text(`Page ${i} of ${pageCount}`, pageWidth / 2, pageHeight - 10, { align: 'center' });
+          doc.text(`ID: ${survey.id.substring(0, 15)}...`, pageWidth - 15, pageHeight - 10, { align: 'right' });
+        }
+
+        // Generate filename and download
+        const centerNameClean = (details.centerName || 'Assessment').replace(/[^a-zA-Z0-9]/g, '_');
+        const date = new Date().toISOString().split('T')[0];
+        doc.save(`StandardsHub_${centerNameClean}_${date}.pdf`);
+      };
 
       return (
         <div className="modal-overlay" onClick={onClose}>
@@ -6026,7 +7363,7 @@
                             borderLeft: '4px solid var(--success)'
                           }}>
                             <div style={{fontSize: '11px', fontWeight: 700, color: 'var(--success)', marginBottom: '4px', textTransform: 'uppercase'}}>
-                              Suggested Corrective Action (Target: {item.targetDays} days)
+                              Suggested Corrective Action (Target: {item.targetRange || item.targetDays} days)
                             </div>
                             <div style={{fontSize: '13px', color: 'var(--text-primary)'}}>
                               {item.suggestedAction}
@@ -6054,12 +7391,55 @@
                 Assessment ID: {survey.id}
               </div>
               <div style={{display: 'flex', gap: '12px'}}>
+                {/* Export Buttons */}
+                <button
+                  onClick={exportToExcel}
+                  className="modern-btn"
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    background: 'linear-gradient(135deg, #217346 0%, #1d6b3f 100%)',
+                    color: 'white',
+                    border: 'none'
+                  }}
+                  title="Export to Excel"
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                    <polyline points="14,2 14,8 20,8"/>
+                    <line x1="8" y1="13" x2="16" y2="13"/>
+                    <line x1="8" y1="17" x2="16" y2="17"/>
+                  </svg>
+                  Excel
+                </button>
+                <button
+                  onClick={exportToPDF}
+                  className="modern-btn"
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    background: 'linear-gradient(135deg, #c0392b 0%, #a93226 100%)',
+                    color: 'white',
+                    border: 'none'
+                  }}
+                  title="Export to PDF"
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                    <polyline points="14,2 14,8 20,8"/>
+                    <line x1="12" y1="18" x2="12" y2="12"/>
+                    <line x1="9" y1="15" x2="15" y2="15"/>
+                  </svg>
+                  PDF
+                </button>
                 <button
                   onClick={() => onViewFullDetails && onViewFullDetails(survey)}
                   className="modern-btn modern-btn-primary"
                   style={{display: 'flex', alignItems: 'center', gap: '8px'}}
                 >
-                  {Icons.clipboard({size: 16})} View Full Scoring Interface
+                  {Icons.clipboard({size: 16})} View Full Details
                 </button>
                 <button onClick={onClose} className="modern-btn modern-btn-secondary">
                   Close
