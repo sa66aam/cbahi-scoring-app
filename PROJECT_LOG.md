@@ -18,7 +18,7 @@ cd "/Users/jo/Projects/CBAHI Scoring Application "
 git status
 
 # Add, commit, push
-git add index.html PROJECT_LOG.md assets/
+git add index.html proxy.js PROJECT_LOG.md assets/
 git commit -m "Your message here"
 git push origin main
 ```
@@ -34,6 +34,7 @@ git push origin main
 | File | Purpose |
 |------|---------|
 | `index.html` | Main application (single file React) |
+| `proxy.js` | Local CORS proxy for Anthropic API (Phase 24) |
 | `PROJECT_LOG.md` | This documentation |
 | `assets/logo-sh.png` | Logo image |
 
@@ -45,7 +46,7 @@ git push origin main
 **Public Brand:** StandardsHub
 **Firebase Project ID:** standards-hub
 **Live URL:** https://standards-hub.web.app
-**Version:** 1.8.0
+**Version:** 1.9.0
 **Technology Stack:** React 18, Firebase Hosting, HTML5, CSS3
 **Primary Purpose:** Digital scoring and assessment tool for healthcare accreditation surveys
 **Developer:** Jo
@@ -2998,7 +2999,7 @@ This phase is complete and locked. Domain and Workspace are active.
 
 ## Phase 21: Landing Page Design Overhaul 🎨
 
-**Status:** In Progress
+**Status:** Completed ✅
 **Date:** February 4, 2026
 **Session:** Morning to Afternoon
 
@@ -3151,16 +3152,18 @@ onLogin={() => {
 
 ### 21.9 Outstanding Tasks
 
-- [ ] **Fix Login Destination:** Change from 'centers' to 'dashboard'
-- [ ] **Implement Login Modal:** Username/password popup with validation
-- [ ] **Firebase Authentication:** Connect login to Firebase Auth
-- [ ] **Session Management:** Persist login state across page refreshes
+- [x] **Fix Login Destination:** Change from 'centers' to 'dashboard' ✅ Resolved
+- [x] **Implement Login Modal:** Username/password popup with validation ✅ Resolved
+- [x] **Firebase Authentication:** Login and authentication working ✅ Resolved
+- [x] **Session Management:** Persist login state across page refreshes ✅ Resolved
+
+> **Note:** Two-step authentication (2FA) is not implemented and not currently required.
 
 ---
 
-*Phase 21 Status: In Progress*
+*Phase 21 Status: Completed ✅*
 *Landing Page Design: Complete ✅*
-*Authentication: Pending 🔄*
+*Authentication: Complete ✅ (Login & Auth working, no 2FA)*
 
 ---
 
@@ -3380,36 +3383,21 @@ Assessment Re-finalized
 
 ---
 
-### 22.8 PERSISTENT ISSUE ⚠️
+### 22.8 RESOLVED ISSUE ✅
 
 **Issue:** SharedAssessmentViewer PDF Export Not Fully Matching Main App
 
-**Description:**
-The PDF export in SharedAssessmentViewer is still not producing identical output to the main app's ExecutiveSummaryModal export. Specifically:
+**Status:** RESOLVED (February 2026)
 
-| Element | Main App | SharedAssessmentViewer | Status |
-|---------|----------|------------------------|--------|
-| Finding text | ✅ Shows "Finding:" prefix | ❌ Missing "Finding:" in some items | **NOT FIXED** |
-| TextBody (Standard Description) | ✅ Shows full standard text | ❌ Missing in some items | **NOT FIXED** |
-| Corrective actions | ✅ Present | ✅ Present (via generator) | OK |
-| Domain colors | ✅ Present | ✅ Present | OK |
-| Pie chart | ✅ Present | ✅ Present | OK |
+| Element | Status |
+|---------|--------|
+| Finding text with "Finding:" prefix | ✅ Fixed |
+| TextBody (Standard Description) | ✅ Fixed |
+| Corrective actions | ✅ Working |
+| Domain colors | ✅ Working |
+| Pie chart | ✅ Working |
 
-**Root Cause Analysis:**
-The scoreData structure passed to SharedAssessmentViewer may not contain the complete `text` field (standard body text) for all items. The main app has direct access to the full standards data, while the shared viewer relies on what's encoded in the share link.
-
-**Screenshots Collected:**
-- Main app PDF output showing full Finding and TextBody
-- SharedAssessmentViewer PDF output with missing elements
-- Side-by-side comparison demonstrating the difference
-
-**Resolution Status:** Deferred to next session (February 5, 2026)
-
-**Action Required:**
-1. Audit the data structure being encoded in the share link
-2. Ensure `text` field (standard body/TextBody) is included for all sub-standards
-3. Verify "Finding:" prefix is added to all items with findings
-4. Test PDF output against main app for exact match
+PDF export in SharedAssessmentViewer now matches the main app's ExecutiveSummaryModal output.
 
 ---
 
@@ -3470,7 +3458,7 @@ For modification mode re-finalization:
 *Client Sharing: Implemented ✅*
 *Export Features: Enhanced ✅*
 *Modification Auth: Implemented ✅*
-*PDF Parity: Pending Fix ⚠️*
+*PDF Parity: Resolved ✅*
 
 ---
 
@@ -3612,34 +3600,251 @@ family=Amiri:wght@400;700
 
 ---
 
-## Phase 24: AI Rewriting Feature (Planned)
-**Date:** February 6, 2026 (Tomorrow)
-**Status:** Planned 📋
+## Phase 24: AI Findings Rewrite Engine ✨
+**Date:** February 7, 2026
+**Status:** Completed ✅
+**Version:** 1.9.0
 
 ### 24.1 Feature Overview
-**Goal:** AI-powered text rewriting with guidelines for findings/corrective actions
+**Goal:** AI-powered findings rewrite engine that transforms short surveyor notes (e.g., "approved not dated") into framework-compliant CBAHI findings using the Anthropic Claude API.
 
-**Planned Features:**
-- Rewrite button integrated with scoring interface
-- AI logic to find best version based on key terms
-- Revision according to CBAHI conditions and guidelines
-- Options: Rewrite / Send / Assign for rewriting
+**What It Does:**
+A surveyor scores a sub-standard as Not Met (0) or Partially Met (1), types a brief note in the findings textarea, and clicks the ✨ sparkle button. The AI rewrites the note into a professional, CBAHI-compliant finding sentence following a trained voice profile and pattern classification system.
 
-**User Flow:**
-1. Surveyor writes finding text
-2. Clicks "Rewrite" button
-3. AI analyzes and suggests improved version based on:
-   - Key terms relevant to the standard
-   - CBAHI guidelines and terminology
-   - Professional language standards
-4. Surveyor can accept, modify, or reject suggestion
+**Training Document:** `Finding Field Translation Button (2).md` (AI Findings Rewrite Engine V2) — a comprehensive 461-line specification defining:
+- Voice profile (third-person past tense, formal-clinical register)
+- 7 pattern classifications (Scope Exclusion, Total Absence, However Pivot, Counted Deficiency, Classification Mismatch, Temporal Gap, Direct Observation)
+- Activity openings for Personnel File, Document Review, Staff Interview
+- Shorthand dictionary for common surveyor abbreviations
+- Quality gate checklist for output validation
 
-**Integration Points:**
-- Finding text field (Partially Met / Not Met)
-- Corrective action suggestions
-- Mobile scoring interface (Phase 25)
+---
 
-*Details to be defined during implementation with user training*
+### 24.2 Implementation Details
+
+**System Prompt Constant** (~line 3947 in index.html):
+```javascript
+const FINDINGS_REWRITE_SYSTEM_PROMPT = `You are a CBAHI dental accreditation findings rewrite engine...`;
+```
+Contains the full voice profile, pattern rules, activity openings, global rules, shorthand dictionary, and quality gate — all derived from the V2 training document.
+
+**SubstandardCard Enhancement** (~line 5463):
+- Added `sessionCounts` and `showToast` props
+- New state: `rewriteState` (idle|loading|success|error), `rewritePreview`, `rewriteLong`
+- `showRewriteBtn` logic: visible when textarea has text AND score is 0 or 1
+- `handleRewrite()` — API call with sub-standard context, activity type, session counts
+- `handleAcceptRewrite()` — replaces findings with AI output
+- `handleDismissRewrite()` — keeps original text
+- Preview panel with Accept/Dismiss buttons below textarea
+- Warning for responses exceeding 300 characters (over-generation check)
+
+**Session Counts in AssessmentSetupModal** (~line 6107):
+- Added `sessionPF` (Personnel Files), `sessionDR` (Dental Records), `sessionINT` (Staff Interviewed) fields
+- Default values: PF=7, DR=5, INT=4
+- 3-column grid layout in setup modal
+- Values plumbed through to SubstandardCard via `sessionCounts` useMemo in ScoringPage
+- Used in AI prompt as contextual input (e.g., "Upon reviewing seven personnel files...")
+
+**API Integration:**
+- Model: `claude-sonnet-4-20250514`
+- Max tokens: 300 (prevents over-generation)
+- Temperature: 0 (deterministic output)
+- Response cleaning: strips quotes, backticks, markdown artifacts
+
+---
+
+### 24.3 The CORS Challenge — A Critical Learning Journey
+
+**The Problem:**
+The initial implementation called `https://api.anthropic.com/v1/messages` directly from the browser. This immediately failed with:
+```
+Access to fetch at 'https://api.anthropic.com/v1/messages' from origin 'http://localhost:8080'
+has been blocked by CORS policy: Response to preflight request doesn't pass access control check:
+No 'Access-Control-Allow-Origin' header is present on the requested resource.
+```
+
+**Why It Happened:**
+Anthropic's API does not include `Access-Control-Allow-Origin` headers in its responses. This is standard practice — production APIs are designed to be called from servers, not directly from browsers. The browser's Same-Origin Policy blocks the response even though the request technically reaches the server.
+
+**The Solution — Local CORS Proxy:**
+Created `proxy.js` (87 lines, zero external dependencies) using only Node.js built-in `http` and `https` modules:
+
+```
+Browser (localhost:8080)  →  Proxy (localhost:3001)  →  Anthropic API
+        ↓                           ↓                        ↓
+   Sends request              Adds CORS headers         Processes AI
+   to local proxy             Forwards to API           Returns finding
+```
+
+**proxy.js Architecture:**
+| Feature | Implementation |
+|---------|---------------|
+| **Server** | Node.js `http.createServer()` on port 3001 |
+| **CORS** | `Access-Control-Allow-Origin: *` on all responses |
+| **Preflight** | OPTIONS requests return 204 with proper headers |
+| **Route** | POST `/api/rewrite` → forwards to Anthropic Messages API |
+| **Auth** | Passes `x-api-key` from browser request header |
+| **Version** | Adds `anthropic-version: 2023-06-01` header |
+| **Errors** | 401 if no API key, 502 on proxy failures |
+| **Dependencies** | Zero — only `http` and `https` from Node.js stdlib |
+
+**Why a Proxy Is Needed (Even for Localhost):**
+CORS is enforced by the browser, not the server. Even though both the app and proxy run locally, the browser still blocks direct calls to `api.anthropic.com` because Anthropic doesn't whitelist `localhost`. The proxy acts as a same-origin relay:
+1. Browser calls `localhost:3001` (same-origin, CORS allowed)
+2. Proxy calls Anthropic server-side (no CORS restriction)
+3. Proxy returns response with `Access-Control-Allow-Origin: *`
+
+**For Production Deployment:**
+When deploying to Firebase Hosting, the proxy would be replaced by a Firebase Cloud Function or similar serverless function that handles the Anthropic API call server-side. The browser would call the Cloud Function URL instead of `localhost:3001`.
+
+**Running the Proxy:**
+```bash
+cd "/Users/jo/Projects/CBAHI Scoring Application "
+node proxy.js
+# Output: ✨ StandardsHub API Proxy running on http://localhost:3001
+```
+
+---
+
+### 24.4 API Key Management
+
+**Challenge:** The Anthropic API requires an API key, but it cannot be hardcoded in a client-side application.
+
+**Solution — Settings Modal:**
+- **ApiKeyModal component** — accessible via gear icon (⚙️) in the app header
+- Password input field with Save/Clear/Cancel buttons
+- Status indicator: "Connected" (green) or "Not Set" (amber)
+- Key stored in `localStorage` under `standardshub_anthropic_key`
+- Retrieved at rewrite time — early return with toast if missing
+- Proxy instruction note in the modal
+
+**Security Consideration:**
+During development, the API key was briefly exposed in screenshots. Key rotation was recommended. For production, the API key would live server-side in environment variables (Firebase Functions config or similar), never in the browser.
+
+---
+
+### 24.5 The Credit Balance Error
+
+**Error Encountered:**
+```
+Rewrite error: Error: Your credit balance is too low to access the Anthropic API.
+Please go to Plans & Billing to upgrade or purchase credits.
+```
+
+**What This Proved:**
+The entire pipeline was working correctly — browser → proxy → Anthropic API → response parsing. The 400 error was purely an account billing issue, not a code bug. After adding credits at `console.anthropic.com`, the rewrite feature worked immediately on first try.
+
+**First Successful Rewrite:**
+- Input: "Not signed" (on sub-standard LD.1.2: "The governing body approves the center's strategic plan...")
+- Output: *"The strategic plan was approved by the governing body; however, the approval document was not signed."*
+- Pattern matched: **However Pivot** — exactly as trained in the V2 document
+
+---
+
+### 24.6 UI Refinements
+
+**Sparkle Button Repositioning:**
+The initial button (30px circle, bottom-right of textarea) was too small and too far from the action. Redesigned to:
+
+| Property | Before | After |
+|----------|--------|-------|
+| **Size** | 30px diameter | 38px diameter |
+| **Position** | Bottom-right corner | Bottom-center, on textarea edge |
+| **Border** | 1px subtle | 2px solid accent blue |
+| **Shadow** | Minimal | Prominent blue glow |
+| **Icons** | 14px SVGs | 18px SVGs |
+| **Z-index** | 2 | 5 |
+| **Hover** | Scale 1.08 | Scale 1.12 with blue glow |
+
+**Existing Survey Compatibility Fix:**
+The rewrite button wasn't appearing on resumed/modified surveys. Root cause: potential type mismatch from JSON deserialization (string vs number scores). Fixed with:
+```javascript
+const numScore = (scoreValue !== null && scoreValue !== undefined && scoreValue !== 'NA')
+  ? Number(scoreValue) : null;
+const hasFindings = (score?.comment || score?.findings || '').trim().length > 0
+  || comment.trim().length > 0;
+const showRewriteBtn = hasFindings && (numScore === 0 || numScore === 1);
+```
+This handles both `comment` (live scoring) and `findings` (mock/imported data) field names, and coerces score values safely.
+
+**Dynamic Count Priority Rule — "The AI Can't Count" Fix:**
+When a surveyor typed "10 personal files reviewed. Performance evaluation has no clear goals," the AI ignored the "10" and substituted "seven" from the default session count (PF=7). The system prompt was trained to always use the session count metadata, with no instruction to respect numbers already present in the raw note.
+
+**Root Cause:** The user message sent `Session counts: PF=seven` as authoritative metadata, and the system prompt's activity opening rule said `"Upon reviewing [count] personnel files,"` — so the AI always filled `[count]` from the metadata, overriding any number the surveyor explicitly stated.
+
+**Fix — Two-layer instruction:**
+
+1. **System prompt** — Added `COUNT PRIORITY RULE` section after Activity Openings:
+```
+COUNT PRIORITY RULE:
+- If the raw note contains an explicit number (e.g., "10 files reviewed", "3 staff"),
+  ALWAYS use that number from the note — convert it to a word (10→ten, 3→three)
+- Only use the session count defaults when the raw note does NOT mention any number
+- The surveyor's stated number is always more accurate than the default session count
+```
+
+2. **User message prompt** — Relabeled from `Session counts:` to `Default session counts (use ONLY if no number appears in the raw note):` and added explicit instruction: *"If the raw note contains a specific number, use that number (as a word) instead of the default session counts."*
+
+**Result:** "10 personal files reviewed" now correctly produces *"Upon reviewing ten personnel files..."* — the AI respects the surveyor's actual count and only falls back to defaults when no number is mentioned.
+
+---
+
+### 24.7 Files Changed
+
+| File | Lines | Change Type |
+|------|-------|-------------|
+| `index.html` | ~17,446 | Modified — CSS, system prompt, SubstandardCard, AssessmentSetupModal, ScoringPage, ApiKeyModal, App component |
+| `proxy.js` | 87 | **New file** — Zero-dependency CORS proxy server |
+
+**CSS Additions (~130 lines):**
+`.comment-input-wrapper`, `.ai-rewrite-btn` (+ hover/loading/success states), `.ai-rewrite-spinner`, `.ai-rewrite-preview`, `.ai-rewrite-preview-text`, `.ai-rewrite-preview-actions`, `.ai-rewrite-accept`, `.ai-rewrite-dismiss`, `.ai-rewrite-long-warning`, `.api-key-gear-btn`, `.api-key-modal-body`, `.api-key-input-wrap`, `.api-key-status`, `.session-counts-row`, `.session-count-input`
+
+**JavaScript Additions (~200 lines):**
+`FINDINGS_REWRITE_SYSTEM_PROMPT` constant, `handleRewrite()`, `handleAcceptRewrite()`, `handleDismissRewrite()`, `toWord()` helper, `showRewriteBtn` logic, `sessionCounts` useMemo, `ApiKeyModal` component, gear button in header
+
+---
+
+### 24.8 Architecture Decision Record
+
+| Decision | Choice | Rationale |
+|----------|--------|-----------|
+| AI Model | Claude Sonnet 4 | Best balance of quality and speed for single-sentence rewrites |
+| Proxy approach | Zero-dep Node.js | Matches project philosophy (no npm, no build step) |
+| API key storage | localStorage | Simple, user-controlled, no server persistence needed |
+| Button visibility | Score 0 or 1 only | Fully Met findings don't need rewriting |
+| Max tokens | 300 | Prevents over-generation, keeps findings concise |
+| Temperature | 0 | Deterministic output — same input always produces same finding |
+| Session counts | Setup modal + dynamic override | Defaults from setup modal; numbers in raw note always take priority |
+
+---
+
+### 24.9 Version Update
+
+| Version | Changes |
+|---------|---------|
+| 1.9.0 | **AI Findings Rewrite Engine** |
+| | - Sparkle button (✨) on Not Met / Partially Met findings |
+| | - Anthropic Claude API integration via local CORS proxy |
+| | - V2 training document: voice profile, 7 patterns, quality gate |
+| | - Session counts (PF/DR/INT) in assessment setup |
+| | - Preview panel with Accept/Dismiss workflow |
+| | - API key management via settings modal (⚙️) |
+| | - proxy.js: zero-dependency Node.js CORS relay |
+| | - Button UI: 38px centered, prominent blue accent |
+| | - Existing survey compatibility fix |
+| | - Dynamic count priority: surveyor numbers override defaults |
+
+---
+
+*Phase 24 Completed: February 7, 2026*
+*AI Rewrite Engine: Operational ✅*
+*CORS Proxy: Running ✅*
+*API Key Management: Implemented ✅*
+*First Successful Rewrite: "Not signed" → However Pivot pattern ✅*
+*Button UI: Redesigned & Centered ✅*
+*Existing Survey Compatibility: Fixed ✅*
+*Dynamic Count Priority: Surveyor numbers respected ✅*
+*Training Document: V2 (461 lines, 7 patterns) ✅*
 
 ---
 
@@ -3702,38 +3907,20 @@ family=Amiri:wght@400;700
 
 ## Known Issues & Ongoing Work
 
-### CRITICAL: SharedAssessmentViewer PDF Export Parity
+### RESOLVED: SharedAssessmentViewer PDF Export Parity
 
 **Issue ID:** PDF-PARITY-001
 **Severity:** High
-**Status:** Open
+**Status:** ✅ RESOLVED
 **Discovered:** February 4, 2026
-**Target Resolution:** February 5, 2026
+**Resolved:** February 2026
 
-**Problem Statement:**
-The SharedAssessmentViewer PDF export does not fully replicate the main app's ExecutiveSummaryModal PDF output. Missing elements include:
-1. "Finding:" prefix text in some corrective action items
-2. "TextBody" (standard description text) in some items
-
-**Impact:**
-Clients viewing shared assessments via the SharedAssessmentViewer will see a PDF that differs from what the surveyor sees in the main app, potentially causing confusion or concern about data accuracy.
-
-**Investigation Notes:**
-- The main app's exportToPDF function (around line 8536) correctly includes all elements
-- The SharedAssessmentViewer's exportToPDF was modeled after the main app
-- Data structure differences may be the root cause
-- The `scoreData.text` field may not be properly populated in the shared data
-
-**Next Steps:**
-1. Compare data structures between main app and shared viewer
-2. Verify all fields are encoded in the share link
-3. Add missing fields to the encoding process
-4. Test PDF output with complete data
+SharedAssessmentViewer PDF export now fully matches the main app's ExecutiveSummaryModal output, including Finding prefixes and standard body text.
 
 ---
 
-*Document Last Updated: February 5, 2026*
-*Application Version: 1.8.0*
+*Document Last Updated: February 7, 2026*
+*Application Version: 1.9.0*
 *Domain: st-hubs.com ✅*
 *Export Features: PDF Complete ✅, Excel Complete ✅*
 *Landing Page: Polished ✅*
@@ -3743,9 +3930,10 @@ Clients viewing shared assessments via the SharedAssessmentViewer will see a PDF
 *Google Workspace: Active ✅*
 *Mobile Interface: Implemented ✅*
 *Client Sharing: Implemented ✅*
-*PDF Parity Issue: Open ⚠️*
+*PDF Parity Issue: Resolved ✅*
+*AI Findings Rewrite Engine: Operational ✅*
+*CORS Proxy: Running ✅*
 
 **Upcoming Phases:**
-*Phase 24: AI Rewriting Feature 📋 (Next)*
-*Phase 25: Mobile Scoring Interface 📋 (After AI Rewriting)*
+*Phase 25: Mobile Scoring Interface 📋 (Next)*
 

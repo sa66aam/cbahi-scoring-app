@@ -2171,6 +2171,221 @@
       box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
     }
 
+    /* AI Rewrite Button & Preview Panel */
+    .comment-input-wrapper {
+      position: relative;
+      margin-bottom: 12px;
+    }
+
+    .ai-rewrite-btn {
+      position: absolute;
+      bottom: -16px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      border: 2px solid var(--accent);
+      background: white;
+      color: var(--accent);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+      padding: 0;
+      z-index: 5;
+      box-shadow: 0 2px 8px rgba(52, 152, 219, 0.25);
+    }
+
+    .ai-rewrite-btn:hover {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+      box-shadow: 0 3px 12px rgba(52, 152, 219, 0.4);
+      transform: translateX(-50%) scale(1.12);
+    }
+
+    .ai-rewrite-btn.loading {
+      pointer-events: none;
+      border-color: var(--accent);
+      background: rgba(52, 152, 219, 0.08);
+    }
+
+    .ai-rewrite-btn.success {
+      background: var(--success);
+      color: white;
+      border-color: var(--success);
+    }
+
+    @keyframes rewriteSpin {
+      to { transform: rotate(360deg); }
+    }
+
+    .ai-rewrite-spinner {
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(52, 152, 219, 0.2);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: rewriteSpin 0.7s linear infinite;
+    }
+
+    .ai-rewrite-preview {
+      margin-top: 8px;
+      padding: 10px 12px;
+      background: var(--bg-hover, #f5f7fa);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      font-size: 13px;
+      line-height: 1.5;
+      color: var(--text-primary);
+    }
+
+    .ai-rewrite-preview-text {
+      margin-bottom: 8px;
+      font-style: italic;
+      color: var(--text-secondary);
+    }
+
+    .ai-rewrite-preview-actions {
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+    }
+
+    .ai-rewrite-accept {
+      padding: 4px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      background: var(--success);
+      color: white;
+      transition: all 0.15s ease;
+    }
+
+    .ai-rewrite-accept:hover {
+      background: #219a52;
+    }
+
+    .ai-rewrite-dismiss {
+      padding: 4px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      cursor: pointer;
+      background: white;
+      color: var(--text-secondary);
+      transition: all 0.15s ease;
+    }
+
+    .ai-rewrite-dismiss:hover {
+      border-color: var(--danger);
+      color: var(--danger);
+    }
+
+    .ai-rewrite-long-warning {
+      font-size: 11px;
+      color: var(--warning);
+      margin-top: 4px;
+    }
+
+    /* API Key Settings */
+    .api-key-gear-btn {
+      position: absolute;
+      right: 24px;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 8px;
+      padding: 8px 10px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+    }
+
+    .api-key-gear-btn:hover {
+      background: rgba(255,255,255,0.25);
+    }
+
+    .api-key-gear-btn.has-key {
+      border-color: rgba(39, 174, 96, 0.5);
+      background: rgba(39, 174, 96, 0.15);
+    }
+
+    .api-key-modal-body {
+      padding: 24px;
+    }
+
+    .api-key-input-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .api-key-input-wrap input {
+      flex: 1;
+      padding: 12px 16px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      font-size: 14px;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+    }
+
+    .api-key-input-wrap input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+    }
+
+    .api-key-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      margin-top: 8px;
+      padding: 4px 10px;
+      border-radius: 12px;
+    }
+
+    .api-key-status.connected {
+      background: rgba(39, 174, 96, 0.1);
+      color: var(--success);
+    }
+
+    .api-key-status.not-set {
+      background: rgba(231, 76, 60, 0.1);
+      color: var(--danger);
+    }
+
+    /* Session counts in setup modal */
+    .session-counts-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+    }
+
+    .session-count-input {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      font-size: 14px;
+      font-family: inherit;
+      text-align: center;
+    }
+
+    .session-count-input:focus {
+      outline: none;
+      border-color: var(--border-focus);
+      box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+    }
+
     .location-field {
       margin-top: 10px;
     }
@@ -3798,6 +4013,113 @@
     const ADMIN_USERNAME = 'admin';
     const ADMIN_PASSWORD = 'admin123';
 
+    // ============================================
+    // AI FINDINGS REWRITE ENGINE — SYSTEM PROMPT
+    // ============================================
+    const FINDINGS_REWRITE_SYSTEM_PROMPT = `You are a CBAHI dental accreditation findings rewrite engine. Convert raw surveyor shorthand into framework-compliant findings matching the lead surveyor's exact voice.
+
+VOICE PROFILE:
+- Single sentence only, 10–25 words. Never two sentences.
+- Past tense always. No present tense.
+- Rhythm: Subject → verb → object → qualifier.
+
+VERB PREFERENCES (use ONLY these, never substitute):
+- was/were provided — absence findings
+- was/were documented — record-based findings
+- reflected — when evidence shows a condition
+- lacked — when a specific element is missing from a record
+- was/were available — physical items present/absent
+- was/were presented — how documents were offered
+- was/were limited to — partial scope findings
+- was/were granted — privilege-related findings
+
+CONNECTOR PREFERENCES:
+- "; however," — the ONLY mismatch pivot. Always semicolon before. Never "but" or "although."
+- "rather than" — quality/type mismatch contrast mid-sentence
+- "without" — elegant absence within a present context
+- "with no evidence of" — bridging present item to missing element
+- "and did not address" — listing what was omitted
+- "; therefore," — ONLY for scope exclusions
+
+NUMBER STYLE: All numbers spelled out (two, five, eleven). Counts always appear.
+
+PROHIBITED:
+- Never start with "It was found/noted/observed that"
+- Never start with "The center failed to" or "The center did not"
+- Never use: adequate, inadequate, sufficient, insufficient, appropriate, inappropriate, ensure, ensuring, significant, notable, various, multiple
+- Never use: good, poor, failed to, neglected, ignored, should, must, needs to
+- Never end with a recommendation
+- Never write two sentences
+
+ACTIVITY OPENINGS:
+- PF: "Upon reviewing [count] personnel files," — never skip
+- DR: "Upon reviewing [count] dental records," — never skip
+- INT: "Upon interviewing [count] staff members," — skip when finding is about absence of evidence rather than what staff said
+- DOC: Usually skip formal opening. Name the document as subject: "The strategic plan included..." Use "Upon reviewing the [document]," only when stating what was found INSIDE multiple files.
+- OBS: "During the facility tour," — skip when observation is self-evident
+
+COUNT PRIORITY RULE:
+- If the raw note contains an explicit number (e.g., "10 files reviewed", "3 staff"), ALWAYS use that number from the note — convert it to a word (10→ten, 3→three)
+- Only use the session count defaults (PF/DR/INT provided in metadata) when the raw note does NOT mention any number
+- The surveyor's stated number is always more accurate than the default session count
+
+PATTERN PRIORITY (test in order):
+
+1. SCOPE EXCLUSION — triggers: out of scope, not applicable, digital only, government center, N/A
+   Formula: "[Service] was [in use/confirmed as out of scope]; therefore, [not applicable]."
+   Ex: "Only digital radiography was in use; therefore, handling of contaminated film packets was not applicable."
+   Ex: "Dental laboratory services were confirmed to be out of scope during the visit."
+
+2. TOTAL ABSENCE — triggers: not provided, no document, no records, none available, no evidence, no monitoring, no PPM
+   Formula: "No [item from standard] was/were provided to demonstrate [requirement]."
+   Ex: "No annual departmental operational plans were provided to demonstrate alignment with the center's strategic plan."
+   Ex: "No maintenance records were provided for electrical and mechanical systems."
+   Use "was/were available" for physical items, "was/were provided" for documents.
+   Use "The [document] did not include [X]" when a document exists but element is missing.
+
+3. HOWEVER PIVOT / MISMATCH — triggers: not dated, general, only, limited, scattered, template only, brief
+   Formula: "[What WAS present]; however, [what was missing/limited]."
+   Ex: "The center's operating and capital budgets were approved; however, the approval documents were not dated."
+   Ex: "Infection control documents were presented as scattered policies rather than a consolidated manual."
+   Ex: "Upon reviewing six dental records, pain assessment was documented using a template without individualized assessment."
+   Choose pivot: equal-weight halves → "; however,"; quality mismatch → "rather than"; missing element within present → "without"
+   "limited to" for scope narrowing, never "only covered."
+
+4. COUNTED DEFICIENCY — triggers: number + deficiency (2 missing, 3 incomplete)
+   Formula: "Upon reviewing [total] [records], [count] records lacked [element]."
+   Ex: "Upon reviewing five dental records, two records lacked documented informed consent for invasive procedures."
+   Use "lacked" — never "were missing." Always add "documented" before evidence element.
+
+5. CLASSIFICATION MISMATCH — triggers: DA nurse, GP procedure, sister facility, hospital language
+   Formula (credentials): "Upon reviewing [count] personnel files, staff assigned as [X] were found to be credentialed as [Y]."
+   Formula (documents): "[Document] was titled for [wrong entity] rather than [correct entity]."
+   Ex: "Upon reviewing eleven personnel files, staff assigned as dental assistants were found to be credentialed as nurses."
+
+6. TEMPORAL GAP — triggers: year (2023), once yearly, outdated, expired, unsigned
+   Formula: "Upon reviewing [count] [files], [item] were outdated and last conducted in [year]."
+   Ex: "Upon reviewing eleven personnel files, infection prevention and control training records were outdated and last conducted in 2023."
+   Ex: "Only one facility inspection round was documented during the year."
+
+7. DIRECT OBSERVATION — fallback for physical conditions
+   Ex: "No crash cart was available in patient care areas, and only one defibrillator was observed."
+   Ex: "Dental air compressors were located outside the building in a ventilated area but were not secured."
+   Add factual context the standard implies. Use "with no evidence of" to bridge.
+
+GLOBAL RULES:
+- Extract the specific subject from the sub-standard text. The raw note rarely names it.
+- One finding = one idea. Never bundle.
+- All PF findings use the same PF count. All DR findings use the same DR count.
+- If note is one vague word, return it unchanged + "Add detail — what specifically was incomplete?"
+- If note contains a recommendation, strip it. Convert only the evidence.
+- If note is already well-formed, light cleanup only.
+
+SHORTHAND: DA=dental assistant, GP=general dentist, RCT=root canal treatment, PPM=preventive maintenance, KPI=key performance indicator, IPC=infection prevention and control, BLS=basic life support, AED=automated external defibrillator
+
+QUALITY GATE — verify before returning:
+✓ Past tense throughout ✓ Single sentence ✓ 10–25 words ✓ Correct activity opening with spelled-out count ✓ Subject from sub-standard text ✓ Your verb preferences ✓ Your connector preferences ✓ No evaluative language ✓ No recommendations ✓ No blame ✓ Counts consistent with session context ✓ One idea only
+
+Return ONLY the finding sentence. No explanation, no quotes, no markdown.`;
+
     const storage = {
       get: (key) => {
         try {
@@ -5143,11 +5465,16 @@
     };
 
     // Sub-standard Card
-    const SubstandardCard = ({ substandard, score, onScoreChange }) => {
+    const SubstandardCard = ({ substandard, score, onScoreChange, sessionCounts, showToast }) => {
       const scoreValue = score?.value;
       // Support both 'comment' (live scoring) and 'findings' (mock/imported data)
       const comment = score?.comment || score?.findings || '';
       const location = score?.location || '';
+
+      // AI Rewrite state
+      const [rewriteState, setRewriteState] = useState('idle'); // idle | loading | success | error
+      const [rewritePreview, setRewritePreview] = useState(null);
+      const [rewriteLong, setRewriteLong] = useState(false);
 
       const getScoreClass = () => {
         if (scoreValue === 'NA') return 'scored-na';
@@ -5155,6 +5482,101 @@
         if (scoreValue === 1) return 'scored-1';
         if (scoreValue === 2) return 'scored-2';
         return '';
+      };
+
+      // Show rewrite button when: textarea has text AND score is Not Met (0) or Partially Met (1)
+      // Number() conversion handles string/number from JSON deserialization of saved surveys
+      const numScore = (scoreValue !== null && scoreValue !== undefined && scoreValue !== 'NA') ? Number(scoreValue) : null;
+      const hasFindings = (score?.comment || score?.findings || '').trim().length > 0 || comment.trim().length > 0;
+      const showRewriteBtn = hasFindings && (numScore === 0 || numScore === 1);
+
+      // Number-to-word helper for session counts
+      const numberWords = ['zero','one','two','three','four','five','six','seven','eight','nine','ten','eleven','twelve','thirteen','fourteen','fifteen','sixteen','seventeen','eighteen','nineteen','twenty'];
+      const toWord = (n) => numberWords[n] || String(n);
+
+      // AI Rewrite handler
+      const handleRewrite = async () => {
+        if (!comment.trim() || rewriteState === 'loading') return;
+
+        setRewriteState('loading');
+        setRewritePreview(null);
+        setRewriteLong(false);
+
+        const counts = sessionCounts || { pf: 7, dr: 5, int: 4 };
+        const userMessage = `Raw note: ${comment.trim()}
+Sub-standard: ${substandard.text}
+Activity type: ${substandard.activityType}
+Default session counts (use ONLY if no number appears in the raw note): PF=${toWord(counts.pf)}, DR=${toWord(counts.dr)}, INT=${toWord(counts.int)}
+Score: ${scoreValue}
+
+Convert this note into one finding sentence. If the raw note contains a specific number, use that number (as a word) instead of the default session counts. Return ONLY the finding text — no explanation, no quotes, no markdown.`;
+
+        try {
+          // Get API key from localStorage
+          const apiKey = localStorage.getItem('standardshub_anthropic_key');
+          if (!apiKey) {
+            if (showToast) showToast('warning', 'API Key Required', 'Set your Anthropic API key in Settings (gear icon in header).');
+            setRewriteState('idle');
+            return;
+          }
+
+          const response = await fetch('http://localhost:3001/api/rewrite', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'x-api-key': apiKey,
+            },
+            body: JSON.stringify({
+              model: 'claude-sonnet-4-20250514',
+              max_tokens: 300,
+              system: FINDINGS_REWRITE_SYSTEM_PROMPT,
+              messages: [
+                { role: 'user', content: userMessage }
+              ]
+            })
+          });
+
+          if (!response.ok) {
+            const errData = await response.json().catch(() => ({}));
+            throw new Error(errData.error?.message || errData.error || `API error ${response.status}`);
+          }
+
+          const data = await response.json();
+          let findingText = (data.content && data.content[0] && data.content[0].text) || '';
+          // Strip accidental quotes or markdown backticks
+          findingText = findingText.trim().replace(/^["'`]+|["'`]+$/g, '').replace(/^```\w*\n?|```$/g, '').trim();
+
+          if (!findingText) {
+            throw new Error('Empty response');
+          }
+
+          setRewritePreview(findingText);
+          setRewriteLong(findingText.length > 300);
+          setRewriteState('success');
+
+          // Flash success then back to idle
+          setTimeout(() => setRewriteState('idle'), 1500);
+        } catch (err) {
+          console.error('Rewrite error:', err);
+          setRewriteState('error');
+          if (showToast) {
+            showToast('error', 'Rewrite Unavailable', 'Could not rewrite finding — try again.');
+          }
+          setTimeout(() => setRewriteState('idle'), 2000);
+        }
+      };
+
+      // Accept rewritten finding
+      const handleAcceptRewrite = () => {
+        onScoreChange(substandard.id, scoreValue, rewritePreview, location);
+        setRewritePreview(null);
+        setRewriteLong(false);
+      };
+
+      // Dismiss rewritten finding
+      const handleDismissRewrite = () => {
+        setRewritePreview(null);
+        setRewriteLong(false);
       };
 
       return (
@@ -5181,10 +5603,50 @@
                   onClick={() => onScoreChange(substandard.id, 2, comment, location)} />
               </div>
               <div className="comment-section">
-                <textarea className="comment-input"
-                  placeholder="Finding / Comment..."
-                  value={comment}
-                  onChange={(e) => onScoreChange(substandard.id, scoreValue, e.target.value, location)} />
+                <div className="comment-input-wrapper">
+                  <textarea className="comment-input"
+                    placeholder="Finding / Comment..."
+                    value={comment}
+                    onChange={(e) => onScoreChange(substandard.id, scoreValue, e.target.value, location)} />
+                  {showRewriteBtn && (
+                    <button
+                      className={`ai-rewrite-btn ${rewriteState}`}
+                      onClick={handleRewrite}
+                      title="Rewrite Finding"
+                      disabled={rewriteState === 'loading'}
+                    >
+                      {rewriteState === 'loading' ? (
+                        <div className="ai-rewrite-spinner" />
+                      ) : rewriteState === 'success' ? (
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                          <polyline points="20 6 9 17 4 12" />
+                        </svg>
+                      ) : (
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M12 3l1.5 4.5L18 9l-4.5 1.5L12 15l-1.5-4.5L6 9l4.5-1.5L12 3z"/>
+                          <path d="M19 13l1 3 3 1-3 1-1 3-1-3-3-1 3-1 1-3z"/>
+                        </svg>
+                      )}
+                    </button>
+                  )}
+                </div>
+                {/* AI Rewrite Preview Panel */}
+                {rewritePreview && (
+                  <div className="ai-rewrite-preview">
+                    <div className="ai-rewrite-preview-text">{rewritePreview}</div>
+                    {rewriteLong && (
+                      <div className="ai-rewrite-long-warning">Response exceeds 300 characters — review for over-generation.</div>
+                    )}
+                    <div className="ai-rewrite-preview-actions">
+                      <button className="ai-rewrite-dismiss" onClick={handleDismissRewrite}>
+                        ✗ Dismiss
+                      </button>
+                      <button className="ai-rewrite-accept" onClick={handleAcceptRewrite}>
+                        ✓ Accept
+                      </button>
+                    </div>
+                  </div>
+                )}
                 {substandard.activityType === 'OBS' && (
                   <div className="location-field">
                     <input type="text" className="location-input"
@@ -5658,7 +6120,10 @@
         coordinatorName: '',
         coordinatorPhone: '',
         coordinatorEmail: '',
-        configuration: 'A1'
+        configuration: 'A1',
+        sessionPF: 7,
+        sessionDR: 5,
+        sessionINT: 4
       });
       const [errors, setErrors] = useState({});
 
@@ -5670,14 +6135,23 @@
 
       useEffect(() => {
         if (existingData) {
-          setFormData({ ...existingData, configuration: existingData.configuration || 'A1' });
+          setFormData({
+            ...existingData,
+            configuration: existingData.configuration || 'A1',
+            sessionPF: existingData.sessionPF || 7,
+            sessionDR: existingData.sessionDR || 5,
+            sessionINT: existingData.sessionINT || 4
+          });
         } else {
           setFormData({
             centerName: '',
             coordinatorName: '',
             coordinatorPhone: '',
             coordinatorEmail: '',
-            configuration: 'A1'
+            configuration: 'A1',
+            sessionPF: 7,
+            sessionDR: 5,
+            sessionINT: 4
           });
         }
         setErrors({});
@@ -5846,6 +6320,49 @@
                       onChange={e => setFormData({ ...formData, coordinatorEmail: e.target.value })}
                     />
                     {errors.coordinatorEmail && <div className="form-error">{errors.coordinatorEmail}</div>}
+                  </div>
+                </div>
+
+                {/* Session Counts for AI Rewrite Engine */}
+                <div className="form-group">
+                  <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>
+                    </svg>
+                    Session Counts
+                    <span style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: 400 }}>(for AI findings engine)</span>
+                  </label>
+                  <div className="session-counts-row">
+                    <div>
+                      <label style={{ fontSize: '11px', color: 'var(--text-muted)', display: 'block', marginBottom: '4px', textTransform: 'uppercase', fontWeight: 600, letterSpacing: '0.5px' }}>Personnel Files</label>
+                      <input
+                        type="number"
+                        className="session-count-input"
+                        min="1" max="20"
+                        value={formData.sessionPF}
+                        onChange={e => setFormData({ ...formData, sessionPF: parseInt(e.target.value) || 7 })}
+                      />
+                    </div>
+                    <div>
+                      <label style={{ fontSize: '11px', color: 'var(--text-muted)', display: 'block', marginBottom: '4px', textTransform: 'uppercase', fontWeight: 600, letterSpacing: '0.5px' }}>Dental Records</label>
+                      <input
+                        type="number"
+                        className="session-count-input"
+                        min="1" max="20"
+                        value={formData.sessionDR}
+                        onChange={e => setFormData({ ...formData, sessionDR: parseInt(e.target.value) || 5 })}
+                      />
+                    </div>
+                    <div>
+                      <label style={{ fontSize: '11px', color: 'var(--text-muted)', display: 'block', marginBottom: '4px', textTransform: 'uppercase', fontWeight: 600, letterSpacing: '0.5px' }}>Staff Interviewed</label>
+                      <input
+                        type="number"
+                        className="session-count-input"
+                        min="1" max="20"
+                        value={formData.sessionINT}
+                        onChange={e => setFormData({ ...formData, sessionINT: parseInt(e.target.value) || 4 })}
+                      />
+                    </div>
                   </div>
                 </div>
 
@@ -6237,6 +6754,13 @@
       const [showRefinalizeAuth, setShowRefinalizeAuth] = useState(false); // Show authentication for re-finalizing modified assessment
       const [refinalizePassword, setRefinalizePassword] = useState('');
       const [refinalizeError, setRefinalizeError] = useState('');
+
+      // Session counts for AI rewrite engine (from assessmentDetails)
+      const sessionCounts = useMemo(() => ({
+        pf: assessmentDetails?.sessionPF || 7,
+        dr: assessmentDetails?.sessionDR || 5,
+        int: assessmentDetails?.sessionINT || 4
+      }), [assessmentDetails?.sessionPF, assessmentDetails?.sessionDR, assessmentDetails?.sessionINT]);
 
       // Expanded domains state for Configuration B sidebar (all expanded by default)
       const [expandedDomains, setExpandedDomains] = useState({
@@ -7198,7 +7722,7 @@
                 <div className="single-standard-substandards">
                   {filteredSubstandards.map(sub => (
                     <SubstandardCard key={sub.id} substandard={sub} score={scores[sub.id]}
-                      onScoreChange={handleScoreChange} />
+                      onScoreChange={handleScoreChange} sessionCounts={sessionCounts} showToast={showToast} />
                   ))}
                 </div>
               ) : assessmentDetails?.configuration === 'B' && activeChapter === 'ALL' ? (
@@ -7272,7 +7796,9 @@
                                   <SubstandardCard key={sub.id}
                                     substandard={sub}
                                     score={scores[sub.id]}
-                                    onScoreChange={handleScoreChange} />
+                                    onScoreChange={handleScoreChange}
+                                    sessionCounts={sessionCounts}
+                                    showToast={showToast} />
                                 ))}
                               </div>
                             </div>
@@ -7299,7 +7825,7 @@
                     <div className="mother-standard-substandards">
                       {group.substandards.map(sub => (
                         <SubstandardCard key={sub.id} substandard={sub} score={scores[sub.id]}
-                          onScoreChange={handleScoreChange} />
+                          onScoreChange={handleScoreChange} sessionCounts={sessionCounts} showToast={showToast} />
                       ))}
                     </div>
                   </div>
@@ -14872,6 +15398,104 @@
       );
     };
 
+    // API Key Settings Modal
+    const ApiKeyModal = ({ isOpen, onClose }) => {
+      const [keyValue, setKeyValue] = useState('');
+      const [saved, setSaved] = useState(false);
+
+      useEffect(() => {
+        if (isOpen) {
+          const existing = localStorage.getItem('standardshub_anthropic_key') || '';
+          setKeyValue(existing);
+          setSaved(false);
+        }
+      }, [isOpen]);
+
+      if (!isOpen) return null;
+
+      const handleSave = () => {
+        const trimmed = keyValue.trim();
+        if (trimmed) {
+          localStorage.setItem('standardshub_anthropic_key', trimmed);
+        } else {
+          localStorage.removeItem('standardshub_anthropic_key');
+        }
+        setSaved(true);
+        setTimeout(() => onClose(), 800);
+      };
+
+      const handleClear = () => {
+        localStorage.removeItem('standardshub_anthropic_key');
+        setKeyValue('');
+        setSaved(false);
+      };
+
+      const hasKey = keyValue.trim().length > 0;
+      const maskedKey = hasKey ? keyValue.slice(0, 10) + '••••••••' + keyValue.slice(-4) : '';
+
+      return (
+        <div className="modal-overlay" onClick={onClose}>
+          <div className="modal" style={{ maxWidth: '480px' }} onClick={e => e.stopPropagation()}>
+            <div className="modal-header" style={{ background: 'var(--primary)', color: 'white', borderRadius: '12px 12px 0 0', padding: '20px 24px' }}>
+              <h3 style={{ display: 'flex', alignItems: 'center', gap: '10px', margin: 0, fontSize: '16px' }}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>
+                </svg>
+                AI Rewrite Engine — Settings
+              </h3>
+              <button onClick={onClose} style={{ background: 'none', border: 'none', color: 'white', fontSize: '20px', cursor: 'pointer', padding: '4px' }}>×</button>
+            </div>
+            <div className="api-key-modal-body">
+              <p style={{ fontSize: '13px', color: 'var(--text-secondary)', marginTop: 0, marginBottom: '16px', lineHeight: 1.5 }}>
+                Enter your Anthropic API key to enable AI-powered finding rewrites. The key is stored locally in your browser and sent only to Anthropic via the local proxy.
+              </p>
+              <label style={{ fontSize: '12px', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px', display: 'block', marginBottom: '6px' }}>
+                API Key
+              </label>
+              <div className="api-key-input-wrap">
+                <input
+                  type="password"
+                  placeholder="sk-ant-api03-..."
+                  value={keyValue}
+                  onChange={e => { setKeyValue(e.target.value); setSaved(false); }}
+                  style={{ flex: 1 }}
+                />
+              </div>
+              <div style={{ marginTop: '6px' }}>
+                {hasKey ? (
+                  <span className="api-key-status connected">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><polyline points="20 6 9 17 4 12"/></svg>
+                    Key set
+                  </span>
+                ) : (
+                  <span className="api-key-status not-set">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+                    No key set
+                  </span>
+                )}
+              </div>
+              <p style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '12px', marginBottom: '20px', lineHeight: 1.5 }}>
+                Requires the proxy server: <code style={{ background: 'var(--bg-hover)', padding: '2px 6px', borderRadius: '3px', fontSize: '11px' }}>node proxy.js</code> running on port 3001.
+              </p>
+              <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
+                {hasKey && (
+                  <button onClick={handleClear} className="modern-btn" style={{ background: 'transparent', color: 'var(--danger)', border: '1px solid var(--danger)', padding: '8px 16px', borderRadius: '6px', cursor: 'pointer', fontSize: '13px' }}>
+                    Clear Key
+                  </button>
+                )}
+                <button onClick={onClose} className="modern-btn" style={{ background: 'var(--bg-hover)', color: 'var(--text-secondary)', border: '1px solid var(--border)', padding: '8px 16px', borderRadius: '6px', cursor: 'pointer', fontSize: '13px' }}>
+                  Cancel
+                </button>
+                <button onClick={handleSave} className="modern-btn" style={{ background: saved ? 'var(--success)' : 'var(--accent)', color: 'white', border: 'none', padding: '8px 20px', borderRadius: '6px', cursor: 'pointer', fontSize: '13px', fontWeight: 600, transition: 'all 0.2s ease' }}>
+                  {saved ? '✓ Saved' : 'Save'}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    };
+
     const App = () => {
       // Check for shared view or card parameter
       const urlParams = new URLSearchParams(window.location.search);
@@ -14952,6 +15576,7 @@
       const [showSetupModal, setShowSetupModal] = useState(false);
       const [editingSurvey, setEditingSurvey] = useState(null); // For editing survey from History
       const [viewingSummary, setViewingSummary] = useState(null); // For viewing Executive Summary
+      const [showApiKeyModal, setShowApiKeyModal] = useState(false); // API key settings modal
 
       // Toast notifications state
       const [toasts, setToasts] = useState([]);
@@ -16671,6 +17296,16 @@
                   <span>Dental Center Accreditation</span>
                 </div>
               </div>
+              {/* AI Settings Gear Button */}
+              <button
+                className={`api-key-gear-btn ${localStorage.getItem('standardshub_anthropic_key') ? 'has-key' : ''}`}
+                onClick={() => setShowApiKeyModal(true)}
+                title="AI Rewrite Settings"
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                </svg>
+              </button>
             </div>
             <div className="nav-tabs">
               <div className={`nav-tab ${currentPage === 'dashboard' ? 'active' : ''}`}
@@ -16805,6 +17440,12 @@
               onViewFullDetails={handleViewFullScoringInterface}
             />
           )}
+
+          {/* API Key Settings Modal */}
+          <ApiKeyModal
+            isOpen={showApiKeyModal}
+            onClose={() => setShowApiKeyModal(false)}
+          />
         </div>
       );
     };
