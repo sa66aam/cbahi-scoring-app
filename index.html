@@ -2190,6 +2190,270 @@
       box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
     }
 
+    /* AI Assistant Panel */
+    .ai-assistant-panel {
+      margin-top: 10px;
+      border: 1px solid #c7dff7;
+      border-radius: var(--radius-md);
+      background: linear-gradient(135deg, #f0f7ff 0%, #e8f4fd 100%);
+      overflow: hidden;
+      animation: ai-slide-in 0.3s ease;
+    }
+
+    @keyframes ai-slide-in {
+      from { opacity: 0; transform: translateY(-8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .ai-assistant-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #1e6bb8;
+      border-bottom: 1px solid #c7dff7;
+    }
+
+    .ai-suggestion-text {
+      padding: 12px 14px;
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--text-primary);
+      white-space: pre-wrap;
+    }
+
+    .ai-assistant-actions {
+      display: flex;
+      gap: 8px;
+      padding: 10px 14px;
+      border-top: 1px solid #c7dff7;
+      flex-wrap: wrap;
+    }
+
+    .ai-btn {
+      padding: 8px 18px;
+      border: none;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .ai-btn-accept {
+      background: linear-gradient(135deg, var(--success) 0%, #2ecc71 100%);
+      color: white;
+      box-shadow: 0 2px 8px rgba(39, 174, 96, 0.3);
+    }
+
+    .ai-btn-accept:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(39, 174, 96, 0.4);
+    }
+
+    .ai-btn-dismiss {
+      background: #f1f5f9;
+      color: var(--text-secondary);
+      border: 1px solid var(--border);
+    }
+
+    .ai-btn-dismiss:hover {
+      background: #e2e8f0;
+    }
+
+    .ai-btn-refine {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+    }
+
+    .ai-btn-refine:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    }
+
+    .ai-refine-input-area {
+      padding: 10px 14px;
+      border-top: 1px solid #c7dff7;
+      display: flex;
+      gap: 8px;
+      align-items: flex-end;
+    }
+
+    .ai-refine-input {
+      flex: 1;
+      padding: 10px 14px;
+      border: 1px solid #c7dff7;
+      border-radius: 8px;
+      font-size: 13px;
+      font-family: inherit;
+      resize: none;
+      min-height: 38px;
+      background: white;
+      transition: border-color 0.2s;
+    }
+
+    .ai-refine-input:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .ai-refine-send {
+      padding: 10px 16px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s ease;
+    }
+
+    .ai-refine-send:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    }
+
+    .ai-enhance-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 5px 12px;
+      margin-top: 8px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 6px rgba(102, 126, 234, 0.25);
+    }
+
+    .ai-enhance-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 10px rgba(102, 126, 234, 0.35);
+    }
+
+    .ai-loading-dots {
+      display: inline-flex;
+      gap: 4px;
+    }
+
+    .ai-loading-dots span {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #1e6bb8;
+      animation: ai-dot-bounce 1.4s ease-in-out infinite;
+    }
+
+    .ai-loading-dots span:nth-child(2) { animation-delay: 0.2s; }
+    .ai-loading-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes ai-dot-bounce {
+      0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
+      40% { transform: scale(1); opacity: 1; }
+    }
+
+    /* Mobile Substandard Navigation Buttons */
+    .mobile-sub-nav {
+      display: none;
+    }
+
+    @media (max-width: 768px) {
+      .mobile-sub-nav {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 16px 0 8px 0;
+        margin-top: 8px;
+      }
+
+      .mobile-sub-nav-btn {
+        flex: 1;
+        min-height: 52px;
+        padding: 12px 16px;
+        border: 1.5px solid var(--border);
+        border-radius: 14px;
+        background: var(--bg-card);
+        color: var(--text-primary);
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        transition: all 0.2s ease;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
+      }
+
+      .mobile-sub-nav-btn:active {
+        transform: scale(0.97);
+        background: var(--bg-hover);
+      }
+
+      .mobile-sub-nav-btn:disabled {
+        opacity: 0.35;
+        cursor: default;
+      }
+
+      .mobile-sub-nav-btn:disabled:active {
+        transform: none;
+        background: var(--bg-card);
+      }
+
+      .mobile-sub-nav-btn.nav-prev {
+        border-color: var(--primary);
+        color: var(--primary);
+      }
+
+      .mobile-sub-nav-btn.nav-next {
+        border-color: var(--primary);
+        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+        color: white;
+        box-shadow: 0 3px 10px rgba(30, 58, 95, 0.25);
+      }
+
+      .mobile-sub-nav-btn.nav-next:active {
+        background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary) 100%);
+      }
+
+      .mobile-sub-nav-label {
+        font-size: 11px;
+        opacity: 0.7;
+        max-width: 100px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      /* Make AI buttons larger on mobile */
+      .ai-btn {
+        padding: 12px 20px;
+        font-size: 14px;
+        min-height: 44px;
+      }
+
+      .ai-enhance-btn {
+        padding: 10px 16px;
+        font-size: 13px;
+        min-height: 44px;
+      }
+    }
+
     /* Score Summary Panel */
     .score-summary-panel {
       position: fixed;
@@ -5072,6 +5336,153 @@
     };
 
     // ============================================
+    // AI FINDING ENHANCEMENT ENGINE
+    // ============================================
+
+    const enhanceFinding = (comment, substandardText, scoreValue, userInstruction) => {
+      // Professional CBAHI survey finding rewriter
+      // Transforms casual/brief comments into structured, professional survey findings
+      if (!comment || comment.trim().length < 3) return null;
+
+      const original = comment.trim();
+      const isNotMet = scoreValue === 0;
+      const isPartial = scoreValue === 1;
+      const isFullyMet = scoreValue === 2;
+
+      // Build enhanced finding based on score and context
+      let enhanced = '';
+
+      if (userInstruction && userInstruction.trim()) {
+        // User provided specific refinement instructions
+        const instruction = userInstruction.trim().toLowerCase();
+
+        if (instruction.includes('shorter') || instruction.includes('brief') || instruction.includes('concise')) {
+          // Make it more concise
+          const sentences = original.split(/[.!?]+/).filter(s => s.trim());
+          if (sentences.length > 1) {
+            enhanced = sentences.slice(0, Math.ceil(sentences.length / 2)).join('. ').trim();
+            if (!enhanced.endsWith('.')) enhanced += '.';
+          } else {
+            enhanced = original;
+          }
+        } else if (instruction.includes('formal') || instruction.includes('professional')) {
+          enhanced = rewriteProfessional(original, substandardText, scoreValue);
+        } else if (instruction.includes('detail') || instruction.includes('elaborate') || instruction.includes('expand')) {
+          enhanced = expandFinding(original, substandardText, scoreValue);
+        } else if (instruction.includes('action') || instruction.includes('recommend')) {
+          enhanced = addActionItems(original, substandardText, scoreValue);
+        } else {
+          // General refinement - incorporate the user's instruction into context
+          enhanced = rewriteWithContext(original, substandardText, scoreValue, userInstruction.trim());
+        }
+      } else {
+        // Default enhancement - make it professional
+        enhanced = rewriteProfessional(original, substandardText, scoreValue);
+      }
+
+      return enhanced !== original ? enhanced : rewriteProfessional(original, substandardText, scoreValue);
+    };
+
+    const rewriteProfessional = (text, substandardText, scoreValue) => {
+      let enhanced = text;
+
+      // Capitalize first letter
+      enhanced = enhanced.charAt(0).toUpperCase() + enhanced.slice(1);
+
+      // Add professional phrasing based on score
+      if (scoreValue === 0) {
+        if (!enhanced.toLowerCase().includes('no evidence') && !enhanced.toLowerCase().includes('not available') && !enhanced.toLowerCase().includes('not found') && !enhanced.toLowerCase().includes('absent')) {
+          if (enhanced.length < 80) {
+            enhanced = `No evidence found to support compliance. ${enhanced}. Immediate corrective action is recommended.`;
+          } else if (!enhanced.endsWith('.')) {
+            enhanced += '. Immediate corrective action is required.';
+          }
+        }
+      } else if (scoreValue === 1) {
+        if (!enhanced.toLowerCase().includes('partial') && !enhanced.toLowerCase().includes('inconsistent') && !enhanced.toLowerCase().includes('some evidence')) {
+          if (enhanced.length < 80) {
+            enhanced = `Partial compliance observed. ${enhanced}. Further improvement needed to achieve full compliance.`;
+          } else if (!enhanced.endsWith('.')) {
+            enhanced += '. Enhancement is recommended to achieve full compliance.';
+          }
+        }
+      } else if (scoreValue === 2) {
+        if (!enhanced.toLowerCase().includes('compliant') && !enhanced.toLowerCase().includes('evidence') && !enhanced.toLowerCase().includes('verified')) {
+          if (enhanced.length < 80) {
+            enhanced = `Compliance verified. ${enhanced}.`;
+          }
+        }
+      }
+
+      // Clean up punctuation
+      enhanced = enhanced.replace(/\.\./g, '.').replace(/\s+/g, ' ').trim();
+      if (!enhanced.endsWith('.') && !enhanced.endsWith('!') && !enhanced.endsWith('?')) {
+        enhanced += '.';
+      }
+
+      return enhanced;
+    };
+
+    const expandFinding = (text, substandardText, scoreValue) => {
+      let enhanced = text.charAt(0).toUpperCase() + text.slice(1);
+
+      if (scoreValue === 0) {
+        enhanced = `During the survey, the following was identified: ${enhanced}. This represents a significant gap in meeting the requirements of this sub-standard. The center should develop and implement a comprehensive plan to address this deficiency, including assigning responsible personnel and establishing timelines for corrective actions.`;
+      } else if (scoreValue === 1) {
+        enhanced = `During the survey, partial compliance was noted: ${enhanced}. While some elements of the sub-standard requirements are in place, gaps were identified that require attention. The center should review current practices, update documentation as needed, and ensure consistent implementation across all applicable areas.`;
+      } else {
+        enhanced = `Evidence of compliance was verified during the survey: ${enhanced}. Documentation and practices reviewed demonstrate that the center meets the requirements of this sub-standard.`;
+      }
+
+      return enhanced;
+    };
+
+    const addActionItems = (text, substandardText, scoreValue) => {
+      let enhanced = text.charAt(0).toUpperCase() + text.slice(1);
+      if (!enhanced.endsWith('.')) enhanced += '.';
+
+      if (scoreValue === 0) {
+        enhanced += ' Recommended actions: (1) Develop and implement the required policy/procedure; (2) Assign a responsible person to oversee compliance; (3) Provide staff training on requirements; (4) Establish a monitoring mechanism to ensure sustained compliance.';
+      } else if (scoreValue === 1) {
+        enhanced += ' Recommended actions: (1) Review and update current practices to address identified gaps; (2) Ensure consistent documentation; (3) Provide refresher training to relevant staff; (4) Monitor implementation for sustained improvement.';
+      }
+
+      return enhanced;
+    };
+
+    const rewriteWithContext = (text, substandardText, scoreValue, instruction) => {
+      let enhanced = text.charAt(0).toUpperCase() + text.slice(1);
+      if (!enhanced.endsWith('.')) enhanced += '.';
+
+      // Try to incorporate the instruction context
+      const scoreLabel = scoreValue === 0 ? 'Not Met' : scoreValue === 1 ? 'Partially Met' : scoreValue === 2 ? 'Fully Met' : 'N/A';
+
+      // If the instruction looks like replacement text, use it
+      if (instruction.length > 20 && !instruction.includes('?')) {
+        // Treat as a rewrite suggestion
+        let newText = instruction.charAt(0).toUpperCase() + instruction.slice(1);
+        if (!newText.endsWith('.')) newText += '.';
+        return newText;
+      }
+
+      // Otherwise enhance with the instruction as guidance
+      if (instruction.includes('location') || instruction.includes('where')) {
+        enhanced += ' [Specify the exact location/area where this was observed.]';
+      } else if (instruction.includes('staff') || instruction.includes('who')) {
+        enhanced += ' [Specify which staff roles or departments are involved.]';
+      } else if (instruction.includes('document') || instruction.includes('evidence')) {
+        enhanced += ' [Reference specific documents or evidence reviewed.]';
+      } else if (instruction.includes('date') || instruction.includes('when') || instruction.includes('time')) {
+        enhanced += ' [Include the date/time of observation.]';
+      } else {
+        // General rewrite incorporating the user's text
+        enhanced = `${enhanced} Additional note: ${instruction}.`;
+      }
+
+      return enhanced;
+    };
+
+    // ============================================
     // COMPONENTS
     // ============================================
 
@@ -5143,11 +5554,17 @@
     };
 
     // Sub-standard Card
-    const SubstandardCard = ({ substandard, score, onScoreChange }) => {
+    const SubstandardCard = ({ substandard, score, onScoreChange, onNavigatePrev, onNavigateNext, prevLabel, nextLabel, navIndex, navTotal }) => {
       const scoreValue = score?.value;
       // Support both 'comment' (live scoring) and 'findings' (mock/imported data)
       const comment = score?.comment || score?.findings || '';
       const location = score?.location || '';
+
+      // AI Assistant state
+      const [aiSuggestion, setAiSuggestion] = useState(null);
+      const [aiLoading, setAiLoading] = useState(false);
+      const [showRefineInput, setShowRefineInput] = useState(false);
+      const [refineText, setRefineText] = useState('');
 
       const getScoreClass = () => {
         if (scoreValue === 'NA') return 'scored-na';
@@ -5157,8 +5574,43 @@
         return '';
       };
 
+      const handleEnhanceFinding = (instruction) => {
+        if (!comment || comment.trim().length < 3) return;
+        setAiLoading(true);
+        setShowRefineInput(false);
+        setRefineText('');
+
+        // Simulate brief processing delay for natural feel
+        setTimeout(() => {
+          const result = enhanceFinding(comment, substandard.text, scoreValue, instruction || '');
+          setAiSuggestion(result);
+          setAiLoading(false);
+        }, 600 + Math.random() * 400);
+      };
+
+      const handleAcceptSuggestion = () => {
+        if (aiSuggestion) {
+          onScoreChange(substandard.id, scoreValue, aiSuggestion, location);
+          setAiSuggestion(null);
+          setShowRefineInput(false);
+          setRefineText('');
+        }
+      };
+
+      const handleDismissSuggestion = () => {
+        setAiSuggestion(null);
+        setShowRefineInput(false);
+        setRefineText('');
+      };
+
+      const handleRefineSubmit = () => {
+        if (refineText.trim()) {
+          handleEnhanceFinding(refineText.trim());
+        }
+      };
+
       return (
-        <div className={`substandard-card ${getScoreClass()}`}>
+        <div id={`sub-${substandard.id}`} className={`substandard-card ${getScoreClass()}`}>
           <div className="substandard-header">
             <span className="substandard-code">{substandard.code}</span>
             <ActivityBadge type={substandard.activityType} />
@@ -5185,12 +5637,131 @@
                   placeholder="Finding / Comment..."
                   value={comment}
                   onChange={(e) => onScoreChange(substandard.id, scoreValue, e.target.value, location)} />
+
+                {/* AI Enhance Button - shown when there's text to enhance */}
+                {comment && comment.trim().length >= 3 && !aiSuggestion && !aiLoading && (
+                  <button className="ai-enhance-btn" onClick={() => handleEnhanceFinding('')}>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"></polygon>
+                    </svg>
+                    AI Enhance
+                  </button>
+                )}
+
+                {/* AI Loading State */}
+                {aiLoading && (
+                  <div className="ai-assistant-panel" style={{ marginTop: '10px' }}>
+                    <div className="ai-assistant-header">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"></polygon>
+                      </svg>
+                      Enhancing finding
+                      <span className="ai-loading-dots"><span></span><span></span><span></span></span>
+                    </div>
+                  </div>
+                )}
+
+                {/* AI Suggestion Panel */}
+                {aiSuggestion && !aiLoading && (
+                  <div className="ai-assistant-panel">
+                    <div className="ai-assistant-header">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"></polygon>
+                      </svg>
+                      AI-Enhanced Finding
+                    </div>
+                    <div className="ai-suggestion-text">{aiSuggestion}</div>
+                    <div className="ai-assistant-actions">
+                      <button className="ai-btn ai-btn-accept" onClick={handleAcceptSuggestion}>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                          <polyline points="20,6 9,17 4,12"></polyline>
+                        </svg>
+                        Accept
+                      </button>
+                      <button className="ai-btn ai-btn-dismiss" onClick={handleDismissSuggestion}>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <line x1="18" y1="6" x2="6" y2="18"></line>
+                          <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                        Dismiss
+                      </button>
+                      <button className="ai-btn ai-btn-refine" onClick={() => setShowRefineInput(!showRefineInput)}>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                          <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Refine
+                      </button>
+                    </div>
+
+                    {/* Refine Input Area */}
+                    {showRefineInput && (
+                      <div className="ai-refine-input-area">
+                        <textarea
+                          className="ai-refine-input"
+                          placeholder="Tell the AI what to change... (e.g., 'make it shorter', 'add recommendations', 'more formal', or type your own version)"
+                          value={refineText}
+                          onChange={(e) => setRefineText(e.target.value)}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter' && !e.shiftKey) {
+                              e.preventDefault();
+                              handleRefineSubmit();
+                            }
+                          }}
+                          rows={2}
+                          autoFocus
+                        />
+                        <button
+                          className="ai-refine-send"
+                          onClick={handleRefineSubmit}
+                          disabled={!refineText.trim()}
+                          style={{ opacity: refineText.trim() ? 1 : 0.5 }}
+                        >
+                          Regenerate
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                )}
+
                 {substandard.activityType === 'OBS' && (
                   <div className="location-field">
                     <input type="text" className="location-input"
                       placeholder="Location..."
                       value={location}
                       onChange={(e) => onScoreChange(substandard.id, scoreValue, comment, e.target.value)} />
+                  </div>
+                )}
+
+                {/* Mobile Navigation Buttons */}
+                {(onNavigatePrev || onNavigateNext) && (
+                  <div className="mobile-sub-nav">
+                    <button
+                      className="mobile-sub-nav-btn nav-prev"
+                      onClick={onNavigatePrev}
+                      disabled={!onNavigatePrev}
+                    >
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                        <polyline points="15,18 9,12 15,6"></polyline>
+                      </svg>
+                      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+                        <span>Previous</span>
+                        {prevLabel && <span className="mobile-sub-nav-label">{prevLabel}</span>}
+                      </div>
+                    </button>
+                    <button
+                      className="mobile-sub-nav-btn nav-next"
+                      onClick={onNavigateNext}
+                      disabled={!onNavigateNext}
+                    >
+                      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
+                        <span>Next</span>
+                        {nextLabel && <span className="mobile-sub-nav-label">{nextLabel}</span>}
+                      </div>
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                        <polyline points="9,18 15,12 9,6"></polyline>
+                      </svg>
+                    </button>
                   </div>
                 )}
               </div>
@@ -7196,9 +7767,22 @@
               ) : activeStandard ? (
                 /* Single standard selected - show substandards directly */
                 <div className="single-standard-substandards">
-                  {filteredSubstandards.map(sub => (
+                  {filteredSubstandards.map((sub, idx) => (
                     <SubstandardCard key={sub.id} substandard={sub} score={scores[sub.id]}
-                      onScoreChange={handleScoreChange} />
+                      onScoreChange={handleScoreChange}
+                      onNavigatePrev={idx > 0 ? () => {
+                        const prevCard = document.getElementById(`sub-${filteredSubstandards[idx - 1].id}`);
+                        if (prevCard) prevCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                      } : null}
+                      onNavigateNext={idx < filteredSubstandards.length - 1 ? () => {
+                        const nextCard = document.getElementById(`sub-${filteredSubstandards[idx + 1].id}`);
+                        if (nextCard) nextCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                      } : null}
+                      prevLabel={idx > 0 ? filteredSubstandards[idx - 1].code : null}
+                      nextLabel={idx < filteredSubstandards.length - 1 ? filteredSubstandards[idx + 1].code : null}
+                      navIndex={idx}
+                      navTotal={filteredSubstandards.length}
+                    />
                   ))}
                 </div>
               ) : assessmentDetails?.configuration === 'B' && activeChapter === 'ALL' ? (
@@ -7268,11 +7852,24 @@
                                 <div className="mother-standard-badge">{filteredStdSubs.length} sub-standard(s)</div>
                               </div>
                               <div className="mother-standard-substandards">
-                                {filteredStdSubs.map(sub => (
+                                {filteredStdSubs.map((sub, idx) => (
                                   <SubstandardCard key={sub.id}
                                     substandard={sub}
                                     score={scores[sub.id]}
-                                    onScoreChange={handleScoreChange} />
+                                    onScoreChange={handleScoreChange}
+                                    onNavigatePrev={idx > 0 ? () => {
+                                      const el = document.getElementById(`sub-${filteredStdSubs[idx - 1].id}`);
+                                      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                    } : null}
+                                    onNavigateNext={idx < filteredStdSubs.length - 1 ? () => {
+                                      const el = document.getElementById(`sub-${filteredStdSubs[idx + 1].id}`);
+                                      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                    } : null}
+                                    prevLabel={idx > 0 ? filteredStdSubs[idx - 1].code : null}
+                                    nextLabel={idx < filteredStdSubs.length - 1 ? filteredStdSubs[idx + 1].code : null}
+                                    navIndex={idx}
+                                    navTotal={filteredStdSubs.length}
+                                  />
                                 ))}
                               </div>
                             </div>
@@ -7297,9 +7894,22 @@
                       <div className="mother-standard-badge">{group.substandards.length} sub-standard(s)</div>
                     </div>
                     <div className="mother-standard-substandards">
-                      {group.substandards.map(sub => (
+                      {group.substandards.map((sub, idx) => (
                         <SubstandardCard key={sub.id} substandard={sub} score={scores[sub.id]}
-                          onScoreChange={handleScoreChange} />
+                          onScoreChange={handleScoreChange}
+                          onNavigatePrev={idx > 0 ? () => {
+                            const el = document.getElementById(`sub-${group.substandards[idx - 1].id}`);
+                            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                          } : null}
+                          onNavigateNext={idx < group.substandards.length - 1 ? () => {
+                            const el = document.getElementById(`sub-${group.substandards[idx + 1].id}`);
+                            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                          } : null}
+                          prevLabel={idx > 0 ? group.substandards[idx - 1].code : null}
+                          nextLabel={idx < group.substandards.length - 1 ? group.substandards[idx + 1].code : null}
+                          navIndex={idx}
+                          navTotal={group.substandards.length}
+                        />
                       ))}
                     </div>
                   </div>
