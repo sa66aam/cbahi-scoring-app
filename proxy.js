@@ -58,11 +58,14 @@ const server = http.createServer((req, res) => {
     };
 
     const proxyReq = https.request(options, (proxyRes) => {
-      let responseBody = '';
-      proxyRes.on('data', chunk => { responseBody += chunk; });
+      // Collect as Buffers to avoid splitting multi-byte UTF-8 characters (Arabic)
+      // across chunks — which causes U+FFFD replacement characters (diamond glyphs)
+      const chunks = [];
+      proxyRes.on('data', chunk => { chunks.push(chunk); });
       proxyRes.on('end', () => {
+        const responseBody = Buffer.concat(chunks).toString('utf8');
         res.writeHead(proxyRes.statusCode, {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json; charset=utf-8',
           'Access-Control-Allow-Origin': '*'
         });
         res.end(responseBody);

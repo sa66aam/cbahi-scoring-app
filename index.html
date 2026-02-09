@@ -2232,10 +2232,11 @@
     }
 
     .ai-rewrite-preview {
-      margin-top: 8px;
-      padding: 10px 12px;
-      background: var(--bg-hover, #f5f7fa);
-      border: 1px solid var(--border);
+      margin-top: 10px;
+      padding: 14px 16px;
+      background: linear-gradient(135deg, #f0f7ff 0%, #f5f7fa 100%);
+      border: 1px solid rgba(52,152,219,0.2);
+      border-left: 3px solid var(--accent, #3498db);
       border-radius: var(--radius-md);
       font-size: 13px;
       line-height: 1.5;
@@ -2243,54 +2244,253 @@
     }
 
     .ai-rewrite-preview-text {
-      margin-bottom: 8px;
+      margin-bottom: 10px;
       font-style: italic;
       color: var(--text-secondary);
     }
 
     .ai-rewrite-preview-actions {
       display: flex;
-      gap: 8px;
+      gap: 16px;
       justify-content: flex-end;
+      padding-top: 10px;
+      border-top: 1px solid rgba(0,0,0,0.06);
+      margin-top: 6px;
     }
 
     .ai-rewrite-accept {
-      padding: 4px 12px;
-      font-size: 12px;
+      padding: 7px 20px;
+      font-size: 13px;
       font-weight: 600;
       border: none;
-      border-radius: 4px;
+      border-radius: 8px;
       cursor: pointer;
       background: var(--success);
       color: white;
-      transition: all 0.15s ease;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
     }
 
     .ai-rewrite-accept:hover {
       background: #219a52;
+      transform: translateY(-1px);
+      box-shadow: 0 2px 8px rgba(39,174,96,0.3);
     }
 
     .ai-rewrite-dismiss {
-      padding: 4px 12px;
-      font-size: 12px;
+      padding: 7px 20px;
+      font-size: 13px;
       font-weight: 600;
-      border: 1px solid var(--border);
-      border-radius: 4px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
       cursor: pointer;
       background: white;
       color: var(--text-secondary);
-      transition: all 0.15s ease;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
     }
 
     .ai-rewrite-dismiss:hover {
       border-color: var(--danger);
       color: var(--danger);
+      background: #fff5f5;
     }
 
     .ai-rewrite-long-warning {
       font-size: 11px;
       color: var(--warning);
       margin-top: 4px;
+    }
+
+    /* AI Rewrite Follow-Up Input */
+    .ai-rewrite-followup {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+      align-items: center;
+    }
+
+    .ai-rewrite-followup-input {
+      flex: 1;
+      padding: 8px 12px;
+      font-size: 13px;
+      font-family: inherit;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      box-sizing: border-box;
+    }
+
+    .ai-rewrite-followup-input:focus {
+      border-color: var(--accent, #3498db);
+      box-shadow: 0 0 0 3px rgba(52,152,219,0.12);
+    }
+
+    .ai-rewrite-followup-btn {
+      padding: 8px 14px;
+      font-size: 13px;
+      font-weight: 600;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      background: var(--accent, #3498db);
+      color: white;
+      white-space: nowrap;
+      flex-shrink: 0;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .ai-rewrite-followup-btn:hover {
+      background: #2980b9;
+    }
+
+    .ai-rewrite-followup-btn:disabled {
+      opacity: 0.6;
+      pointer-events: none;
+    }
+
+    /* Mobile follow-up — collapsible refine */
+    .mobile-refine-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 10px;
+      padding: 8px 16px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--accent, #3498db);
+      background: rgba(52,152,219,0.06);
+      border: 1.5px solid rgba(52,152,219,0.3);
+      border-radius: 20px;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      transition: all 0.2s;
+    }
+    .mobile-refine-toggle:active {
+      background: var(--accent, #3498db);
+      color: white;
+    }
+    .mobile-refine-toggle svg {
+      width: 14px;
+      height: 14px;
+      flex-shrink: 0;
+    }
+    .mobile-rewrite-followup {
+      display: flex;
+      gap: 6px;
+      margin-top: 8px;
+      align-items: center;
+      animation: mobileSlideDown 0.2s ease-out;
+    }
+    @keyframes mobileSlideDown {
+      from { opacity: 0; transform: translateY(-6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .mobile-rewrite-followup-input {
+      flex: 1;
+      padding: 10px 12px;
+      font-size: 14px;
+      font-family: inherit;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      outline: none;
+      box-sizing: border-box;
+      min-height: 44px;
+    }
+
+    .mobile-rewrite-followup-input:focus {
+      border-color: var(--accent, #3498db);
+      box-shadow: 0 0 0 3px rgba(52,152,219,0.15);
+    }
+
+    .mobile-rewrite-followup-btn {
+      padding: 10px 16px;
+      font-size: 14px;
+      font-weight: 600;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      background: var(--accent, #3498db);
+      color: white;
+      white-space: nowrap;
+      flex-shrink: 0;
+      min-height: 44px;
+      min-width: 44px;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .mobile-rewrite-followup-btn:disabled {
+      opacity: 0.6;
+      pointer-events: none;
+    }
+
+    /* Mobile nav guard dialog (unsaved rewrite warning) */
+    .mobile-nav-guard-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.45);
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: fadeIn 0.15s ease-out;
+    }
+    .mobile-nav-guard-dialog {
+      background: white;
+      border-radius: 16px;
+      padding: 20px;
+      width: 88%;
+      max-width: 340px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+      text-align: center;
+    }
+    .mobile-nav-guard-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 6px;
+    }
+    .mobile-nav-guard-msg {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-bottom: 16px;
+      line-height: 1.4;
+    }
+    .mobile-nav-guard-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .mobile-nav-guard-btn {
+      padding: 12px 16px;
+      font-size: 14px;
+      font-weight: 600;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      min-height: 44px;
+    }
+    .mobile-nav-guard-btn.accept {
+      background: var(--success, #27ae60);
+      color: white;
+    }
+    .mobile-nav-guard-btn.dismiss {
+      background: var(--danger, #e74c3c);
+      color: white;
+    }
+    .mobile-nav-guard-btn.cancel {
+      background: var(--bg-secondary, #f0f0f0);
+      color: var(--text-primary);
     }
 
     /* API Key Settings */
@@ -2551,6 +2751,670 @@
       margin-top: 5px;
       text-align: center;
     }
+
+    /* ========== MOBILE SCORING INTERFACE (Phase 25 v2) ========== */
+
+    .mobile-scoring-page {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      min-height: 100dvh;
+      background: var(--bg-main);
+      position: relative;
+      overflow-x: hidden;
+      padding-bottom: 56px; /* space for fixed footer */
+    }
+
+    /* --- Mobile Header Bar (v2 — wider, clearer) --- */
+    .mobile-header-bar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: linear-gradient(135deg, #1e3a5f 0%, #2c5282 100%);
+      padding: 0;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+    }
+
+    .mobile-header-top-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px 8px;
+    }
+
+    .mobile-menu-toggle {
+      width: 36px;
+      height: 36px;
+      border: none;
+      background: rgba(255,255,255,0.15);
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 20px;
+      flex-shrink: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .mobile-menu-toggle:active { background: rgba(255,255,255,0.25); transform: scale(0.95); }
+
+    .mobile-chapter-badge {
+      min-width: 36px;
+      height: 36px;
+      padding: 0 8px;
+      background: rgba(255,255,255,0.2);
+      color: white;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      letter-spacing: 0.3px;
+      border: 1px solid rgba(255,255,255,0.3);
+    }
+
+    .mobile-standard-info {
+      flex: 1;
+      min-width: 0;
+      overflow: hidden;
+    }
+
+    .mobile-standard-code {
+      font-size: 15px;
+      font-weight: 700;
+      color: white;
+      letter-spacing: 0.2px;
+    }
+
+    .mobile-standard-title {
+      font-size: 12px;
+      color: rgba(255,255,255,0.75);
+      line-height: 1.35;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .mobile-header-progress {
+      width: 100%;
+      height: 3px;
+      background: rgba(255,255,255,0.15);
+      overflow: hidden;
+    }
+
+    .mobile-header-progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #48bb78 0%, #68d391 100%);
+      transition: width 0.4s ease;
+    }
+
+    .mobile-sub-counter {
+      font-size: 11px;
+      color: rgba(255,255,255,0.65);
+      text-align: center;
+      padding: 4px 12px 6px;
+      letter-spacing: 0.3px;
+    }
+
+    /* --- Mobile Nav Drawer (v2 — expandable chapters → standards) --- */
+    .mobile-drawer-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.45);
+      z-index: 200;
+      animation: mFadeIn 0.2s ease;
+    }
+
+    @keyframes mFadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    .mobile-nav-drawer {
+      position: fixed;
+      left: 0; top: 0; bottom: 0;
+      width: 300px;
+      max-width: 85vw;
+      background: white;
+      z-index: 201;
+      box-shadow: 4px 0 20px rgba(0,0,0,0.15);
+      transform: translateX(-100%);
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .mobile-nav-drawer.open { transform: translateX(0); }
+
+    .mobile-drawer-header {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-shrink: 0;
+      background: linear-gradient(135deg, #1e3a5f 0%, #2c5282 100%);
+    }
+
+    .mobile-drawer-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: white;
+    }
+
+    .mobile-drawer-close {
+      width: 32px; height: 32px;
+      border: none; background: rgba(255,255,255,0.15);
+      border-radius: 6px; cursor: pointer;
+      font-size: 18px; color: white;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    .mobile-drawer-content {
+      flex: 1;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .mobile-drawer-chapter {
+      border-bottom: 1px solid var(--border);
+    }
+
+    .mobile-drawer-ch-btn {
+      width: 100%;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      text-align: left;
+      -webkit-tap-highlight-color: transparent;
+      transition: background 0.15s;
+    }
+
+    .mobile-drawer-ch-btn:active { background: var(--bg-hover); }
+
+    .mobile-drawer-ch-btn.active {
+      background: rgba(52,152,219,0.08);
+      border-left: 3px solid var(--accent, #3498db);
+    }
+
+    .mobile-drawer-ch-badge {
+      width: 30px; height: 30px;
+      border-radius: 6px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--accent, #3498db) 100%);
+      color: white;
+      font-size: 9px; font-weight: 800;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .mobile-drawer-ch-info { flex: 1; min-width: 0; }
+
+    .mobile-drawer-ch-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .mobile-drawer-ch-sub {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .mobile-drawer-ch-progress {
+      font-size: 11px;
+      color: var(--text-muted);
+      background: var(--bg-hover);
+      padding: 2px 8px;
+      border-radius: 10px;
+      flex-shrink: 0;
+    }
+
+    .mobile-drawer-ch-progress.complete {
+      background: rgba(39,174,96,0.12);
+      color: var(--success);
+      font-weight: 600;
+    }
+
+    .mobile-drawer-ch-expand {
+      font-size: 12px;
+      color: var(--text-muted);
+      flex-shrink: 0;
+      transition: transform 0.2s;
+      width: 20px;
+      text-align: center;
+    }
+
+    .mobile-drawer-ch-expand.open { transform: rotate(90deg); }
+
+    /* Sub-standards list under expanded chapter */
+    .mobile-drawer-subs {
+      overflow: hidden;
+      max-height: 0;
+      transition: max-height 0.3s ease;
+      background: #f8fafc;
+    }
+
+    .mobile-drawer-subs.expanded {
+      max-height: 2000px;
+    }
+
+    .mobile-drawer-sub-item {
+      width: 100%;
+      padding: 9px 16px 9px 56px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: none;
+      border: none;
+      border-top: 1px solid rgba(0,0,0,0.04);
+      cursor: pointer;
+      text-align: left;
+      font-size: 12px;
+      color: var(--text-secondary);
+      -webkit-tap-highlight-color: transparent;
+      transition: background 0.15s;
+    }
+
+    .mobile-drawer-sub-item:active { background: rgba(52,152,219,0.06); }
+
+    .mobile-drawer-sub-item.current {
+      color: var(--accent, #3498db);
+      font-weight: 600;
+      background: rgba(52,152,219,0.06);
+    }
+
+    .mobile-drawer-sub-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .mobile-drawer-sub-dot.scored-2 { background: var(--success); }
+    .mobile-drawer-sub-dot.scored-1 { background: var(--warning); }
+    .mobile-drawer-sub-dot.scored-0 { background: var(--danger); }
+    .mobile-drawer-sub-dot.scored-na { background: var(--neutral); }
+    .mobile-drawer-sub-dot.unscored { background: var(--border); border: 1px solid var(--text-muted); }
+
+    .mobile-drawer-sub-code {
+      font-weight: 600;
+      min-width: 48px;
+    }
+
+    .mobile-drawer-sub-text {
+      flex: 1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* --- Mobile Scoring Container --- */
+    .mobile-scoring-container {
+      flex: 1;
+      padding: 12px 12px 16px;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    /* --- Mobile Substandard Card --- */
+    .mobile-sub-card {
+      background: white;
+      border-radius: 16px;
+      padding: 18px 16px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .mobile-sub-top {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .mobile-sub-code {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--primary);
+      background: rgba(30,58,95,0.06);
+      padding: 3px 10px;
+      border-radius: 6px;
+    }
+
+    .mobile-sub-activity {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 5px;
+    }
+
+    .mobile-sub-activity.DOC { background: #e0e7ff; color: #3730a3; }
+    .mobile-sub-activity.OBS { background: #dbeafe; color: #0369a1; }
+    .mobile-sub-activity.INT { background: #fce7f3; color: #be185d; }
+    .mobile-sub-activity.PER { background: #f3e8ff; color: #7c3aed; }
+    .mobile-sub-activity.DEN { background: #fed7aa; color: #92400e; }
+
+    .mobile-sub-text {
+      font-size: 15px;
+      line-height: 1.65;
+      color: var(--text-primary);
+    }
+
+    /* --- Mobile Score Buttons — capsule pills in a row --- */
+    .mobile-score-grid {
+      display: flex;
+      gap: 6px;
+    }
+
+    .mobile-score-btn {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 10px 4px;
+      background: white;
+      border: 2px solid var(--border);
+      border-radius: 24px;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      transition: all 0.2s ease;
+    }
+
+    .mobile-score-btn:active { transform: scale(0.96); }
+
+    .mobile-score-btn.selected.na      { border-color: var(--neutral); background: rgba(149,165,166,0.12); }
+    .mobile-score-btn.selected.not-met  { border-color: var(--danger);  background: rgba(231,76,60,0.12); box-shadow: 0 2px 8px rgba(231,76,60,0.2); }
+    .mobile-score-btn.selected.partial  { border-color: var(--warning); background: rgba(243,156,18,0.12); box-shadow: 0 2px 8px rgba(243,156,18,0.2); }
+    .mobile-score-btn.selected.full     { border-color: var(--success); background: rgba(39,174,96,0.12); box-shadow: 0 2px 8px rgba(39,174,96,0.2); }
+
+    .mobile-score-dot {
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      color: white; font-weight: 700; font-size: 11px;
+      flex-shrink: 0;
+    }
+
+    .mobile-score-dot.na      { background: var(--neutral); }
+    .mobile-score-dot.not-met  { background: var(--danger); }
+    .mobile-score-dot.partial  { background: var(--warning); }
+    .mobile-score-dot.full     { background: var(--success); }
+
+    .mobile-score-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      white-space: nowrap;
+    }
+
+    .mobile-score-btn.selected .mobile-score-label { color: var(--text-primary); }
+
+    /* --- Mobile Findings Wrapper --- */
+    .mobile-findings-wrap {
+      position: relative;
+    }
+
+    .mobile-findings-textarea {
+      width: 100%;
+      padding: 14px 52px 14px 14px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      font-size: 15px;
+      font-family: inherit;
+      resize: vertical;
+      min-height: 100px;
+      line-height: 1.5;
+      transition: border-color 0.2s;
+      box-sizing: border-box;
+    }
+
+    .mobile-findings-textarea:focus {
+      outline: none;
+      border-color: var(--accent, #3498db);
+      box-shadow: 0 0 0 3px rgba(52,152,219,0.1);
+    }
+
+    /* AI Rewrite on mobile — top-right of textarea */
+    .mobile-ai-btn {
+      position: absolute;
+      right: 8px;
+      top: 8px;
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      border: 2px solid var(--accent, #3498db);
+      background: white;
+      color: var(--accent, #3498db);
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      padding: 0;
+      z-index: 5;
+      box-shadow: 0 2px 8px rgba(52,152,219,0.2);
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .mobile-ai-btn:active { transform: scale(0.93); }
+    .mobile-ai-btn.loading { pointer-events: none; background: rgba(52,152,219,0.08); }
+    .mobile-ai-btn.success { background: var(--success); color: white; border-color: var(--success); }
+
+    .mobile-rewrite-preview {
+      margin-top: 10px;
+      padding: 12px;
+      background: var(--bg-hover);
+      border-radius: 10px;
+      border-left: 4px solid var(--accent, #3498db);
+    }
+
+    .mobile-rewrite-text {
+      font-size: 14px;
+      font-style: italic;
+      color: var(--text-primary);
+      line-height: 1.5;
+      margin: 0 0 10px;
+    }
+
+    .mobile-rewrite-actions {
+      display: flex;
+      gap: 14px;
+      justify-content: stretch;
+      padding-top: 12px;
+      border-top: 1px solid rgba(0,0,0,0.06);
+      margin-top: 8px;
+    }
+
+    .mobile-rewrite-dismiss, .mobile-rewrite-accept {
+      flex: 1;
+      padding: 11px 16px;
+      font-size: 14px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 600;
+      border: none;
+      -webkit-tap-highlight-color: transparent;
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+    }
+
+    .mobile-rewrite-dismiss {
+      background: white;
+      border: 1.5px solid var(--border);
+      color: var(--text-secondary);
+    }
+    .mobile-rewrite-dismiss:active {
+      background: #fff0f0;
+      border-color: var(--danger);
+      color: var(--danger);
+    }
+
+    .mobile-rewrite-accept {
+      background: var(--success);
+      color: white;
+      box-shadow: 0 2px 8px rgba(39,174,96,0.25);
+    }
+    .mobile-rewrite-accept:active {
+      background: #219a52;
+      transform: scale(0.97);
+    }
+
+    /* --- Mobile Location Field --- */
+    .mobile-location-wrap {
+      margin-top: 2px;
+    }
+
+    .mobile-location-input {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      font-size: 14px;
+      font-family: inherit;
+      box-sizing: border-box;
+    }
+
+    .mobile-location-input:focus {
+      outline: none;
+      border-color: var(--accent, #3498db);
+    }
+
+    /* --- Mobile Swipe Hint --- */
+    .mobile-swipe-hint {
+      text-align: center;
+      padding: 10px;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .mobile-swipe-hint.scored {
+      color: var(--success);
+      font-weight: 600;
+    }
+
+    /* --- Mobile Nav Arrows (prev/next) — debounced, no swipe --- */
+    .mobile-nav-arrows {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      padding: 14px 16px 10px;
+      margin-top: 6px;
+    }
+
+    .mobile-nav-arrow {
+      flex: 1;
+      max-width: 140px;
+      min-height: 46px;
+      border-radius: 12px;
+      border: 1.5px solid var(--border);
+      background: white;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      -webkit-tap-highlight-color: transparent;
+      transition: all 0.15s;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+      gap: 4px;
+    }
+
+    .mobile-nav-arrow:active { background: var(--bg-hover); transform: scale(0.97); }
+    .mobile-nav-arrow:disabled { opacity: 0.3; pointer-events: none; }
+
+    /* --- Mobile Progress Footer (v2 — desktop-style with filters) --- */
+    .mobile-progress-footer {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      background: white;
+      border-top: 1px solid var(--border);
+      z-index: 100;
+      box-shadow: 0 -2px 10px rgba(0,0,0,0.06);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .mobile-footer-bar {
+      height: 3px;
+      background: var(--border);
+      width: 100%;
+    }
+
+    .mobile-footer-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent, #3498db) 0%, var(--success) 100%);
+      transition: width 0.4s ease;
+    }
+
+    .mobile-footer-stats {
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      padding: 6px 8px 7px;
+    }
+
+    .mobile-footer-stat {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1px;
+      cursor: pointer;
+      padding: 2px 6px;
+      border-radius: 8px;
+      -webkit-tap-highlight-color: transparent;
+      transition: background 0.15s;
+      min-width: 42px;
+    }
+
+    .mobile-footer-stat:active { transform: scale(0.95); }
+    .mobile-footer-stat.active { background: rgba(52,152,219,0.08); }
+    .mobile-footer-stat.active.f-full    { background: rgba(39,174,96,0.1); }
+    .mobile-footer-stat.active.f-partial { background: rgba(243,156,18,0.1); }
+    .mobile-footer-stat.active.f-not-met { background: rgba(231,76,60,0.1); }
+    .mobile-footer-stat.active.f-na      { background: rgba(149,165,166,0.1); }
+    .mobile-footer-stat.active.f-pending { background: rgba(142,68,173,0.1); }
+
+    .mobile-footer-stat-val {
+      font-size: 15px;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    .mobile-footer-stat-label {
+      font-size: 9px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .mobile-footer-pct {
+      font-size: 14px;
+      font-weight: 800;
+      min-width: 48px;
+      text-align: center;
+      line-height: 1;
+    }
+
+    .mobile-footer-pct-label {
+      font-size: 9px;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    /* ========== END MOBILE SCORING ========== */
 
     /* Buttons */
     .btn {
@@ -3898,17 +4762,7 @@
       }
     }
 
-    /* Mobile Main App - Hide Scoring Tab */
-    @media (max-width: 768px) {
-      .nav-tabs .nav-tab[data-tab="scoring"] {
-        display: none !important;
-      }
-
-      .mobile-only-message {
-        display: block !important;
-      }
-    }
-
+    /* Mobile Main App - Scoring tab now shows mobile interface (Phase 25) */
     @media (min-width: 769px) {
       .mobile-only-message {
         display: none !important;
@@ -4012,6 +4866,273 @@
     // ============================================
     const ADMIN_USERNAME = 'admin';
     const ADMIN_PASSWORD = 'admin123';
+
+    // ============================================
+    // AI REWRITE — SMART URL (works local + deployed)
+    // ============================================
+    // Localhost → proxy.js on port 3001 (or firebase emulators)
+    // Production → Cloud Function via /api/rewrite
+    const getRewriteUrl = () => {
+      const h = window.location.hostname;
+      if (h === 'localhost' || h === '127.0.0.1') {
+        return 'http://localhost:3001/api/rewrite';
+      }
+      return '/api/rewrite';
+    };
+
+    // ============================================
+    // ARABIC TEXT RENDERER — Canvas-based for jsPDF
+    // ============================================
+    // Uses browser's native Arabic shaping (perfect RTL, ligatures, diacritics)
+    // Renders to canvas image, then embeds in PDF
+
+    // Force-load Arabic font for canvas rendering
+    // Google Fonts with display=swap lazy-loads weights only when used in DOM
+    // Canvas API does NOT trigger font loading — must explicitly force it
+    const forceLoadArabicFont = async () => {
+      // Create hidden DOM elements that use the exact font weights we need
+      const testEl = document.createElement('div');
+      testEl.style.cssText = 'position:absolute;left:-9999px;top:-9999px;font-size:16px;';
+      testEl.innerHTML = '<span style="font-family:\'Noto Naskh Arabic\';font-weight:400">تجربة</span>' +
+                         '<span style="font-family:\'Noto Naskh Arabic\';font-weight:700">تجربة</span>';
+      document.body.appendChild(testEl);
+
+      // Explicitly request font loading via FontFace API
+      try {
+        await document.fonts.load("400 16px 'Noto Naskh Arabic'");
+        await document.fonts.load("700 16px 'Noto Naskh Arabic'");
+      } catch (e) {
+        console.warn('[ArabicFont] FontFace load failed, falling back to fonts.ready:', e);
+      }
+      await document.fonts.ready;
+
+      const loaded400 = document.fonts.check("400 16px 'Noto Naskh Arabic'");
+      const loaded700 = document.fonts.check("700 16px 'Noto Naskh Arabic'");
+      console.log('[ArabicFont] 400 loaded:', loaded400, '| 700 loaded:', loaded700);
+
+      document.body.removeChild(testEl);
+      return loaded400 && loaded700;
+    };
+    let arabicFontReady = false;
+    forceLoadArabicFont().then(ok => { arabicFontReady = ok; });
+
+    const renderArabicBlock = (text, maxWidthMM, options = {}) => {
+      const {
+        fontSize = 13,
+        fontWeight = '400',
+        color = '#2c3e50',
+        lineHeight = 1.7
+      } = options;
+
+      // Runtime font availability check
+      const fontAvailable = document.fonts.check(`${fontWeight} 16px 'Noto Naskh Arabic'`);
+      if (!fontAvailable) {
+        console.warn('[ArabicRender] WARNING: Noto Naskh Arabic weight', fontWeight, 'NOT available! Text may render with diamonds.');
+      }
+
+      // WHITELIST-based Arabic text sanitization
+      // Only allow characters we KNOW the font can render — strip everything else
+      let sanitized = text;
+      if (typeof sanitized.normalize === 'function') {
+        sanitized = sanitized.normalize('NFC');
+      }
+
+      // First: strip surrogate pairs (non-BMP characters like emoji) — these cause ◆◆ diamonds
+      const stripped = [];
+      const strippedChars = [];
+      for (let i = 0; i < sanitized.length; i++) {
+        const code = sanitized.charCodeAt(i);
+        // Detect surrogate pairs (non-BMP characters: emoji, rare symbols)
+        if (code >= 0xD800 && code <= 0xDBFF) {
+          // High surrogate — skip it and the next low surrogate
+          const nextCode = i + 1 < sanitized.length ? sanitized.charCodeAt(i + 1) : 0;
+          strippedChars.push(`U+${(((code - 0xD800) * 0x400) + (nextCode - 0xDC00) + 0x10000).toString(16).toUpperCase()} (surrogate pair at pos ${i})`);
+          i++; // skip low surrogate too
+          continue;
+        }
+        if (code >= 0xDC00 && code <= 0xDFFF) {
+          // Orphan low surrogate — skip
+          continue;
+        }
+
+        // WHITELIST: only keep these character ranges
+        const allowed =
+          (code >= 0x0020 && code <= 0x007E) || // Basic Latin (space, letters, digits, punctuation)
+          (code >= 0x0600 && code <= 0x06FF) || // Arabic (all standard Arabic letters, diacritics, numbers)
+          (code >= 0x0750 && code <= 0x077F) || // Arabic Supplement
+          (code >= 0x08A0 && code <= 0x08FF) || // Arabic Extended-A
+          (code >= 0x0870 && code <= 0x089F) || // Arabic Extended-B
+          (code >= 0xFB50 && code <= 0xFDFF) || // Arabic Presentation Forms-A
+          (code >= 0xFE70 && code <= 0xFEFF) || // Arabic Presentation Forms-B
+          code === 0x000A ||                     // Newline
+          code === 0x000D ||                     // Carriage return
+          code === 0x060C ||                     // Arabic comma
+          code === 0x061B ||                     // Arabic semicolon
+          code === 0x061F ||                     // Arabic question mark
+          (code >= 0x2000 && code <= 0x200A) ||  // Various spaces (en/em space etc)
+          code === 0x00AB || code === 0x00BB ||  // Guillemets « »
+          code === 0x2013 || code === 0x2014 ||  // En/Em dash
+          code === 0x2018 || code === 0x2019 ||  // Smart quotes
+          code === 0x201C || code === 0x201D;    // Double smart quotes
+
+        if (allowed) {
+          stripped.push(sanitized[i]);
+        } else {
+          strippedChars.push(`U+${code.toString(16).toUpperCase()} '${sanitized[i]}' at pos ${i}`);
+        }
+      }
+      if (strippedChars.length > 0) {
+        console.warn('[ArabicRender] STRIPPED chars (likely causing diamonds):', strippedChars.join(', '));
+      }
+      text = stripped.join('');
+
+      // High-DPI scale for crisp PDF output
+      const scale = 4;
+      const mmToPx = 3.78;
+      const maxWidthPx = maxWidthMM * mmToPx;
+      const canvasMaxWidth = maxWidthPx * scale;
+      const fontSizePx = fontSize * scale;
+      const lineHeightPx = fontSizePx * lineHeight;
+      const fontStr = `${fontWeight} ${fontSizePx}px 'Noto Naskh Arabic', 'Amiri', serif`;
+
+      // Create off-screen canvas
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      ctx.font = fontStr;
+
+      // Split lines — each numbered line is its own paragraph
+      const paragraphs = text.split('\n').filter(l => l.trim());
+
+      // Word-wrap each paragraph respecting full canvas width
+      const allLines = [];
+      const usableWidth = canvasMaxWidth - 20; // minimal margin
+      paragraphs.forEach(para => {
+        const trimmed = para.trim();
+        const words = trimmed.split(/\s+/);
+        let currentLine = '';
+        words.forEach(word => {
+          const testLine = currentLine ? currentLine + ' ' + word : word;
+          if (ctx.measureText(testLine).width > usableWidth && currentLine) {
+            allLines.push(currentLine);
+            currentLine = '    ' + word; // indent continuation
+          } else {
+            currentLine = testLine;
+          }
+        });
+        if (currentLine) allLines.push(currentLine);
+      });
+
+      // Size canvas — tight, no excess padding
+      const padX = 10 * scale;
+      const padY = 6 * scale;
+      canvas.width = canvasMaxWidth + padX;
+      canvas.height = allLines.length * lineHeightPx + padY * 2;
+
+      // Clear
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Render Arabic text — RTL, right-aligned, full width
+      ctx.font = fontStr;
+      ctx.direction = 'rtl';
+      ctx.textAlign = 'right';
+      ctx.fillStyle = color;
+      ctx.textBaseline = 'top';
+
+      allLines.forEach((line, i) => {
+        ctx.fillText(line, canvas.width - padX, padY + i * lineHeightPx);
+      });
+
+      return {
+        dataUrl: canvas.toDataURL('image/png'),
+        widthMM: maxWidthMM,
+        heightMM: canvas.height / (mmToPx * scale)
+      };
+    };
+
+    // ============================================
+    // BATCH ARABIC توصية GENERATOR
+    // ============================================
+    // Generates Arabic recommendations for all Partial/Not Met items via Claude API
+
+    const generateArabicRecommendations = async (actionPlanItems, showToast, correctiveActionFn, onProgress) => {
+      const apiKey = localStorage.getItem('standardshub_anthropic_key');
+      console.log('[ArabicGen] Starting. Items:', actionPlanItems.length, '| API key:', apiKey ? apiKey.substring(0,10) + '...' : 'MISSING');
+      if (!apiKey) {
+        console.error('[ArabicGen] NO API KEY — cannot generate Arabic recommendations');
+        if (showToast) showToast('warning', 'API Key Required', 'Set your Anthropic API key in Settings to generate Arabic recommendations.');
+        return {};
+      }
+
+      const recommendations = {};
+      const rewriteUrl = getRewriteUrl();
+      console.log('[ArabicGen] Using URL:', rewriteUrl);
+      let completedCount = 0;
+      const totalCount = actionPlanItems.length;
+      if (onProgress) onProgress({ phase: 'arabic', completed: 0, total: totalCount });
+
+      // Process in batches of 5 to avoid overwhelming the API
+      const batchSize = 5;
+      for (let i = 0; i < actionPlanItems.length; i += batchSize) {
+        const batch = actionPlanItems.slice(i, i + batchSize);
+        console.log(`[ArabicGen] Processing batch ${Math.floor(i/batchSize)+1}: items ${i+1}-${Math.min(i+batchSize, actionPlanItems.length)}`);
+        const promises = batch.map(async (item) => {
+          try {
+            // Generate English corrective action for context
+            const englishAction = correctiveActionFn ? correctiveActionFn(item) : '';
+
+            const userMessage = `FINDING (PRIMARY — this is what the surveyor actually observed):
+${item.findings || 'No finding recorded — use the standard and corrective action for context'}
+
+STANDARD: ${item.text}
+SCORE: ${item.score === 0 ? 'Not Met (0)' : 'Partial (1)'}
+DOMAIN: ${item.chapter}
+ENGLISH CORRECTIVE ACTION: ${englishAction}
+
+Write an Arabic recommendation that directly addresses the FINDING above.`;
+
+            console.log(`[ArabicGen] Fetching for ${item.id}...`);
+            const response = await fetch(rewriteUrl, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey },
+              body: JSON.stringify({
+                model: 'claude-sonnet-4-5-20250929',
+                max_tokens: 250,
+                system: ARABIC_TAWSIYA_SYSTEM_PROMPT,
+                messages: [{ role: 'user', content: userMessage }]
+              })
+            });
+
+            console.log(`[ArabicGen] ${item.id} response status:`, response.status);
+            if (!response.ok) {
+              const errBody = await response.text().catch(() => 'no body');
+              console.error(`[ArabicGen] ${item.id} API error ${response.status}:`, errBody);
+              throw new Error(`API error ${response.status}`);
+            }
+
+            const data = await response.json();
+            let text = (data.content && data.content[0] && data.content[0].text) || '';
+            text = text.trim().replace(/^["'`]+|["'`]+$/g, '').replace(/^```\w*\n?|```$/g, '').trim();
+
+            if (text) {
+              recommendations[item.id] = text;
+              console.log(`[ArabicGen] ✓ ${item.id}: ${text.substring(0, 60)}...`);
+            } else {
+              console.warn(`[ArabicGen] ${item.id}: empty response`);
+            }
+          } catch (err) {
+            console.error(`[ArabicGen] ✗ ${item.id} FAILED:`, err.message);
+          }
+          completedCount++;
+          if (onProgress) onProgress({ phase: 'arabic', completed: completedCount, total: totalCount });
+        });
+
+        await Promise.all(promises);
+      }
+
+      console.log('[ArabicGen] Done. Total generated:', Object.keys(recommendations).length);
+      if (onProgress) onProgress({ phase: 'arabic-done', completed: totalCount, total: totalCount });
+      return recommendations;
+    };
 
     // ============================================
     // AI FINDINGS REWRITE ENGINE — SYSTEM PROMPT
@@ -4119,6 +5240,57 @@ QUALITY GATE — verify before returning:
 ✓ Past tense throughout ✓ Single sentence ✓ 10–25 words ✓ Correct activity opening with spelled-out count ✓ Subject from sub-standard text ✓ Your verb preferences ✓ Your connector preferences ✓ No evaluative language ✓ No recommendations ✓ No blame ✓ Counts consistent with session context ✓ One idea only
 
 Return ONLY the finding sentence. No explanation, no quotes, no markdown.`;
+
+    // ============================================
+    // ARABIC توصية RECOMMENDATION ENGINE — SYSTEM PROMPT
+    // ============================================
+    const ARABIC_TAWSIYA_SYSTEM_PROMPT = `You are a senior CBAHI quality consultant writing Arabic recommendations for dental center managers.
+
+YOUR PRIMARY INPUT IS THE FINDING. The finding is what the surveyor actually saw and documented. Everything you write must directly address THIS finding. The standard gives the "why" context. The English corrective action shows one possible direction. But the finding is your anchor.
+
+THINKING PROCESS:
+- What exactly did the surveyor observe? → Address THAT
+- What is the simplest, most practical way to fix THIS specific gap?
+- What would a wise quality advisor tell this manager face to face?
+
+WRITING RULES:
+- Write as many lines as the finding needs. One clear gap = 1-2 lines. Multiple gaps = 3-4 lines. Let the content dictate the length.
+- FORMATTING: If the recommendation is a single sentence, write it as plain text with NO bullet or dash. If there are multiple separate points, put a small dash (–) before each point. NEVER use numbers (1, 2, 3) or numbered lists.
+- PUNCTUATION: Every complete sentence must end with a full stop (.). This applies to both single-sentence recommendations and each dash-prefixed point.
+- Write flowing Arabic prose. Plain professional Arabic. A clinic manager with no quality background must understand every word.
+- NEVER use complex terms: no "منهجية" no "آلية مؤسسية" no "اطار عمل" no "بروتوكول شامل" — use simple direct words
+- Always say "المركز" — never "المنظمة" or "المؤسسة" or "المستشفى". NEVER add a specialty suffix like "السني" or "الجلدي" — just "المركز" alone. The reader already knows which center they are. Keep it universal.
+- Western digits only (1, 2, 3) — never Arabic-Indic (١، ٢، ٣)
+- Tone: kind, supportive, professional. Make the reader feel capable and guided. NEVER use "يجب فوراً" or commanding/urgent language.
+- TASHKEEL (تشكيل): Add diacritical marks ONLY on words that could be misread or mispronounced without them. Common examples: يُوصى، يُفضّل، يُقترح، يُراجَع، يُوثَّق، يُحدَّد، تُعدّ، يُعيَّن، يُسجَّل، تُتابَع. Do NOT over-use tashkeel — only where ambiguity exists.
+- NO introductions, NO conclusions, NO motivational sentences, NO markdown, NO bold, NO headers
+
+CRITICAL RULES — DO NOT ASSUME:
+- NEVER invent timeframes. If you suggest a timeline, always say "يُفضّل" (preferable) or "يُقترح" (suggested). Example: "يُفضّل المراجعة كل 3 اشهر" NOT "يجب المراجعة كل 3 اشهر"
+- NEVER assume specific procedures unless the finding explicitly mentions them. If the finding says "no risk register" → talk about risk register. Do NOT add "and train all staff on risk management" unless the finding says training was lacking.
+- NEVER add steps beyond what the finding warrants. Stay focused on what was actually observed.
+- If the finding says nothing about training → do not recommend training
+- If the finding says nothing about a specific number of years → do not invent "خبرة سنتين" (2 years experience)
+- Every recommendation line must trace back to something in the finding. If you cannot justify a line from the finding, delete it.
+
+FINDING FOCUS EXAMPLES:
+- Finding: "consent forms in English only" → recommend Arabic consent forms. NOT general patient rights.
+- Finding: "moderate sedation not implemented" → recommend sedation protocols. NOT radiograph procedures.
+- Finding: "no documented evidence of BLS training" → recommend documenting BLS. NOT hiring new staff.
+- Finding: "strategic plan goals were broad" → recommend measurable goals. NOT "establish governance committees."
+
+GOOD OUTPUT — Finding: "Staff credential files lacked updated BLS certificates" (multiple points → use dashes)
+– يُوصى بتوثيق شهادات الانعاش القلبي لكل موظف سريري وتحديد موعد تجديد واضح في ملفه.
+– يُفضّل تكليف مسؤول بمتابعة صلاحية الشهادات بشكل دوري.
+
+GOOD OUTPUT — Finding: "Informed consent forms were written in English for Arabic-speaking patients" (single point → no dash)
+يُوصى بتوفير نماذج موافقة مسبقة باللغة العربية لجميع الاجراءات العلاجية في المركز.
+
+GOOD OUTPUT — Finding: "Leadership discussions focused solely on audit reports with no documentation of KPI review" (multiple points → use dashes)
+– يُوصى بتوثيق مناقشة مؤشرات الاداء في محاضر اجتماعات الادارة بشكل واضح ومنتظم.
+– يُقترح اضافة بند ثابت لمراجعة المؤشرات في جدول اعمال الاجتماعات.
+
+Return ONLY the recommendation text. Nothing else.`;
 
     const storage = {
       get: (key) => {
@@ -5475,6 +6647,8 @@ Return ONLY the finding sentence. No explanation, no quotes, no markdown.`;
       const [rewriteState, setRewriteState] = useState('idle'); // idle | loading | success | error
       const [rewritePreview, setRewritePreview] = useState(null);
       const [rewriteLong, setRewriteLong] = useState(false);
+      const [followUpText, setFollowUpText] = useState('');
+      const [followUpLoading, setFollowUpLoading] = useState(false);
 
       const getScoreClass = () => {
         if (scoreValue === 'NA') return 'scored-na';
@@ -5520,14 +6694,14 @@ Convert this note into one finding sentence. If the raw note contains a specific
             return;
           }
 
-          const response = await fetch('http://localhost:3001/api/rewrite', {
+          const response = await fetch(getRewriteUrl(), {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
               'x-api-key': apiKey,
             },
             body: JSON.stringify({
-              model: 'claude-sonnet-4-20250514',
+              model: 'claude-sonnet-4-5-20250929',
               max_tokens: 300,
               system: FINDINGS_REWRITE_SYSTEM_PROMPT,
               messages: [
@@ -5577,6 +6751,78 @@ Convert this note into one finding sentence. If the raw note contains a specific
       const handleDismissRewrite = () => {
         setRewritePreview(null);
         setRewriteLong(false);
+        setFollowUpText('');
+      };
+
+      // Follow-up refinement handler
+      const handleFollowUp = async () => {
+        if (!followUpText.trim() || !rewritePreview || followUpLoading) return;
+
+        setFollowUpLoading(true);
+
+        const counts = sessionCounts || { pf: 7, dr: 5, int: 4 };
+        const actType = substandard.activityType || 'DOC';
+        const followUpMessage = `CONTEXT (do not ignore — this determines the finding structure):
+Sub-standard: ${substandard.text}
+Activity type: ${actType}  ← THIS DETERMINES THE OPENING PHRASE
+Session counts: PF=${toWord(counts.pf)}, DR=${toWord(counts.dr)}, INT=${toWord(counts.int)}
+Original raw note: ${comment.trim()}
+
+CURRENT AI FINDING:
+${rewritePreview}
+
+SURVEYOR INSTRUCTION:
+${followUpText.trim()}
+
+RULES:
+- The activity type above determines the opening phrase. Do not change it based on the instruction.
+- If activity type is INT, open with "Upon interviewing [count] staff members"
+- If activity type is PF, open with "Upon reviewing [count] personnel files"
+- If activity type is DR, open with "Upon reviewing [count] dental records"
+- If activity type is OBS, open with "Upon observing" or "During observation of"
+- If activity type is DOC, open with "Upon reviewing" or "Review of documentation"
+- Apply the surveyor's instruction while maintaining the correct activity type opening.
+- Return ONLY the revised finding text — no explanation, no quotes, no markdown.`;
+
+        try {
+          const apiKey = localStorage.getItem('standardshub_anthropic_key');
+          if (!apiKey) {
+            if (showToast) showToast('warning', 'API Key Required', 'Set your Anthropic API key in Settings.');
+            setFollowUpLoading(false);
+            return;
+          }
+
+          const response = await fetch(getRewriteUrl(), {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey },
+            body: JSON.stringify({
+              model: 'claude-sonnet-4-5-20250929',
+              max_tokens: 300,
+              system: FINDINGS_REWRITE_SYSTEM_PROMPT,
+              messages: [{ role: 'user', content: followUpMessage }]
+            })
+          });
+
+          if (!response.ok) {
+            const errData = await response.json().catch(() => ({}));
+            throw new Error(errData.error?.message || errData.error || `API error ${response.status}`);
+          }
+
+          const data = await response.json();
+          let findingText = (data.content && data.content[0] && data.content[0].text) || '';
+          findingText = findingText.trim().replace(/^["'`]+|["'`]+$/g, '').replace(/^```\w*\n?|```$/g, '').trim();
+
+          if (!findingText) throw new Error('Empty response');
+
+          setRewritePreview(findingText);
+          setRewriteLong(findingText.length > 300);
+          setFollowUpText('');
+          setFollowUpLoading(false);
+        } catch (err) {
+          console.error('Follow-up error:', err);
+          setFollowUpLoading(false);
+          if (showToast) showToast('error', 'Refinement Failed', 'Could not refine finding — try again.');
+        }
       };
 
       return (
@@ -5637,12 +6883,42 @@ Convert this note into one finding sentence. If the raw note contains a specific
                     {rewriteLong && (
                       <div className="ai-rewrite-long-warning">Response exceeds 300 characters — review for over-generation.</div>
                     )}
+                    <div className="ai-rewrite-followup">
+                      <input
+                        type="text"
+                        className="ai-rewrite-followup-input"
+                        placeholder="e.g. make it shorter, add location..."
+                        value={followUpText}
+                        onChange={(e) => setFollowUpText(e.target.value)}
+                        onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleFollowUp(); } }}
+                        disabled={followUpLoading}
+                      />
+                      <button
+                        className="ai-rewrite-followup-btn"
+                        onClick={handleFollowUp}
+                        disabled={followUpLoading || !followUpText.trim()}
+                      >
+                        {followUpLoading ? '...' : <>
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M12 20h9"/>
+                            <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+                          </svg>
+                          Refine
+                        </>}
+                      </button>
+                    </div>
                     <div className="ai-rewrite-preview-actions">
                       <button className="ai-rewrite-dismiss" onClick={handleDismissRewrite}>
-                        ✗ Dismiss
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                        </svg>
+                        Dismiss
                       </button>
                       <button className="ai-rewrite-accept" onClick={handleAcceptRewrite}>
-                        ✓ Accept
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                          <polyline points="20 6 9 17 4 12"/>
+                        </svg>
+                        Accept
                       </button>
                     </div>
                   </div>
@@ -6724,8 +8000,876 @@ Convert this note into one finding sentence. If the raw note contains a specific
       );
     };
 
+    // ==================== MOBILE SCORING INTERFACE (Phase 25) ====================
+
+    // Mobile Nav Drawer — slide-in chapter picker
+    const MobileNavDrawer = ({ isOpen, onClose, chapters, currentChapterId, currentSubstandardId, scores, onSelectChapter, onSelectSubstandard }) => {
+      const [expandedChapter, setExpandedChapter] = useState(currentChapterId);
+
+      const getChapterProgress = (chapter) => {
+        const subs = getAllSubstandards(chapter.standards);
+        const scored = subs.filter(s => scores[s.id]?.value !== undefined && scores[s.id]?.value !== null).length;
+        return { scored, total: subs.length };
+      };
+
+      const getSubScoreClass = (subId) => {
+        const sv = scores[subId]?.value;
+        if (sv === 2) return 'scored-2';
+        if (sv === 1) return 'scored-1';
+        if (sv === 0) return 'scored-0';
+        if (sv === 'NA') return 'scored-na';
+        return 'unscored';
+      };
+
+      const handleChapterToggle = (chId) => {
+        setExpandedChapter(expandedChapter === chId ? null : chId);
+      };
+
+      return (
+        React.createElement(React.Fragment, null,
+          isOpen && React.createElement('div', { className: 'mobile-drawer-overlay', onClick: onClose }),
+          React.createElement('div', { className: `mobile-nav-drawer ${isOpen ? 'open' : ''}` },
+            React.createElement('div', { className: 'mobile-drawer-header' },
+              React.createElement('div', { className: 'mobile-drawer-title' }, 'Chapters'),
+              React.createElement('button', { className: 'mobile-drawer-close', onClick: onClose }, '\u2715')
+            ),
+            React.createElement('div', { className: 'mobile-drawer-content' },
+              chapters.map(ch => {
+                const prog = getChapterProgress(ch);
+                const isActive = ch.id === currentChapterId;
+                const isExpanded = expandedChapter === ch.id;
+                const isComplete = prog.scored === prog.total && prog.total > 0;
+                const allSubs = getAllSubstandards(ch.standards);
+                return React.createElement('div', { key: ch.id, className: 'mobile-drawer-chapter' },
+                  // Chapter row — tap to expand/collapse
+                  React.createElement('button', {
+                    className: `mobile-drawer-ch-btn ${isActive ? 'active' : ''}`,
+                    onClick: () => handleChapterToggle(ch.id)
+                  },
+                    React.createElement('div', { className: 'mobile-drawer-ch-badge' }, ch.code),
+                    React.createElement('div', { className: 'mobile-drawer-ch-info' },
+                      React.createElement('div', { className: 'mobile-drawer-ch-name' }, ch.name),
+                      React.createElement('div', { className: 'mobile-drawer-ch-sub' },
+                        allSubs.length + ' Sub-standards')
+                    ),
+                    React.createElement('div', {
+                      className: `mobile-drawer-ch-progress ${isComplete ? 'complete' : ''}`
+                    }, prog.scored + '/' + prog.total),
+                    React.createElement('div', {
+                      className: `mobile-drawer-ch-expand ${isExpanded ? 'open' : ''}`
+                    }, '\u25B6')
+                  ),
+                  // Expandable sub-standards list
+                  React.createElement('div', { className: `mobile-drawer-subs ${isExpanded ? 'expanded' : ''}` },
+                    allSubs.map(sub =>
+                      React.createElement('button', {
+                        key: sub.id,
+                        className: `mobile-drawer-sub-item ${sub.id === currentSubstandardId ? 'current' : ''}`,
+                        onClick: () => { onSelectSubstandard(ch.id, sub); onClose(); }
+                      },
+                        React.createElement('div', { className: `mobile-drawer-sub-dot ${getSubScoreClass(sub.id)}` }),
+                        React.createElement('span', { className: 'mobile-drawer-sub-code' }, sub.code),
+                        React.createElement('span', { className: 'mobile-drawer-sub-text' },
+                          sub.text.length > 50 ? sub.text.substring(0, 50) + '...' : sub.text
+                        )
+                      )
+                    )
+                  )
+                );
+              })
+            )
+          )
+        )
+      );
+    };
+
+    // Mobile Substandard Card — single card with scores, findings, AI rewrite
+    const MobileSubstandardCard = ({ substandard, score, onScoreChange, sessionCounts, showToast, onRewriteStateChange }) => {
+      const scoreValue = score?.value;
+      const comment = score?.comment || score?.findings || '';
+      const location = score?.location || '';
+
+      const [rewriteState, setRewriteState] = useState('idle');
+      const [rewritePreview, setRewritePreview] = useState(null);
+      const [rewriteLong, setRewriteLong] = useState(false);
+      const [followUpText, setFollowUpText] = useState('');
+      const [followUpLoading, setFollowUpLoading] = useState(false);
+      const [showRefineInput, setShowRefineInput] = useState(false);
+
+      const numScore = (scoreValue !== null && scoreValue !== undefined && scoreValue !== 'NA') ? Number(scoreValue) : null;
+      const hasFindings = (score?.comment || score?.findings || '').trim().length > 0 || comment.trim().length > 0;
+      const showRewriteBtn = hasFindings && (numScore === 0 || numScore === 1);
+
+      const numberWords = ['zero','one','two','three','four','five','six','seven','eight','nine','ten','eleven','twelve','thirteen','fourteen','fifteen','sixteen','seventeen','eighteen','nineteen','twenty'];
+      const toWord = (n) => numberWords[n] || String(n);
+
+      // AI Rewrite handler (same logic as desktop SubstandardCard)
+      const handleRewrite = async () => {
+        if (!comment.trim() || rewriteState === 'loading') return;
+        setRewriteState('loading');
+        setRewritePreview(null);
+        setRewriteLong(false);
+
+        const counts = sessionCounts || { pf: 7, dr: 5, int: 4 };
+        const userMessage = `Raw note: ${comment.trim()}
+Sub-standard: ${substandard.text}
+Activity type: ${substandard.activityType}
+Default session counts (use ONLY if no number appears in the raw note): PF=${toWord(counts.pf)}, DR=${toWord(counts.dr)}, INT=${toWord(counts.int)}
+Score: ${scoreValue}
+
+Convert this note into one finding sentence. If the raw note contains a specific number, use that number (as a word) instead of the default session counts. Return ONLY the finding text — no explanation, no quotes, no markdown.`;
+
+        try {
+          const apiKey = localStorage.getItem('standardshub_anthropic_key');
+          if (!apiKey) {
+            if (showToast) showToast('warning', 'API Key Required', 'Set your Anthropic API key in Settings.');
+            setRewriteState('idle');
+            return;
+          }
+
+          const response = await fetch(getRewriteUrl(), {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey },
+            body: JSON.stringify({
+              model: 'claude-sonnet-4-5-20250929',
+              max_tokens: 300,
+              system: FINDINGS_REWRITE_SYSTEM_PROMPT,
+              messages: [{ role: 'user', content: userMessage }]
+            })
+          });
+
+          if (!response.ok) {
+            const errData = await response.json().catch(() => ({}));
+            throw new Error(errData.error?.message || errData.error || `API error ${response.status}`);
+          }
+
+          const data = await response.json();
+          let findingText = (data.content && data.content[0] && data.content[0].text) || '';
+          findingText = findingText.trim().replace(/^["'`]+|["'`]+$/g, '').replace(/^```\w*\n?|```$/g, '').trim();
+
+          if (!findingText) throw new Error('Empty response');
+
+          setRewritePreview(findingText);
+          setRewriteLong(findingText.length > 300);
+          setRewriteState('success');
+          setTimeout(() => setRewriteState('idle'), 1500);
+        } catch (err) {
+          console.error('Rewrite error:', err);
+          setRewriteState('error');
+          if (showToast) showToast('error', 'Rewrite Unavailable', 'Could not rewrite finding — try again.');
+          setTimeout(() => setRewriteState('idle'), 2000);
+        }
+      };
+
+      const handleAcceptRewrite = () => {
+        onScoreChange(substandard.id, scoreValue, rewritePreview, location);
+        setRewritePreview(null);
+        setRewriteLong(false);
+        setFollowUpText('');
+        setShowRefineInput(false);
+      };
+
+      const handleDismissRewrite = () => {
+        setRewritePreview(null);
+        setRewriteLong(false);
+        setFollowUpText('');
+        setShowRefineInput(false);
+      };
+
+      // Report rewrite state to parent for navigation guard (Issue 3)
+      useEffect(() => {
+        if (onRewriteStateChange) {
+          onRewriteStateChange(!!rewritePreview, {
+            preview: rewritePreview,
+            accept: handleAcceptRewrite,
+            dismiss: handleDismissRewrite
+          });
+        }
+      }, [rewritePreview]);
+
+      // Follow-up refinement handler
+      const handleFollowUp = async () => {
+        if (!followUpText.trim() || !rewritePreview || followUpLoading) return;
+
+        setFollowUpLoading(true);
+
+        const counts = sessionCounts || { pf: 7, dr: 5, int: 4 };
+        const actType = substandard.activityType || 'DOC';
+        const followUpMessage = `CONTEXT (do not ignore — this determines the finding structure):
+Sub-standard: ${substandard.text}
+Activity type: ${actType}  ← THIS DETERMINES THE OPENING PHRASE
+Session counts: PF=${toWord(counts.pf)}, DR=${toWord(counts.dr)}, INT=${toWord(counts.int)}
+Original raw note: ${comment.trim()}
+
+CURRENT AI FINDING:
+${rewritePreview}
+
+SURVEYOR INSTRUCTION:
+${followUpText.trim()}
+
+RULES:
+- The activity type above determines the opening phrase. Do not change it based on the instruction.
+- If activity type is INT, open with "Upon interviewing [count] staff members"
+- If activity type is PF, open with "Upon reviewing [count] personnel files"
+- If activity type is DR, open with "Upon reviewing [count] dental records"
+- If activity type is OBS, open with "Upon observing" or "During observation of"
+- If activity type is DOC, open with "Upon reviewing" or "Review of documentation"
+- Apply the surveyor's instruction while maintaining the correct activity type opening.
+- Return ONLY the revised finding text — no explanation, no quotes, no markdown.`;
+
+        try {
+          const apiKey = localStorage.getItem('standardshub_anthropic_key');
+          if (!apiKey) {
+            if (showToast) showToast('warning', 'API Key Required', 'Set your Anthropic API key in Settings.');
+            setFollowUpLoading(false);
+            return;
+          }
+
+          const response = await fetch(getRewriteUrl(), {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey },
+            body: JSON.stringify({
+              model: 'claude-sonnet-4-5-20250929',
+              max_tokens: 300,
+              system: FINDINGS_REWRITE_SYSTEM_PROMPT,
+              messages: [{ role: 'user', content: followUpMessage }]
+            })
+          });
+
+          if (!response.ok) {
+            const errData = await response.json().catch(() => ({}));
+            throw new Error(errData.error?.message || errData.error || `API error ${response.status}`);
+          }
+
+          const data = await response.json();
+          let findingText = (data.content && data.content[0] && data.content[0].text) || '';
+          findingText = findingText.trim().replace(/^["'`]+|["'`]+$/g, '').replace(/^```\w*\n?|```$/g, '').trim();
+
+          if (!findingText) throw new Error('Empty response');
+
+          setRewritePreview(findingText);
+          setRewriteLong(findingText.length > 300);
+          setFollowUpText('');
+          setFollowUpLoading(false);
+        } catch (err) {
+          console.error('Follow-up error:', err);
+          setFollowUpLoading(false);
+          if (showToast) showToast('error', 'Refinement Failed', 'Could not refine finding — try again.');
+        }
+      };
+
+      const scoreButtons = [
+        { val: 'NA', label: 'N/A', type: 'na', display: '\u2212' },
+        { val: 0, label: 'Not Met', type: 'not-met', display: '0' },
+        { val: 1, label: 'Partial', type: 'partial', display: '1' },
+        { val: 2, label: 'Fully Met', type: 'full', display: '2' }
+      ];
+
+      return (
+        React.createElement('div', { className: 'mobile-sub-card' },
+          // Top: code + activity badge
+          React.createElement('div', { className: 'mobile-sub-top' },
+            React.createElement('span', { className: 'mobile-sub-code' }, substandard.code),
+            React.createElement('span', { className: `mobile-sub-activity ${substandard.activityType}` },
+              substandard.activityType === 'PER' ? 'Personnel File' :
+              substandard.activityType === 'DOC' ? 'Document Review' :
+              substandard.activityType === 'OBS' ? 'Observation' :
+              substandard.activityType === 'INT' ? 'Interview' :
+              substandard.activityType === 'DEN' ? 'Dental Record' : substandard.activityType
+            )
+          ),
+          // Sub-standard text
+          React.createElement('p', { className: 'mobile-sub-text' }, substandard.text),
+          // Score buttons 2x2
+          React.createElement('div', { className: 'mobile-score-grid' },
+            scoreButtons.map(btn =>
+              React.createElement('div', {
+                key: btn.type,
+                className: `mobile-score-btn ${scoreValue === btn.val ? 'selected ' + btn.type : ''}`,
+                onClick: () => onScoreChange(substandard.id, btn.val, comment, location)
+              },
+                React.createElement('div', { className: `mobile-score-dot ${btn.type}` }, btn.display),
+                React.createElement('span', { className: 'mobile-score-label' }, btn.label)
+              )
+            )
+          ),
+          // Findings textarea + AI rewrite
+          React.createElement('div', { className: 'mobile-findings-wrap' },
+            React.createElement('textarea', {
+              className: 'mobile-findings-textarea',
+              placeholder: 'Finding / Comment...',
+              value: comment,
+              onChange: (e) => onScoreChange(substandard.id, scoreValue, e.target.value, location)
+            }),
+            showRewriteBtn && React.createElement('button', {
+              className: `mobile-ai-btn ${rewriteState}`,
+              onClick: handleRewrite,
+              disabled: rewriteState === 'loading'
+            },
+              rewriteState === 'loading'
+                ? React.createElement('div', { className: 'ai-rewrite-spinner' })
+                : rewriteState === 'success'
+                  ? '\u2713'
+                  : '\u2728'
+            ),
+            // Rewrite preview
+            rewritePreview && React.createElement('div', { className: 'mobile-rewrite-preview' },
+              React.createElement('p', { className: 'mobile-rewrite-text' }, rewritePreview),
+              rewriteLong && React.createElement('div', {
+                style: { fontSize: '11px', color: 'var(--warning)', marginBottom: '8px' }
+              }, 'Response exceeds 300 characters — review for over-generation.'),
+              // Follow-up refinement — collapsible toggle
+              !showRefineInput
+                ? React.createElement('button', {
+                    className: 'mobile-refine-toggle',
+                    onClick: () => setShowRefineInput(true)
+                  },
+                    React.createElement('svg', { viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: '2', strokeLinecap: 'round', strokeLinejoin: 'round' },
+                      React.createElement('path', { d: 'M12 20h9' }),
+                      React.createElement('path', { d: 'M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z' })
+                    ),
+                    ' Refine'
+                  )
+                : React.createElement('div', { className: 'mobile-rewrite-followup' },
+                    React.createElement('input', {
+                      type: 'text',
+                      className: 'mobile-rewrite-followup-input',
+                      placeholder: 'e.g. shorter, add location...',
+                      value: followUpText,
+                      onChange: (e) => setFollowUpText(e.target.value),
+                      onKeyDown: (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleFollowUp(); } },
+                      disabled: followUpLoading,
+                      autoFocus: true
+                    }),
+                    React.createElement('button', {
+                      className: 'mobile-rewrite-followup-btn',
+                      onClick: handleFollowUp,
+                      disabled: followUpLoading || !followUpText.trim()
+                    }, followUpLoading ? '...' : '\u27A4')
+                  ),
+              React.createElement('div', { className: 'mobile-rewrite-actions' },
+                React.createElement('button', {
+                  className: 'mobile-rewrite-dismiss',
+                  onClick: handleDismissRewrite
+                },
+                  React.createElement('svg', { width: 15, height: 15, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: '2.5', strokeLinecap: 'round', strokeLinejoin: 'round' },
+                    React.createElement('line', { x1: '18', y1: '6', x2: '6', y2: '18' }),
+                    React.createElement('line', { x1: '6', y1: '6', x2: '18', y2: '18' })
+                  ),
+                  ' Dismiss'
+                ),
+                React.createElement('button', {
+                  className: 'mobile-rewrite-accept',
+                  onClick: handleAcceptRewrite
+                },
+                  React.createElement('svg', { width: 15, height: 15, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: '2.5', strokeLinecap: 'round', strokeLinejoin: 'round' },
+                    React.createElement('polyline', { points: '20 6 9 17 4 12' })
+                  ),
+                  ' Accept'
+                )
+              )
+            )
+          ),
+          // Location field (OBS only)
+          substandard.activityType === 'OBS' && React.createElement('div', { className: 'mobile-location-wrap' },
+            React.createElement('input', {
+              type: 'text',
+              className: 'mobile-location-input',
+              placeholder: 'Location of observation...',
+              value: location,
+              onChange: (e) => onScoreChange(substandard.id, scoreValue, comment, e.target.value)
+            })
+          )
+        )
+      );
+    };
+
+    // Mobile Scoring Page — main orchestrator (v2)
+    const MobileScoringPage = ({ scores, setScores, saving, isFinalized, finalizedData, viewingMode, setViewingMode, onFinalize, onReset, onGoHome, showToast, assessmentDetails, onEditDetails, onNavigateToHistory, onConfigChange }) => {
+
+      const activeChapters = useMemo(() => {
+        const config = assessmentDetails?.configuration || 'A1';
+        return getChaptersByConfig(config);
+      }, [assessmentDetails?.configuration]);
+
+      const allSubs = useMemo(() => getAllSubstandards(
+        activeChapters.flatMap(ch => ch.standards)
+      ), [activeChapters]);
+
+      // Session counts for AI rewrite
+      const sessionCounts = useMemo(() => ({
+        pf: assessmentDetails?.sessionPF || 7,
+        dr: assessmentDetails?.sessionDR || 5,
+        int: assessmentDetails?.sessionINT || 4
+      }), [assessmentDetails?.sessionPF, assessmentDetails?.sessionDR, assessmentDetails?.sessionINT]);
+
+      // Mobile navigation state
+      const [currentChapterIdx, setCurrentChapterIdx] = useState(0);
+      const [currentStdIdx, setCurrentStdIdx] = useState(0);
+      const [currentSubIdx, setCurrentSubIdx] = useState(0);
+      const [drawerOpen, setDrawerOpen] = useState(false);
+      const [mobileScoreFilter, setMobileScoreFilter] = useState(null);
+      const [filteredSubsList, setFilteredSubsList] = useState(null);
+      const [filteredSubsIndex, setFilteredSubsIndex] = useState(0);
+
+      // Unsaved rewrite navigation guard (Issue 3)
+      const [hasActiveRewrite, setHasActiveRewrite] = useState(false);
+      const [navGuardDialog, setNavGuardDialog] = useState(null); // null | { direction: 'next'|'prev', acceptFn, dismissFn }
+      const activeRewriteRef = useRef(null); // holds { preview, acceptFn, dismissFn } from child
+
+      // Derived data
+      const currentChapter = activeChapters[currentChapterIdx] || activeChapters[0];
+      const currentStandard = currentChapter?.standards?.[currentStdIdx];
+      const currentSubs = useMemo(() =>
+        currentStandard ? getAllSubstandards([currentStandard]) : [],
+        [currentStandard]
+      );
+      const currentSubstandard = mobileScoreFilter && filteredSubsList
+        ? filteredSubsList[filteredSubsIndex]
+        : currentSubs[currentSubIdx];
+
+      // Chapter progress
+      const chapterProgress = useMemo(() => {
+        if (!currentChapter) return { scored: 0, total: 0 };
+        const chSubs = getAllSubstandards(currentChapter.standards);
+        const scored = chSubs.filter(s => scores[s.id]?.value !== undefined && scores[s.id]?.value !== null).length;
+        return { scored, total: chSubs.length };
+      }, [currentChapter, scores]);
+
+      // Overall stats (replicates desktop overallStats)
+      const overallStats = useMemo(() => {
+        let total = 0, scored = 0, fullyMet = 0, partial = 0, notMet = 0, na = 0;
+        activeChapters.forEach(ch => {
+          if (!ch.placeholder) {
+            const subs = getAllSubstandards(ch.standards);
+            total += subs.length;
+            subs.forEach(sub => {
+              const score = scores[sub.id];
+              if (score?.value !== undefined && score?.value !== null) {
+                scored++;
+                if (score.value === 'NA') na++;
+                else if (score.value === 2) fullyMet++;
+                else if (score.value === 1) partial++;
+                else if (score.value === 0) notMet++;
+              }
+            });
+          }
+        });
+        const applicable = fullyMet + partial + notMet;
+        const maxPossible = applicable * 2;
+        const earnedPoints = (fullyMet * 2) + (partial * 1);
+        const percentage = maxPossible > 0 ? Math.round((earnedPoints / maxPossible) * 100 * 100) / 100 : 0;
+        const pending = total - scored;
+        return { total, scored, fullyMet, partial, notMet, na, percentage, pending };
+      }, [scores, activeChapters]);
+
+      // Standard completeness
+      const isStdComplete = useMemo(() =>
+        currentSubs.length > 0 && currentSubs.every(s => scores[s.id]?.value !== undefined && scores[s.id]?.value !== null),
+        [currentSubs, scores]
+      );
+
+      // Filter handler — tap a stat to enter filter browse mode
+      const handleFilterTap = (filterType) => {
+        if (mobileScoreFilter === filterType) {
+          // Deactivate filter — go back to normal scoring
+          setMobileScoreFilter(null);
+          setFilteredSubsList(null);
+          setFilteredSubsIndex(0);
+          return;
+        }
+        // Build filtered list
+        const filtered = allSubs.filter(sub => {
+          const sv = scores[sub.id]?.value;
+          if (filterType === 'full') return sv === 2;
+          if (filterType === 'partial') return sv === 1;
+          if (filterType === 'not-met') return sv === 0;
+          if (filterType === 'na') return sv === 'NA';
+          if (filterType === 'pending') return sv === undefined || sv === null;
+          return false;
+        });
+        if (filtered.length === 0) return;
+        setMobileScoreFilter(filterType);
+        setFilteredSubsList(filtered);
+        setFilteredSubsIndex(0);
+      };
+
+      // Internal navigation logic (no guard)
+      const doGoNext = useCallback(() => {
+        if (mobileScoreFilter && filteredSubsList) {
+          if (filteredSubsIndex + 1 < filteredSubsList.length) {
+            setFilteredSubsIndex(filteredSubsIndex + 1);
+          }
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+          return;
+        }
+        if (currentSubIdx + 1 < currentSubs.length) {
+          setCurrentSubIdx(currentSubIdx + 1);
+        } else if (currentStdIdx + 1 < currentChapter.standards.length) {
+          setCurrentStdIdx(currentStdIdx + 1);
+          setCurrentSubIdx(0);
+        } else if (currentChapterIdx + 1 < activeChapters.length) {
+          setCurrentChapterIdx(currentChapterIdx + 1);
+          setCurrentStdIdx(0);
+          setCurrentSubIdx(0);
+        }
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }, [currentSubIdx, currentSubs.length, currentStdIdx, currentChapter, currentChapterIdx, activeChapters.length, mobileScoreFilter, filteredSubsList, filteredSubsIndex]);
+
+      const doGoPrev = useCallback(() => {
+        if (mobileScoreFilter && filteredSubsList) {
+          if (filteredSubsIndex > 0) {
+            setFilteredSubsIndex(filteredSubsIndex - 1);
+          }
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+          return;
+        }
+        if (currentSubIdx > 0) {
+          setCurrentSubIdx(currentSubIdx - 1);
+        } else if (currentStdIdx > 0) {
+          const prevStd = currentChapter.standards[currentStdIdx - 1];
+          const prevSubs = getAllSubstandards([prevStd]);
+          setCurrentStdIdx(currentStdIdx - 1);
+          setCurrentSubIdx(prevSubs.length - 1);
+        } else if (currentChapterIdx > 0) {
+          const prevCh = activeChapters[currentChapterIdx - 1];
+          const lastStdIdx = prevCh.standards.length - 1;
+          const lastSubs = getAllSubstandards([prevCh.standards[lastStdIdx]]);
+          setCurrentChapterIdx(currentChapterIdx - 1);
+          setCurrentStdIdx(lastStdIdx);
+          setCurrentSubIdx(lastSubs.length - 1);
+        }
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }, [currentSubIdx, currentStdIdx, currentChapterIdx, currentChapter, activeChapters, mobileScoreFilter, filteredSubsList, filteredSubsIndex]);
+
+      // Navigation with unsaved rewrite guard (Issue 3)
+      const goNext = useCallback(() => {
+        if (hasActiveRewrite && activeRewriteRef.current) {
+          setNavGuardDialog({ direction: 'next' });
+          return;
+        }
+        doGoNext();
+      }, [hasActiveRewrite, doGoNext]);
+
+      const goPrev = useCallback(() => {
+        if (hasActiveRewrite && activeRewriteRef.current) {
+          setNavGuardDialog({ direction: 'prev' });
+          return;
+        }
+        doGoPrev();
+      }, [hasActiveRewrite, doGoPrev]);
+
+      // Nav guard dialog actions
+      const handleNavGuardAccept = useCallback(() => {
+        // Accept the rewrite, then navigate
+        if (activeRewriteRef.current?.accept) activeRewriteRef.current.accept();
+        const dir = navGuardDialog?.direction;
+        setNavGuardDialog(null);
+        setHasActiveRewrite(false);
+        setTimeout(() => { dir === 'next' ? doGoNext() : doGoPrev(); }, 50);
+      }, [navGuardDialog, doGoNext, doGoPrev]);
+
+      const handleNavGuardDismiss = useCallback(() => {
+        // Dismiss the rewrite, then navigate
+        if (activeRewriteRef.current?.dismiss) activeRewriteRef.current.dismiss();
+        const dir = navGuardDialog?.direction;
+        setNavGuardDialog(null);
+        setHasActiveRewrite(false);
+        setTimeout(() => { dir === 'next' ? doGoNext() : doGoPrev(); }, 50);
+      }, [navGuardDialog, doGoNext, doGoPrev]);
+
+      const handleNavGuardCancel = useCallback(() => {
+        // Stay on current sub-standard
+        setNavGuardDialog(null);
+      }, []);
+
+      // Chapter selection from drawer
+      const handleChapterSelect = (chapterId) => {
+        const idx = activeChapters.findIndex(ch => ch.id === chapterId);
+        if (idx >= 0) {
+          setCurrentChapterIdx(idx);
+          setCurrentStdIdx(0);
+          setCurrentSubIdx(0);
+        }
+        // Clear any filter when navigating via drawer
+        setMobileScoreFilter(null);
+        setFilteredSubsList(null);
+        setDrawerOpen(false);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      };
+
+      // Sub-standard selection from drawer
+      const handleSubstandardSelect = (chapterId, sub) => {
+        const chIdx = activeChapters.findIndex(ch => ch.id === chapterId);
+        if (chIdx < 0) return;
+        setCurrentChapterIdx(chIdx);
+        const ch = activeChapters[chIdx];
+        // Find which standard and sub-index this belongs to
+        for (let si = 0; si < ch.standards.length; si++) {
+          const stdSubs = getAllSubstandards([ch.standards[si]]);
+          const subIdx = stdSubs.findIndex(s => s.id === sub.id);
+          if (subIdx >= 0) {
+            setCurrentStdIdx(si);
+            setCurrentSubIdx(subIdx);
+            break;
+          }
+        }
+        // Clear filter
+        setMobileScoreFilter(null);
+        setFilteredSubsList(null);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      };
+
+      // Score change handler (reuse from ScoringPage logic)
+      const handleScoreChange = useCallback((substandardId, value, comment, location) => {
+        setScores(prev => ({
+          ...prev,
+          [substandardId]: { value, comment, location, scoredAt: new Date().toISOString() }
+        }));
+      }, [setScores]);
+
+      // Debounced nav buttons — prevent rapid-fire accidental taps (Issue 4)
+      const navCooldownRef = useRef(false);
+      const debouncedGoNext = useCallback(() => {
+        if (navCooldownRef.current) return;
+        navCooldownRef.current = true;
+        goNext();
+        setTimeout(() => { navCooldownRef.current = false; }, 350);
+      }, [goNext]);
+      const debouncedGoPrev = useCallback(() => {
+        if (navCooldownRef.current) return;
+        navCooldownRef.current = true;
+        goPrev();
+        setTimeout(() => { navCooldownRef.current = false; }, 350);
+      }, [goPrev]);
+
+      const isFirst = mobileScoreFilter
+        ? filteredSubsIndex === 0
+        : (currentChapterIdx === 0 && currentStdIdx === 0 && currentSubIdx === 0);
+      const isLast = mobileScoreFilter
+        ? (filteredSubsList && filteredSubsIndex >= filteredSubsList.length - 1)
+        : (currentChapterIdx === activeChapters.length - 1 &&
+           currentStdIdx === (currentChapter?.standards?.length || 1) - 1 &&
+           currentSubIdx === currentSubs.length - 1);
+
+      // Score color for percentage
+      const pctColor = overallStats.percentage >= 80 ? 'var(--success)' :
+                       overallStats.percentage >= 50 ? 'var(--warning)' : 'var(--danger)';
+
+      if (!currentSubstandard) {
+        return React.createElement('div', { className: 'mobile-scoring-page',
+          style: { justifyContent: 'center', alignItems: 'center', padding: '40px 20px', textAlign: 'center' }
+        },
+          React.createElement('p', { style: { fontSize: '16px', color: 'var(--text-secondary)' } },
+            'No sub-standards found. Please set up an assessment first.'),
+          React.createElement('button', {
+            className: 'btn btn-primary',
+            onClick: onGoHome,
+            style: { marginTop: '16px' }
+          }, 'Go to Dashboard')
+        );
+      }
+
+      return (
+        React.createElement('div', { className: 'mobile-scoring-page' },
+          // Unsaved rewrite navigation guard dialog
+          navGuardDialog && React.createElement('div', {
+            className: 'mobile-nav-guard-overlay',
+            onClick: handleNavGuardCancel
+          },
+            React.createElement('div', {
+              className: 'mobile-nav-guard-dialog',
+              onClick: (e) => e.stopPropagation()
+            },
+              React.createElement('div', { className: 'mobile-nav-guard-title' }, 'Unsaved AI Rewrite'),
+              React.createElement('div', { className: 'mobile-nav-guard-msg' },
+                'You have an AI-rewritten finding that hasn\'t been accepted yet. What would you like to do?'),
+              React.createElement('div', { className: 'mobile-nav-guard-actions' },
+                React.createElement('button', {
+                  className: 'mobile-nav-guard-btn accept',
+                  onClick: handleNavGuardAccept
+                }, '\u2713 Accept & Move'),
+                React.createElement('button', {
+                  className: 'mobile-nav-guard-btn dismiss',
+                  onClick: handleNavGuardDismiss
+                }, '\u2717 Dismiss & Move'),
+                React.createElement('button', {
+                  className: 'mobile-nav-guard-btn cancel',
+                  onClick: handleNavGuardCancel
+                }, 'Stay Here')
+              )
+            )
+          ),
+
+          // Nav Drawer (v2 — expandable)
+          React.createElement(MobileNavDrawer, {
+            isOpen: drawerOpen,
+            onClose: () => setDrawerOpen(false),
+            chapters: activeChapters,
+            currentChapterId: currentChapter.id,
+            currentSubstandardId: currentSubstandard?.id,
+            scores: scores,
+            onSelectChapter: handleChapterSelect,
+            onSelectSubstandard: handleSubstandardSelect
+          }),
+
+          // Sticky Header (v2 — dark, wider info)
+          React.createElement('div', { className: 'mobile-header-bar' },
+            React.createElement('div', { className: 'mobile-header-top-row' },
+              React.createElement('button', {
+                className: 'mobile-menu-toggle',
+                onClick: () => setDrawerOpen(true)
+              }, '\u2630'),
+              React.createElement('div', { className: 'mobile-chapter-badge' }, currentChapter.code),
+              React.createElement('div', { className: 'mobile-standard-info' },
+                React.createElement('div', { className: 'mobile-standard-code' },
+                  (currentStandard?.code || '') + (isStdComplete ? ' \u2713' : '')),
+                React.createElement('div', { className: 'mobile-standard-title' }, currentStandard?.title || '')
+              )
+            ),
+            React.createElement('div', { className: 'mobile-header-progress' },
+              React.createElement('div', {
+                className: 'mobile-header-progress-fill',
+                style: { width: chapterProgress.total > 0 ? `${(chapterProgress.scored / chapterProgress.total) * 100}%` : '0%' }
+              })
+            ),
+            React.createElement('div', { className: 'mobile-sub-counter' },
+              mobileScoreFilter
+                ? `Browsing ${mobileScoreFilter === 'not-met' ? 'Not Met' : mobileScoreFilter === 'full' ? 'Fully Met' : mobileScoreFilter.charAt(0).toUpperCase() + mobileScoreFilter.slice(1)}: ${filteredSubsIndex + 1} of ${filteredSubsList ? filteredSubsList.length : 0}  \u2022  Tap stat again to exit`
+                : `Sub ${currentSubIdx + 1} of ${currentSubs.length}  \u2022  Chapter ${chapterProgress.scored}/${chapterProgress.total}  \u2022  Overall ${overallStats.scored}/${overallStats.total}`
+            )
+          ),
+
+          // Scoring Card (swipe removed — buttons only, Issue 4)
+          React.createElement('div', {
+            className: 'mobile-scoring-container'
+          },
+            React.createElement(MobileSubstandardCard, {
+              key: currentSubstandard.id,
+              substandard: currentSubstandard,
+              score: scores[currentSubstandard.id],
+              onScoreChange: handleScoreChange,
+              sessionCounts: sessionCounts,
+              showToast: showToast,
+              onRewriteStateChange: (active, fns) => {
+                setHasActiveRewrite(active);
+                activeRewriteRef.current = active ? fns : null;
+              }
+            }),
+
+            // Navigation arrows (debounced, Issue 4)
+            React.createElement('div', { className: 'mobile-nav-arrows' },
+              React.createElement('button', {
+                className: 'mobile-nav-arrow',
+                onClick: debouncedGoPrev,
+                disabled: isFirst
+              }, '\u25B2 Prev'),
+              React.createElement('button', {
+                className: 'mobile-nav-arrow',
+                onClick: debouncedGoNext,
+                disabled: isLast
+              }, 'Next \u25BC')
+            ),
+
+            // Navigation hint
+            React.createElement('div', {
+              className: `mobile-swipe-hint ${scores[currentSubstandard.id]?.value !== undefined && scores[currentSubstandard.id]?.value !== null ? 'scored' : ''}`
+            }, scores[currentSubstandard.id]?.value !== undefined && scores[currentSubstandard.id]?.value !== null
+              ? (isLast ? '\u2713 All done!' : 'Tap Next \u25BC to continue')
+              : 'Score this sub-standard to continue'
+            ),
+
+            // Auto-save indicator
+            React.createElement(AutosaveIndicator, { saving: saving })
+          ),
+
+          // Progress Footer (v2 — desktop-style stats with filter taps)
+          React.createElement('div', { className: 'mobile-progress-footer' },
+            React.createElement('div', { className: 'mobile-footer-bar' },
+              React.createElement('div', {
+                className: 'mobile-footer-bar-fill',
+                style: { width: overallStats.total > 0 ? `${(overallStats.scored / overallStats.total) * 100}%` : '0%' }
+              })
+            ),
+            React.createElement('div', { className: 'mobile-footer-stats' },
+              // Percentage
+              React.createElement('div', { className: 'mobile-footer-stat', style: { cursor: 'default' } },
+                React.createElement('div', { className: 'mobile-footer-pct', style: { color: pctColor } }, overallStats.percentage + '%'),
+                React.createElement('div', { className: 'mobile-footer-pct-label' }, 'Score')
+              ),
+              // Fully Met
+              React.createElement('div', {
+                className: `mobile-footer-stat ${mobileScoreFilter === 'full' ? 'active f-full' : ''}`,
+                onClick: () => handleFilterTap('full')
+              },
+                React.createElement('div', { className: 'mobile-footer-stat-val', style: { color: 'var(--success)' } }, overallStats.fullyMet),
+                React.createElement('div', { className: 'mobile-footer-stat-label' }, 'Met')
+              ),
+              // Partial
+              React.createElement('div', {
+                className: `mobile-footer-stat ${mobileScoreFilter === 'partial' ? 'active f-partial' : ''}`,
+                onClick: () => handleFilterTap('partial')
+              },
+                React.createElement('div', { className: 'mobile-footer-stat-val', style: { color: 'var(--warning)' } }, overallStats.partial),
+                React.createElement('div', { className: 'mobile-footer-stat-label' }, 'Partial')
+              ),
+              // Not Met
+              React.createElement('div', {
+                className: `mobile-footer-stat ${mobileScoreFilter === 'not-met' ? 'active f-not-met' : ''}`,
+                onClick: () => handleFilterTap('not-met')
+              },
+                React.createElement('div', { className: 'mobile-footer-stat-val', style: { color: 'var(--danger)' } }, overallStats.notMet),
+                React.createElement('div', { className: 'mobile-footer-stat-label' }, 'Not Met')
+              ),
+              // N/A
+              React.createElement('div', {
+                className: `mobile-footer-stat ${mobileScoreFilter === 'na' ? 'active f-na' : ''}`,
+                onClick: () => handleFilterTap('na')
+              },
+                React.createElement('div', { className: 'mobile-footer-stat-val', style: { color: 'var(--neutral)' } }, overallStats.na),
+                React.createElement('div', { className: 'mobile-footer-stat-label' }, 'N/A')
+              ),
+              // Pending
+              React.createElement('div', {
+                className: `mobile-footer-stat ${mobileScoreFilter === 'pending' ? 'active f-pending' : ''}`,
+                onClick: () => handleFilterTap('pending')
+              },
+                React.createElement('div', { className: 'mobile-footer-stat-val', style: { color: '#8e44ad' } }, overallStats.pending),
+                React.createElement('div', { className: 'mobile-footer-stat-label' }, 'Pending')
+              )
+            )
+          )
+        )
+      );
+    };
+
+    // ==================== END MOBILE SCORING ====================
+
     // SCORING PAGE - PRIMARY VIEW
     const ScoringPage = ({ scores, setScores, saving, isFinalized, finalizedData, viewingMode, setViewingMode, onFinalize, onReset, onGoHome, showToast, assessmentDetails, onEditDetails, onNavigateToHistory, onConfigChange }) => {
+
+      // Phase 25: Mobile detection — render mobile interface on small screens
+      // Debounced to prevent rapid toggling during resize
+      const [isMobileView, setIsMobileView] = useState(window.innerWidth <= 768);
+      useEffect(() => {
+        let debounceTimer = null;
+        const handleResize = () => {
+          clearTimeout(debounceTimer);
+          debounceTimer = setTimeout(() => setIsMobileView(window.innerWidth <= 768), 250);
+        };
+        window.addEventListener('resize', handleResize);
+        return () => { window.removeEventListener('resize', handleResize); clearTimeout(debounceTimer); };
+      }, []);
+
+      // Mobile gate — render mobile scoring interface on small screens
+      if (isMobileView) {
+        return React.createElement(MobileScoringPage, {
+          scores, setScores, saving, isFinalized, finalizedData, viewingMode, setViewingMode,
+          onFinalize, onReset, onGoHome, showToast, assessmentDetails, onEditDetails,
+          onNavigateToHistory, onConfigChange
+        });
+      }
+
       // Get chapters based on current configuration
       const activeChapters = useMemo(() => {
         const config = assessmentDetails?.configuration || 'A1';
@@ -8613,6 +10757,7 @@ Convert this note into one finding sentence. If the raw note contains a specific
       const [copied, setCopied] = useState(false);
       const [exportingExcel, setExportingExcel] = useState(false);
       const [exportingPDF, setExportingPDF] = useState(false);
+      const [pdfProgress, setPdfProgress] = useState(null); // { phase, completed, total, message }
       const [showMobileWarning, setShowMobileWarning] = useState(false);
 
       // Mobile detection for Executive Summary Modal
@@ -9380,12 +11525,24 @@ Convert this note into one finding sentence. If the raw note contains a specific
       };
 
       // Export to PDF function - Enhanced with domain colors, executive narrative, and Lora styling
-      const exportToPDF = () => {
+      const exportToPDF = async () => {
         const { jsPDF } = window.jspdf;
         if (!jsPDF) {
           alert('PDF export library not loaded. Please refresh and try again.');
           return;
         }
+
+        // Progress updates
+        setPdfProgress({ phase: 'init', completed: 0, total: 0, message: 'Loading Arabic fonts...' });
+
+        // Force-load Arabic font before any canvas rendering
+        await forceLoadArabicFont();
+        console.log('[PDF] Arabic font loaded. Check:', document.fonts.check("400 16px 'Noto Naskh Arabic'"));
+
+        setPdfProgress({ phase: 'init', completed: 0, total: 0, message: 'Preparing report data...' });
+
+        // Arabic recommendations will be generated after generateCorrectiveAction is defined
+        let arabicRecommendations = {};
 
         const doc = new jsPDF('p', 'mm', 'a4');
         const pageWidth = doc.internal.pageSize.getWidth();
@@ -9507,6 +11664,29 @@ Convert this note into one finding sentence. If the raw note contains a specific
 
           return action;
         };
+
+        // NOW generate Arabic توصية recommendations (needs generateCorrectiveAction above)
+        const actionItemsForArabic = generateActionPlan();
+        console.log('[PDF Arabic] Action plan items:', actionItemsForArabic.length);
+        if (actionItemsForArabic.length > 0) {
+          setPdfProgress({ phase: 'arabic', completed: 0, total: actionItemsForArabic.length, message: `Generating PDF report... 0/${actionItemsForArabic.length}` });
+          try {
+            const apiKey = localStorage.getItem('standardshub_anthropic_key');
+            console.log('[PDF Arabic] API key set:', !!apiKey, '| URL:', getRewriteUrl());
+            arabicRecommendations = await generateArabicRecommendations(actionItemsForArabic, null, generateCorrectiveAction, (prog) => {
+              setPdfProgress({ phase: prog.phase, completed: prog.completed, total: prog.total, message: `Generating PDF report... ${prog.completed}/${prog.total}` });
+            });
+            const count = Object.keys(arabicRecommendations).length;
+            console.log('[PDF Arabic] Generated:', count, '/', actionItemsForArabic.length);
+            if (count > 0) {
+              console.log('[PDF Arabic] Sample:', Object.entries(arabicRecommendations)[0]);
+            }
+          } catch (err) {
+            console.error('[PDF Arabic] FAILED:', err);
+          }
+        }
+
+        setPdfProgress({ phase: 'rendering', completed: 0, total: 0, message: 'Rendering PDF pages...' });
 
         // Generate Executive Narrative based on findings
         const generateExecutiveNarrative = () => {
@@ -9921,6 +12101,38 @@ Convert this note into one finding sentence. If the raw note contains a specific
                 yPos += 4;
               });
 
+              // ---- ARABIC توصية RECOMMENDATION (if generated via Claude API) ----
+              if (arabicRecommendations && arabicRecommendations[item.id]) {
+                yPos += 3;
+                checkNewPage(25);
+
+                // Pre-render both title and body to measure total height for accent bar
+                const tawsiyaTitle = renderArabicBlock('\u062a\u0648\u0635\u064a\u0629:', pageWidth - 44, {
+                  fontSize: 13, fontWeight: '700', color: '#1a3a4a', lineHeight: 1.4
+                });
+                const tawsiyaBody = renderArabicBlock(arabicRecommendations[item.id], pageWidth - 44, {
+                  fontSize: 12, fontWeight: '400', color: '#2c3e50', lineHeight: 1.8
+                });
+                const ttH = Math.min(tawsiyaTitle.heightMM, 7);
+                const tbH = tawsiyaBody.heightMM;
+                const totalH = ttH + tbH + 1;
+
+                if (yPos + totalH > pageHeight - 20) { doc.addPage(); yPos = 25; }
+
+                // Right-aligned teal accent bar spanning full block height
+                doc.setFillColor(15, 82, 100);
+                doc.rect(pageWidth - 22, yPos, 0.8, totalH, 'F');
+
+                // Title — bold "توصية:"
+                doc.addImage(tawsiyaTitle.dataUrl, 'PNG', 22, yPos, pageWidth - 46, ttH);
+                yPos += ttH;
+
+                // Body — 3 action lines
+                doc.addImage(tawsiyaBody.dataUrl, 'PNG', 22, yPos, pageWidth - 46, tbH);
+                yPos += tbH + 1;
+              }
+
+
               yPos += 8;
             });
 
@@ -10094,7 +12306,9 @@ Convert this note into one finding sentence. If the raw note contains a specific
         // Generate filename and download
         const centerNameClean = (details.centerName || 'Assessment').replace(/[^a-zA-Z0-9]/g, '_');
         const date = new Date().toISOString().split('T')[0];
+        setPdfProgress({ phase: 'done', completed: 0, total: 0, message: 'Download complete!' });
         doc.save(`StandardsHub_${centerNameClean}_${date}.pdf`);
+        setTimeout(() => setPdfProgress(null), 2000);
       };
 
       return (
@@ -10106,8 +12320,55 @@ Convert this note into one finding sentence. If the raw note contains a specific
             overflow: 'hidden',
             display: 'flex',
             flexDirection: 'column',
-            margin: isMobile ? '0 auto' : undefined
+            margin: isMobile ? '0 auto' : undefined,
+            position: 'relative'
           }}>
+            {/* PDF Generation Progress Overlay */}
+            {pdfProgress && (
+              <div style={{
+                position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
+                background: 'rgba(255,255,255,0.92)',
+                backdropFilter: 'blur(4px)',
+                zIndex: 100,
+                display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+                gap: '16px', padding: '40px'
+              }}>
+                <div style={{
+                  width: '52px', height: '52px', borderRadius: '50%',
+                  border: '4px solid #e8e8e8', borderTopColor: 'var(--accent, #3498db)',
+                  animation: 'rewriteSpin 0.8s linear infinite'
+                }} />
+                <div style={{ fontSize: '16px', fontWeight: 700, color: 'var(--text-primary)', textAlign: 'center' }}>
+                  {pdfProgress.message}
+                </div>
+                {pdfProgress.total > 0 && (
+                  <div style={{ width: '240px', maxWidth: '80%' }}>
+                    <div style={{
+                      height: '8px', borderRadius: '4px', background: '#e8e8e8', overflow: 'hidden'
+                    }}>
+                      <div style={{
+                        height: '100%', borderRadius: '4px',
+                        background: pdfProgress.phase === 'done' ? 'var(--success)' : 'linear-gradient(90deg, var(--accent, #3498db), #2980b9)',
+                        width: `${Math.round((pdfProgress.completed / pdfProgress.total) * 100)}%`,
+                        transition: 'width 0.3s ease'
+                      }} />
+                    </div>
+                    <div style={{ textAlign: 'center', marginTop: '6px', fontSize: '12px', color: 'var(--text-secondary)' }}>
+                      {Math.round((pdfProgress.completed / pdfProgress.total) * 100)}%
+                    </div>
+                  </div>
+                )}
+                {pdfProgress.phase === 'done' && (
+                  <div style={{ color: 'var(--success)', fontWeight: 600, fontSize: '14px' }}>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ verticalAlign: 'middle', marginRight: '4px' }}>
+                      <polyline points="20 6 9 17 4 12"/>
+                    </svg>
+                    Complete!
+                  </div>
+                )}
+              </div>
+            )}
+
             {/* Header */}
             <div className="modal-header" style={{
               background: 'linear-gradient(135deg, var(--primary) 0%, #1a252f 100%)',
@@ -10601,8 +12862,8 @@ Convert this note into one finding sentence. If the raw note contains a specific
                     <button
                       onClick={() => {
                         setExportingPDF(true);
-                        setTimeout(() => {
-                          exportToPDF();
+                        setTimeout(async () => {
+                          try { await exportToPDF(); } catch(e) { console.error('PDF export error:', e); setPdfProgress(null); }
                           setExportingPDF(false);
                         }, 300);
                       }}
@@ -10745,8 +13006,8 @@ Convert this note into one finding sentence. If the raw note contains a specific
                     <button
                       onClick={() => {
                         setExportingPDF(true);
-                        setTimeout(() => {
-                          exportToPDF();
+                        setTimeout(async () => {
+                          try { await exportToPDF(); } catch(e) { console.error('PDF export error:', e); setPdfProgress(null); }
                           setExportingPDF(false);
                         }, 300);
                       }}
@@ -13629,7 +15890,7 @@ Convert this note into one finding sentence. If the raw note contains a specific
       };
 
       // Export to PDF function - EXACT MATCH with main app ExecutiveSummaryModal
-      const exportToPDF = () => {
+      const exportToPDF = async () => {
         if (!survey) return;
 
         const { jsPDF } = window.jspdf;
@@ -13638,12 +15899,18 @@ Convert this note into one finding sentence. If the raw note contains a specific
           return;
         }
 
-        setExportMessage('Generating PDF report...');
+        setExportMessage('Loading Arabic fonts...');
+
+        // Force-load Arabic font before any canvas rendering
+        await forceLoadArabicFont();
 
         const details = survey.assessmentDetails || {};
         const stats = survey.stats || {};
         const chapterData = getChapterDataForExport();
         const compliance = getComplianceLevelExport(stats.percentage || 0);
+
+        // Arabic recommendations will be generated after generateCorrectiveAction is defined
+        let arabicRecommendations = {};
 
         const doc = new jsPDF('p', 'mm', 'a4');
         const pageWidth = doc.internal.pageSize.getWidth();
@@ -13776,6 +16043,26 @@ Convert this note into one finding sentence. If the raw note contains a specific
             });
           });
         });
+
+        // Generate Arabic توصية recommendations via Claude API
+        console.log('[SharedPDF Arabic] Action plan items:', actionPlanItems.length);
+        if (actionPlanItems.length > 0) {
+          setExportMessage(`Generating PDF report... 0/${actionPlanItems.length}`);
+          try {
+            const apiKey = localStorage.getItem('standardshub_anthropic_key');
+            console.log('[SharedPDF Arabic] API key set:', !!apiKey, '| URL:', getRewriteUrl());
+            if (apiKey) {
+              arabicRecommendations = await generateArabicRecommendations(actionPlanItems, null, generateCorrectiveAction, (prog) => {
+                setExportMessage(`Generating PDF report... ${prog.completed}/${prog.total}`);
+              });
+              const count = Object.keys(arabicRecommendations).length;
+              console.log('[SharedPDF Arabic] Generated:', count, '/', actionPlanItems.length);
+            }
+          } catch (err) {
+            console.error('[SharedPDF Arabic] FAILED:', err);
+          }
+        }
+        setExportMessage('Rendering PDF pages...');
 
         // Generate Executive Narrative based on findings (EXACT match with main app)
         const generateExecutiveNarrative = () => {
@@ -14180,6 +16467,37 @@ Convert this note into one finding sentence. If the raw note contains a specific
                 doc.text(line, 35, yPos);
                 yPos += 4;
               });
+
+              // ---- ARABIC توصية RECOMMENDATION (if generated via Claude API) ----
+              if (arabicRecommendations && arabicRecommendations[item.id]) {
+                yPos += 3;
+                checkNewPage(25);
+
+                // Pre-render both title and body to measure total height for accent bar
+                const tawsiyaTitle = renderArabicBlock('\u062a\u0648\u0635\u064a\u0629:', pageWidth - 44, {
+                  fontSize: 13, fontWeight: '700', color: '#1a3a4a', lineHeight: 1.4
+                });
+                const tawsiyaBody = renderArabicBlock(arabicRecommendations[item.id], pageWidth - 44, {
+                  fontSize: 12, fontWeight: '400', color: '#2c3e50', lineHeight: 1.8
+                });
+                const ttH = Math.min(tawsiyaTitle.heightMM, 7);
+                const tbH = tawsiyaBody.heightMM;
+                const totalH = ttH + tbH + 1;
+
+                if (yPos + totalH > pageHeight - 20) { doc.addPage(); yPos = 25; }
+
+                // Right-aligned teal accent bar spanning full block height
+                doc.setFillColor(15, 82, 100);
+                doc.rect(pageWidth - 22, yPos, 0.8, totalH, 'F');
+
+                // Title — bold "توصية:"
+                doc.addImage(tawsiyaTitle.dataUrl, 'PNG', 22, yPos, pageWidth - 46, ttH);
+                yPos += ttH;
+
+                // Body — Arabic recommendation lines
+                doc.addImage(tawsiyaBody.dataUrl, 'PNG', 22, yPos, pageWidth - 46, tbH);
+                yPos += tbH + 1;
+              }
 
               yPos += 8;
             });
@@ -14789,7 +17107,7 @@ Convert this note into one finding sentence. If the raw note contains a specific
                   )}
                   {/* PDF & Excel - Always Available with proper SVG icons matching main app */}
                   <div style={{ display: 'flex', gap: '12px' }}>
-                    <button onClick={exportToPDF} style={{
+                    <button onClick={async () => { try { await exportToPDF(); } catch(e) { console.error('Shared PDF export error:', e); } }} style={{
                       padding: isMobile ? '14px 0' : '12px 20px',
                       flex: isMobile ? 1 : 'none',
                       background: 'linear-gradient(135deg, #c0392b 0%, #a93226 100%)',
@@ -14828,10 +17146,24 @@ Convert this note into one finding sentence. If the raw note contains a specific
               </div>
             </div>
 
-            {/* Export Message */}
+            {/* Export Message with Progress */}
             {exportMessage && (
-              <div style={{ textAlign: 'center', marginBottom: '24px', padding: '12px 20px', background: '#dcfce7', color: '#166534', borderRadius: '10px', fontSize: '14px', fontWeight: 500 }}>
-                {exportMessage}
+              <div style={{
+                textAlign: 'center', marginBottom: '24px', padding: '16px 20px',
+                background: exportMessage.includes('success') ? '#dcfce7' : 'linear-gradient(135deg, #eff6ff, #f0f7ff)',
+                color: exportMessage.includes('success') ? '#166534' : '#1e3a5f',
+                borderRadius: '12px', fontSize: '14px', fontWeight: 600,
+                border: exportMessage.includes('success') ? '1px solid #bbf7d0' : '1px solid rgba(52,152,219,0.2)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', flexWrap: 'wrap'
+              }}>
+                {!exportMessage.includes('success') && (
+                  <div style={{
+                    width: '20px', height: '20px', borderRadius: '50%',
+                    border: '3px solid #e2e8f0', borderTopColor: 'var(--accent, #3498db)',
+                    animation: 'rewriteSpin 0.8s linear infinite', flexShrink: 0
+                  }} />
+                )}
+                <span>{exportMessage}</span>
               </div>
             )}
 
@@ -15521,19 +17853,16 @@ Convert this note into one finding sentence. If the raw note contains a specific
       const [showScoringHome, setShowScoringHome] = useState(true); // Show Scoring Home by default when Scoring tab is clicked
       const [isMobileApp, setIsMobileApp] = useState(window.innerWidth <= 768);
 
-      // Mobile detection for main app
+      // Mobile detection for main app — debounced, empty deps
       useEffect(() => {
+        let timer = null;
         const checkMobile = () => {
-          const mobile = window.innerWidth <= 768;
-          setIsMobileApp(mobile);
-          // If on mobile and trying to access scoring, redirect to dashboard
-          if (mobile && currentPage === 'scoring') {
-            setCurrentPage('dashboard');
-          }
+          clearTimeout(timer);
+          timer = setTimeout(() => setIsMobileApp(window.innerWidth <= 768), 250);
         };
         window.addEventListener('resize', checkMobile);
-        return () => window.removeEventListener('resize', checkMobile);
-      }, [currentPage]);
+        return () => { window.removeEventListener('resize', checkMobile); clearTimeout(timer); };
+      }, []);
 
       const handleStartScoring = () => {
         setShowLanding(false);
@@ -17314,8 +19643,7 @@ Convert this note into one finding sentence. If the raw note contains a specific
               <div className={`nav-tab ${currentPage === 'centers' ? 'active' : ''}`}
                 data-tab="history"
                 onClick={() => setCurrentPage('centers')}>History</div>
-              {/* Scoring tab - Hidden on mobile */}
-              {!isMobileApp && (
+              {/* Scoring tab - Shows mobile interface on small screens */}
               <div className={`nav-tab ${currentPage === 'scoring' ? 'active' : ''}`}
                 data-tab="scoring"
                 onClick={() => {
@@ -17325,7 +19653,6 @@ Convert this note into one finding sentence. If the raw note contains a specific
                   }
                   setCurrentPage('scoring');
                 }}>Scoring</div>
-              )}
             </div>
           </header>
 

@@ -4,13 +4,22 @@
     "ignore": [
       "firebase.json",
       "**/.*",
-      "**/node_modules/**"
+      "**/node_modules/**",
+      "functions/**",
+      "proxy.js"
     ],
     "rewrites": [
+      {
+        "source": "/api/rewrite",
+        "function": "rewrite"
+      },
       {
         "source": "**",
         "destination": "/index.html"
       }
     ]
+  },
+  "functions": {
+    "source": "functions"
   }
 }

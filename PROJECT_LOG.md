@@ -28,13 +28,16 @@ git push origin main
 |----------|-----|
 | **Live App** | https://standards-hub.web.app |
 | **GitHub** | https://github.com/sa66aam/cbahi-scoring-app |
-| **Website** | https://www.st-hubs.com |
+| **Website** | https://standards-hub.web.app |
 
 ### 📄 Key Files
 | File | Purpose |
 |------|---------|
 | `index.html` | Main application (single file React) |
-| `proxy.js` | Local CORS proxy for Anthropic API (Phase 24) |
+| `proxy.js` | Legacy local CORS proxy — replaced by Cloud Function |
+| `functions/index.js` | Firebase Cloud Function — Anthropic API proxy (production) |
+| `functions/package.json` | Cloud Function dependencies |
+| `firebase.json` | Hosting + Cloud Function routing config |
 | `PROJECT_LOG.md` | This documentation |
 | `assets/logo-sh.png` | Logo image |
 
@@ -3519,7 +3522,7 @@ For modification mode re-finalization:
 **Final Design:**
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│ [Logo] StandardsHub    [www.st-hubs.com]    © 2026 جميع... │
+│ [Logo] StandardsHub    [standards-hub.web.app]    © 2026 جميع... │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -3848,60 +3851,512 @@ COUNT PRIORITY RULE:
 
 ---
 
-## Phase 25: Mobile Scoring Interface (Planned)
-**Date:** After Phase 24
-**Status:** Planned 📋
+## Phase 25: Mobile Scoring Interface & Cloud Function Migration
+**Date:** February 7, 2026
+**Status:** In Progress 🔧
+**Version:** 2.0.0
 
-### 25.1 Concept Overview
-**Goal:** Simplified mobile-first scoring experience
+### 25.1 Firebase Cloud Function Migration
 
-**Design Philosophy:**
-- One sub-standard at a time (card-based)
-- Swipe/flip navigation like landing page carousel
-- Minimal UI - no clutter
-- Quick scoring with AI rewriting support
+**Problem Discovered:** The AI rewrite feature relied on `proxy.js` running on `localhost:3001` — a local Node.js server that only works during development. Once deployed to Firebase Hosting (static files only), there is no server to run. The rewrite button fails with `ERR_CONNECTION_REFUSED` on any deployed instance, including the live site at st-hubs.com.
 
-### 25.2 Interface Mockup
+**Root Cause:** The Anthropic API does not allow direct browser-to-API calls due to CORS restrictions. A server-side proxy is required. The original `proxy.js` was a development-only workaround, never designed for production.
+
+**Solution: Firebase Cloud Function**
+
+Created `functions/index.js` — a serverless Cloud Function that replaces the local proxy:
+
+| Component | Before (Phase 24) | After (Phase 25) |
+|-----------|-------------------|-------------------|
+| **Proxy Server** | `proxy.js` on `localhost:3001` | `functions/index.js` (Cloud Function) |
+| **Fetch URL** | `http://localhost:3001/api/rewrite` | `/api/rewrite` (relative path) |
+| **Deployment** | Manual: `node proxy.js` | Automatic with `firebase deploy` |
+| **Production** | Broken (no server) | Works everywhere |
+| **CORS** | Handled by proxy.js | Handled by Cloud Function |
+
+**Architecture:**
 ```
-┌─────────────────────────────┐
-│     ← Sub-Standard 1/58 →   │
-├─────────────────────────────┤
-│                             │
-│   LD.1.1                    │
-│   ─────────────────────     │
-│   [Standard description     │
-│    text here...]            │
-│                             │
-│   ┌───────────────────┐     │
-│   │ 📝 Finding:       │     │
-│   │ [Text input...]   │     │
-│   │ [🤖 AI Rewrite]   │     │
-│   └───────────────────┘     │
-│                             │
-├─────────────────────────────┤
-│ ✓ Met │ ~ Partial │ ✗ Not  │
-└─────────────────────────────┘
-         ← Swipe →
+Browser → POST /api/rewrite → Firebase Hosting Rewrite Rule
+  → Firebase Cloud Function (functions/index.js)
+    → HTTPS request to api.anthropic.com/v1/messages
+      → Response piped back to browser
 ```
 
-### 25.3 Key Features
-| Feature | Description |
-|---------|-------------|
-| **Card Flip UI** | Swipe left/right between sub-standards |
-| **Progress Bar** | Visual indicator of completion |
-| **Quick Scoring** | Three buttons: Met / Partial / Not Met |
-| **AI Rewrite** | Integrated rewriting for findings |
-| **Auto-Calculate** | Score calculates in background |
-| **No Clutter** | Essential elements only |
+**Files Created:**
+- `functions/index.js` — Cloud Function (same logic as proxy.js but serverless)
+- `functions/package.json` — Dependencies (firebase-functions, firebase-admin)
 
-### 25.4 Technical Approach
-- Reuse landing page carousel swipe mechanics
-- Full-screen card view for each sub-standard
-- Bottom-fixed scoring buttons
-- Floating AI rewrite button
-- Sync with main assessment data
+**Files Modified:**
+- `firebase.json` — Added `functions` config + `/api/rewrite` rewrite rule
+- `index.html` — Changed both fetch calls from `http://localhost:3001/api/rewrite` to `/api/rewrite`
 
-*Implementation details to follow Phase 24 completion*
+**Note:** Firebase Cloud Functions require the Blaze (pay-as-you-go) plan. The free tier covers ~2 million invocations/month — effectively free for this app's usage.
+
+**Legacy:** `proxy.js` is retained for local development but is no longer required for production.
+
+### 25.2 Mobile Scoring Interface — Implementation
+
+**Goal:** Single-handed mobile scoring experience — one sub-standard at a time, card-based navigation.
+
+**New Components (4):**
+
+| Component | Lines | Purpose |
+|-----------|-------|---------|
+| `MobileNavDrawer` | ~7212–7253 | Slide-in chapter navigation panel (280px wide) |
+| `MobileSubstandardCard` | ~7256–7420 | Single sub-standard scoring card with AI rewrite |
+| `MobileScoringPage` | ~7423–7684 | Full mobile scoring orchestrator |
+| Mobile CSS | ~250 lines | Complete mobile stylesheet |
+
+**Mobile Detection & Routing:**
+- ScoringPage detects `window.innerWidth <= 768` with 250ms debounced resize listener
+- `if (isMobileView)` gate returns `MobileScoringPage` instead of desktop layout
+- App component also uses debounced mobile detection with `[]` dependency array (not `[currentPage]`)
+
+**Key Features Implemented:**
+- Sticky header with hamburger menu, chapter badge, standard code/title, progress bar
+- Card-based sub-standard view (one at a time)
+- 2×2 score grid with colored dot indicators (N/A grey, Not Met red, Partial amber, Fully Met green)
+- Findings textarea with AI rewrite sparkle button (identical API to desktop)
+- Touch gestures: swipe up (>60px) = next sub, swipe down = previous (disabled when textarea focused)
+- Navigation arrows (▲/▼) below card
+- Sub counter: "Sub 2 of 5 • Chapter 12/119 • Overall 240/349"
+- Side drawer: lists all chapters with domain badge, progress counts, tap-to-jump navigation
+
+### 25.3 Mobile Crash Bugs — Diagnosed & Fixed
+
+**Bug 1: "New Assessment" crashes on mobile**
+- **Symptom:** Pressing "New Assessment" on mobile caused the page to crash/go blank
+- **Root Cause:** App component `useEffect` had `[currentPage]` dependency, causing mobile detection to re-run on every page change → excessive re-renders
+- **Fix:** Changed to `[]` empty dependency array — mobile detection runs once at mount
+
+**Bug 2: Resizing across 768px boundary resets page**
+- **Symptom:** Dragging browser width across the 768px breakpoint sent user back to dashboard
+- **Root Cause:** Rapid `isMobileView` toggling caused component unmount/remount → state loss
+- **Fix:** Added 250ms debounce to both App-level and ScoringPage-level resize handlers
+
+**Bug 3: Mobile gate accidentally removed**
+- **Symptom:** Mobile interface would not render at all — showed desktop layout on mobile
+- **Root Cause:** During the debounce fix edit, the `if (isMobileView) { return MobileScoringPage }` conditional was accidentally removed
+- **Fix:** Re-added the mobile gate block after the debounced useEffect in ScoringPage
+
+### 25.4 Deployment Commands
+```bash
+# Deploy everything (hosting + cloud function):
+firebase deploy
+
+# Deploy only hosting (skip function):
+firebase deploy --only hosting
+
+# Deploy only function:
+firebase deploy --only functions
+
+# Local development (optional, for testing rewrite locally):
+node proxy.js
+```
+
+### 25.5 Mobile UI v2 — Design Overhaul
+**Date:** February 8, 2026
+
+Following initial deployment, the mobile interface received a comprehensive design upgrade:
+
+**Header Redesign (Dark Theme, 60% Width Utilization):**
+- Dark navy gradient background with white text for maximum readability
+- Standard title now shows up to 2 lines (was truncated to 1)
+- Larger 15px standard code, translucent chapter badge with border
+- Sub-counter in soft white against dark background
+
+**Side Drawer v2 (Expandable Chapters → Sub-standards):**
+- Tapping a chapter now expands/collapses (arrow indicator rotates)
+- Under each chapter: full list of sub-standards with color-coded score dots
+  - Green = Fully Met, Red = Not Met, Amber = Partial, Grey = N/A, Outline = Unscored
+- Tapping any sub-standard jumps directly to it and closes the drawer
+- Current sub-standard highlighted in blue
+- Drawer header matches dark theme
+
+**Score Buttons (Capsule Pills):**
+- Changed from 2×2 grid to horizontal row of 4 capsule-shaped pills (24px border-radius)
+- Compact 22px dots, selected state gets shadow glow in score color
+- Labels get bolder when selected
+
+**Progress Footer v2 (Desktop-style Stats with Filters):**
+- Fixed at bottom: thin progress bar + stats row
+- Shows: Score %, Fully Met, Partial, Not Met, N/A, Pending — each with count
+- Tap any stat to enter filter browse mode — scrolls through only those items
+- Tap same stat again to exit filter mode
+- Header counter updates to show "Browsing Not Met: 3 of 12"
+
+### 25.6 Smart API URL Detection
+**Problem:** `/api/rewrite` (relative path) works on deployed Firebase but returns 501 on localhost.
+**Solution:** `getRewriteUrl()` function auto-detects environment:
+- `localhost` or `127.0.0.1` → `http://localhost:3001/api/rewrite` (proxy.js)
+- Any other hostname → `/api/rewrite` (Cloud Function)
+- Zero manual toggling — same code works everywhere
+
+### 25.7 Firebase Deployment — Successful
+**Date:** February 8, 2026
+
+First full deployment with Cloud Function:
+- `firebase deploy` — deployed both hosting and function together
+- Function: `rewrite(us-central1)` — Node.js 20 runtime
+- Function URL: `https://us-central1-standards-hub.cloudfunctions.net/rewrite`
+- Hosting URL: `https://standards-hub.web.app`
+- Container cleanup policy: 1 day retention
+- Initial Node 18 error resolved by upgrading to Node 20 in `functions/package.json`
+
+*Phase 25 Completed: February 8, 2026*
+*Cloud Function Migration: Deployed ✅*
+*Mobile Interface: V2 — Full Design Overhaul ✅*
+*Mobile Crash Bugs: All 3 fixed ✅*
+*Smart URL Detection: Implemented ✅*
+*Firebase Deploy: Hosting + Function live ✅*
+
+---
+
+## Phase 26: Arabic توصية Recommendations
+**Date:** February 9, 2026
+**Status:** ✅ Complete
+**Version:** 2.2.0
+
+### 26.1 Concept & Philosophy
+
+**Goal:** Add professional Arabic recommendation statements (توصية) to the PDF Action Plan, appearing below every Partial (1) or Not Met (0) sub-standard.
+
+**Critical Design Decision — NOT a Translation:**
+The Arabic توصية is intentionally NOT a translation of the English corrective action. They serve different purposes for different audiences:
+
+| Aspect | English Corrective Action | Arabic توصية |
+|--------|--------------------------|--------------|
+| **Source** | Local keyword-matching (`generateCorrectiveAction()`) — no API needed | Claude API (`generateArabicRecommendations()`) — AI-generated |
+| **Audience** | Quality professionals, surveyors | Center management & staff (not quality experts) |
+| **Tone** | Technical, compliance-focused | Kind, supportive, empowering — makes managers feel capable |
+| **Content** | Generic template per keyword category | Finding-focused — addresses the specific gap the surveyor observed |
+| **Purpose** | Quick placeholder corrective action | Practical insight explaining HOW to fix the issue |
+| **Structure** | 1-2 sentences | Dynamic — 1 to 4 lines depending on finding complexity |
+| **Language** | English | Simple professional Arabic — no complex quality terminology |
+
+**Target audience insight:** Most dental center managers are not deep in quality management. The Arabic توصية provides straightforward, actionable guidance they can understand and act on immediately. It reads like advice from a wise quality consultant speaking to you face-to-face.
+
+### 26.2 The Journey — From V1 to Final Version
+
+This feature went through significant iteration based on real testing and expert feedback. The journey is documented here as a learning reference.
+
+#### V1: Initial Build (Standard-Focused)
+- System prompt was entirely in Arabic, instructing Claude to generate 5 numbered steps
+- User message sent: standard text, score, chapter, finding (buried at bottom)
+- Claude focused on the STANDARD TEXT and guessed what the problem might be
+- Result: Generic, verbose, template-like output that often missed the actual issue
+
+**Critical Failure Example:** Standard PC.15.2 is about radiographs, but the finding said "moderate sedation was not implemented." V1's Arabic recommendation talked about hiring dental assistants for x-rays — completely ignoring the actual finding. This exposed the fundamental architectural flaw.
+
+#### V2: Finding-Focused Rewrite
+- System prompt rewritten in English (for clearer instruction to Claude)
+- Changed from "exactly 3 lines" to "2-4 lines depending on complexity"
+- Added Western numbers only (1, 2, 3) — no Arabic-Indic digits
+- Added المركز always, never المنظمة or المؤسسة
+- Made tone gentle — removed "يجب فوراً" (must immediately)
+- But still had a rigid 3-line pattern and some generic content
+
+#### V3: Final Version (Finding as Anchor)
+- **Finding is PRIMARY input** — the user message now sends finding FIRST, labeled clearly
+- **English corrective action sent as context** — `generateCorrectiveAction(item)` passed to API so Claude can see the direction
+- **Standard is secondary context** — gives the "why" but doesn't drive the recommendation
+- **No forced patterns** — Claude writes 1-4 lines as the finding warrants. One clear gap = 1 line. Complex multi-part finding = 3-4 lines.
+- **No assumed timeframes** — any suggested timeline must use "يفضل" (preferable) or "يقترح" (suggested)
+- **No assumed procedures** — if the finding doesn't mention training, don't recommend training. Every line must trace back to the finding.
+- **Natural Arabic prose** — numbering only when listing genuinely separate steps, otherwise flowing sentences
+- **Simple vocabulary** — no منهجية, no آلية مؤسسية, no اطار عمل, no بروتوكول شامل
+
+### 26.3 Implementation Architecture (Final)
+
+**Components:**
+
+1. **`ARABIC_TAWSIYA_SYSTEM_PROMPT`** — English-language system prompt for Claude API
+   - Thinking process: Read Finding → Read English Action → Read Standard → Write recommendation
+   - Writing style: plain professional Arabic, kind tone, dynamic length
+   - Critical rules: no assumed timeframes, no assumed procedures, finding-focused only
+   - Includes correct/incorrect examples for Claude to learn from
+   - Evolved through 3 complete rewrites based on testing
+
+2. **`renderArabicBlock(text, maxWidthMM, options)`** — Canvas-based Arabic text renderer
+   - Uses browser's native Arabic shaping engine (RTL, ligatures, diacritics)
+   - Font: Noto Naskh Arabic via Google Fonts CDN
+   - Renders to high-resolution PNG (4x scale) for crisp PDF embedding
+   - Full-width usage (pageWidth - 44mm) with minimal padding
+   - Whitelist-based Unicode sanitization (see Error 4 below)
+   - Parameters: fontSize (default 13), fontWeight, color, lineHeight
+
+3. **`generateArabicRecommendations(items, showToast, correctiveActionFn, onProgress)`** — Batch AI generator
+   - Accepts `correctiveActionFn` to generate English corrective action as context for each item
+   - Accepts `onProgress` callback for real-time progress updates (`{ phase, completed, total }`)
+   - User message structure: FINDING (primary) → STANDARD → SCORE → DOMAIN → ENGLISH CORRECTIVE ACTION
+   - Processes in parallel batches of 5 via Claude API
+   - max_tokens: 250 (reduced from 500 — shorter, focused output)
+   - Returns `{ subId: arabicText }` map
+   - Comprehensive `[ArabicGen]` console logging at every step
+
+4. **`forceLoadArabicFont()`** — Explicit font preloader
+   - Creates hidden DOM elements with Noto Naskh Arabic in both weights (400, 700)
+   - Calls `document.fonts.load()` via FontFace API for explicit loading
+   - Verifies with `document.fonts.check()` before canvas rendering
+   - Necessary because Google Fonts with `display=swap` lazy-loads weights
+
+5. **PDF Integration** — `exportToPDF` (async)
+   - Calls `await forceLoadArabicFont()` before any canvas rendering
+   - Arabic generation runs after `generateCorrectiveAction` is defined (ordering dependency)
+   - Each action plan item renders: Finding → Corrective Action → **توصية**
+   - Visual design: right-aligned teal accent bar, bold title (13pt), body (12pt, #2c3e50)
+   - Smooth flow below corrective action — minimal vertical gap, no heavy accent lines
+   - Proper page break handling for long recommendations
+
+6. **proxy.js** — Fixed UTF-8 encoding for Arabic (see Error 4 below)
+
+### 26.4 Errors Encountered & Lessons Learned
+
+**Error 1: `ERR_CONNECTION_REFUSED` on localhost:3001**
+- **Cause:** proxy.js was not running. Arabic generator uses `getRewriteUrl()` which routes to localhost:3001
+- **Fix:** Run `node proxy.js` before testing locally
+- **Lesson:** Unlike English corrective actions (local keyword-matching, no API), the Arabic توصية requires a live Claude API connection.
+
+**Error 2: `401 Unauthorized — invalid x-api-key`**
+- **Cause:** Anthropic API key had been disabled/revoked from previous session
+- **Fix:** Generated new API key from console.anthropic.com
+- **Lesson:** API key lifecycle management is critical. When keys are disabled, ALL API features stop simultaneously.
+
+**Error 3: Silent failure — no Arabic appeared in PDF, no visible error**
+- **Cause:** All API errors caught silently, returning `{}`. PDF skipped Arabic blocks.
+- **Fix:** Added comprehensive `[ArabicGen]` console logging at every step
+- **Lesson:** For async batch operations feeding a rendering pipeline, always log intermediate results. Silent catch-all is dangerous.
+
+**Error 4: Diamond characters (◆◆) in rendered Arabic text — THE 4-ATTEMPT JOURNEY**
+
+This was the most persistent bug, requiring 4 attempts to resolve. Documented here as a critical learning:
+
+| Attempt | Hypothesis | Action | Result |
+|---------|-----------|--------|--------|
+| 1 | Exotic Unicode characters in API response | Added sanitization: strip zero-width chars, Arabic presentation forms, control characters | ❌ Diamonds persisted |
+| 2 | Font not loaded when canvas renders | Added `document.fonts.ready` await before rendering | ❌ Diamonds persisted |
+| 3 | Google Fonts lazy-loading not triggered for canvas | Built `forceLoadArabicFont()` — explicit FontFace API loading, DOM element triggers, verification | ❌ Diamonds persisted |
+| 4 | **Whitelist approach** — strip everything not explicitly allowed | Whitelist-only sanitization: basic Latin, Arabic (U+0600-U+06FF), supplements, presentation forms. Strip everything else. | ⚠️ Diamonds stripped but **diagnostic revealed the real cause** |
+
+**The breakthrough:** Attempt 4's diagnostic logging showed: `[ArabicRender] STRIPPED chars: U+FFFD at pos 57, U+FFFD at pos 58`
+
+**U+FFFD is the Unicode REPLACEMENT CHARACTER (�)** — it appears when a byte sequence cannot be properly decoded. The characters were ALREADY corrupted before reaching the canvas.
+
+**Root cause: `proxy.js` UTF-8 encoding bug**
+
+```javascript
+// BUG — line 62 of proxy.js:
+let responseBody = '';
+proxyRes.on('data', chunk => { responseBody += chunk; });
+```
+
+When Node.js receives HTTP response data in chunks (Buffers), doing `responseBody += chunk` implicitly calls `chunk.toString()`. If a multi-byte UTF-8 character (Arabic letters are 2-3 bytes each) is split across two chunks, the first chunk ends with an incomplete byte sequence. JavaScript decodes each incomplete sequence as **U+FFFD (�)**. Two corrupted bytes = two diamonds (◆◆).
+
+**Fix:**
+```javascript
+// FIXED — collect raw Buffers, decode once at end:
+const chunks = [];
+proxyRes.on('data', chunk => { chunks.push(chunk); });
+proxyRes.on('end', () => {
+  const responseBody = Buffer.concat(chunks).toString('utf8');
+  // ... send response
+});
+```
+
+**Lesson:** This is a classic Node.js encoding pitfall. Never concatenate Buffers as strings when dealing with multi-byte character sets (Arabic, Chinese, Japanese, emoji). Always collect Buffers and decode once. The 4-attempt journey happened because the symptom (diamonds in canvas) pointed away from the actual cause (proxy encoding). The diagnostic whitelist in Attempt 4 was the key — it revealed U+FFFD, which pointed directly to the proxy.
+
+**Error 5: Arabic output too verbose, complex, and standard-focused**
+- **Cause:** V1 system prompt was in Arabic, told Claude to write 5 numbered steps based on the standard
+- **Symptoms:** Complex terminology (منهجية، آلية مؤسسية), invented timeframes ("خبرة سنتين"), assumed procedures not in findings, always exactly 3 or 5 numbered lines regardless of complexity
+- **Fix:** Three complete rewrites of `ARABIC_TAWSIYA_SYSTEM_PROMPT` — from Arabic instructions to English instructions, from standard-focused to finding-focused, from rigid format to dynamic length, from commanding tone to supportive tone
+- **Lesson:** Training AI for Arabic output follows the same "brain training" principle as the English findings rewrite engine. The prompt must be specific about what NOT to do (no assumed timeframes, no invented procedures) and must show examples of varying length.
+
+### 26.5 Visual Design Evolution
+
+| Element | V1 | Final |
+|---------|-----|-------|
+| Title font | 10pt, #0f5264 | 13pt bold, #1a3a4a |
+| Body font | 9pt, #1a5c6e | 12pt regular, #2c3e50 |
+| Canvas scale | 3x | 4x (crispier) |
+| Width | pageWidth - 55mm | pageWidth - 44mm (full width) |
+| Accent | Top + bottom teal lines | Single right-aligned teal bar (RTL cue) |
+| Spacing | 4mm gap + 5mm after top line | 3mm gap, smooth flow |
+| Line height | 1.9 (body), 1.5 (title) | 1.8 (body), 1.4 (title) |
+
+### 26.6 Other Improvements Completed This Session
+
+**Improvement A: Conversational Follow-Up on AI Rewrite**
+- Added a "Refine" text input inside the AI rewrite preview panel (both desktop & mobile)
+- Surveyors can type instructions like "make it shorter" or "add clinic location" and the AI will revise the finding
+- Uses the same Claude API with full context: original note, sub-standard, previous AI finding, and surveyor instruction
+- Multiple refinement rounds supported before Accept/Dismiss
+
+**Improvement B: Mobile Navigation Button Sizing**
+- Increased touch targets from 40px to 48px (meets Apple/Google 44px+ guideline)
+- Added 16px gap between buttons (was 10px)
+- Added top margin for breathing room from textarea
+- Larger arrow icons (20px) with subtle shadow for visual affordance
+
+### 26.7 Future Considerations
+
+- [x] Add Arabic توصية to SharedAssessmentViewer (client-facing PDF) — ✅ Done (Phase 27)
+- [ ] Add Arabic توصية column to Excel export
+- [ ] Evaluate caching — avoid re-generating on repeated exports of the same survey
+- [ ] Deploy proxy.js fix to Firebase Cloud Function (production)
+- [x] PDF generation progress indicator — ✅ Done (Phase 27)
+
+---
+
+## Phase 27: Field-Testing Fixes, UI Redesign & Arabic Refinement
+**Date:** February 9, 2026
+**Status:** ✅ Complete
+**Version:** 2.3.0
+
+### 27.1 Overview
+
+Phase 27 addressed four field-testing issues discovered during real surveyor usage, redesigned the AI rewrite button system for both desktop and mobile, added a PDF generation progress overlay, and refined the Arabic توصية system prompt with punctuation, diacritics, formatting, and universality improvements.
+
+### 27.2 Field-Testing Fixes (4 Issues)
+
+**Issue 1: AI Follow-Up Refinement Lacked Full Context**
+- **Problem:** When a surveyor used the "Refine" input to adjust an AI-rewritten finding, the follow-up message to Claude did not include the activity type. Claude would change the opening phrase based on the surveyor's instruction instead of maintaining the correct one (e.g., switching from "Upon interviewing" to "Upon reviewing personnel files" because the surveyor mentioned "4 out of 3").
+- **Fix:** Restructured the follow-up message in both desktop (`handleFollowUp` ~line 6621) and mobile (~line 8024) to include:
+  - Activity type code (INT, PF, DR, OBS, DOC) with explicit label: "← THIS DETERMINES THE OPENING PHRASE"
+  - Session counts (PF, DR, INT) as words
+  - Original raw note for reference
+  - Explicit RULES section mapping each activity type to its required opening phrase
+  - Clear instruction: "The activity type above determines the opening phrase. Do not change it based on the instruction."
+- **Both desktop and mobile handlers updated** — identical logic in JSX (desktop) and React.createElement (mobile)
+
+**Issue 2: Mobile Refine Button Not Thumb-Friendly**
+- **Problem:** The Refine input field and button were always visible in the rewrite preview panel, making the panel crowded on small screens and prone to accidental taps.
+- **Fix:** Implemented a collapsible pattern:
+  - Default state: compact pill-shaped "Refine" toggle button (with SVG edit icon)
+  - On tap: smoothly expands to show input field + send button (with slide-down animation)
+  - Input auto-focuses for immediate typing
+  - Collapses back on Accept or Dismiss
+  - Added `showRefineInput` state variable to `MobileSubstandardCard`
+  - Touch targets: 44px minimum height for all interactive elements
+
+**Issue 3: Unsaved AI Rewrite Alert on Navigation**
+- **Problem:** When a surveyor had an active AI rewrite preview and pressed the Prev/Next navigation buttons, the rewrite was silently lost — no warning, no chance to save.
+- **Fix:** Added a navigation guard system:
+  - `MobileSubstandardCard` reports rewrite state to parent via `onRewriteStateChange` callback
+  - Parent `MobileScoringPage` tracks `hasActiveRewrite` state and `activeRewriteRef` ref
+  - `goNext` and `goPrev` check for active rewrite before navigating
+  - If rewrite is active, a centered modal dialog appears with three options:
+    - "✓ Accept & Move" — saves the rewrite, then navigates
+    - "✗ Dismiss & Move" — discards the rewrite, then navigates
+    - "Stay Here" — cancels navigation, returns to current card
+  - Dialog has overlay backdrop (tap to cancel) and proper z-index (9999)
+  - CSS class: `.mobile-nav-guard-overlay`, `.mobile-nav-guard-dialog`
+
+**Issue 4: Mobile Scroll Triggering Accidental Navigation**
+- **Problem:** Swipe gesture handlers (`handleTouchStart`/`handleTouchEnd`) with a 60px threshold were triggering page navigation during normal scrolling, especially when the finding textarea was long.
+- **Fix:** Complete removal of swipe gesture navigation:
+  - Removed `handleTouchStart`, `handleTouchEnd` functions
+  - Removed `touchStartY`, `textareaFocused` state variables
+  - Removed `onTouchStart`/`onTouchEnd` event handlers from scoring container
+  - Removed focus/blur event listeners for textarea swipe disabling
+  - Navigation is now button-only with labeled "▲ Prev" / "Next ▼" buttons
+  - Added 350ms debounce cooldown (`navCooldownRef`) to prevent rapid double-taps
+  - Nav buttons redesigned: rectangular pills (max-width 140px), 46px min-height, 12px gap, labeled text
+  - Updated hint text from "Swipe up or tap ▼" to "Tap Next ▼ to continue"
+
+### 27.3 AI Rewrite Button System Redesign
+
+**Desktop Changes:**
+- Preview panel: subtle blue tint gradient background (`linear-gradient(135deg, #f0f7ff, #f5f7fa)`), left accent border
+- Accept/Dismiss buttons: increased gap from 8px to 16px, larger padding (7px 20px), rounded corners (8px), SVG icons (checkmark/X), hover effects with shadow elevation
+- Refine button: SVG edit icon added, larger padding
+- Separator line above action buttons for visual grouping
+
+**Mobile Changes:**
+- Accept/Dismiss buttons: full-width side-by-side layout (`flex: 1`), 14px gap, 44px min-height, SVG icons, active-state color feedback
+- Refine toggle: pill-shaped with SVG edit icon, subtle blue tint background, border-radius 20px
+- Separator line above action buttons
+- All buttons meet 44px minimum touch target guideline
+
+### 27.4 PDF Generation Progress Overlay
+
+**Problem:** PDF export with Arabic generation took 15-30 seconds with no feedback — users didn't know if the app was working or frozen.
+
+**Implementation:**
+- Added `onProgress` callback (4th parameter) to `generateArabicRecommendations`
+- Progress reported after each item completes: `{ phase: 'arabic', completed: N, total: M }`
+- Phases: `init` → `arabic` → `arabic-done` → `rendering` → `done`
+
+**Main App (ExecutiveSummaryModal):**
+- Added `pdfProgress` state variable
+- Frosted-glass overlay covers entire modal during export (`rgba(255,255,255,0.92)`, `backdrop-filter: blur(4px)`)
+- Spinning indicator (reuses `rewriteSpin` animation)
+- Progress bar with percentage: blue gradient fill, smooth width transition
+- Phase messages: "Loading Arabic fonts..." → "Preparing report data..." → "Generating PDF report... 14/21" → "Rendering PDF pages..." → "Download complete!"
+- Green checkmark on completion, auto-dismiss after 2 seconds
+- Error handling: `setPdfProgress(null)` on catch
+
+**Shared Assessment Viewer:**
+- Enhanced existing `exportMessage` banner with inline spinner
+- Same progress messages via `onProgress` callback
+- Distinct styling: blue gradient for in-progress, green for success
+- Spinner uses `rewriteSpin` animation
+
+### 27.5 Arabic System Prompt Refinements (V3 → V3.1)
+
+All changes apply to both main app and shared assessment (same global `ARABIC_TAWSIYA_SYSTEM_PROMPT`).
+
+**Refinement A: Formatting — Dashes Instead of Numbers**
+- **Rule added:** "If the recommendation is a single sentence, write it as plain text with NO bullet or dash. If there are multiple separate points, put a small dash (–) before each point. NEVER use numbers (1, 2, 3) or numbered lists."
+- **Rationale:** User feedback showed AI was using numbered lists despite instructions not to. Dashes are cleaner and more appropriate for recommendations.
+
+**Refinement B: Punctuation — Full Stops**
+- **Rule added:** "Every complete sentence must end with a full stop (.). This applies to both single-sentence recommendations and each dash-prefixed point."
+- **Rationale:** Arabic output was inconsistent with sentence-ending punctuation.
+
+**Refinement C: Diacritics (تشكيل)**
+- **Rule added:** "Add diacritical marks ONLY on words that could be misread or mispronounced without them."
+- **Examples provided:** يُوصى، يُفضّل، يُقترح، يُراجَع، يُوثَّق، يُحدَّد، تُعدّ، يُعيَّن، يُسجَّل، تُتابَع
+- **Rationale:** Words like يوصى (passive "recommended") without tashkeel could be misread as يوصي (active "recommends"), changing the meaning. Expert Arabic review identified this as a professional quality issue.
+- **All example outputs updated** with proper tashkeel
+
+**Refinement D: Universal Center Name — No Specialty Suffix**
+- **Rule updated:** Added "NEVER add a specialty suffix like 'السني' or 'الجلدي' — just 'المركز' alone. The reader already knows which center they are. Keep it universal."
+- **Rationale:** The application is expanding beyond dental centers to dermatology and other ambulatory care centers. "المركز السني" would be wrong for a derma center.
+
+**Refinement E: Progress Message Branding**
+- Changed from "Generating Arabic recommendations... 14/21" to "Generating PDF report... 14/21"
+- **Rationale:** More professional and generalized — users don't need to know the internal process.
+
+### 27.6 API Model Update
+
+Updated Claude API model string from `claude-sonnet-4-20250514` to `claude-sonnet-4-5-20250929` across all 5 API call locations (AI rewrite desktop, AI rewrite mobile, AI follow-up desktop, AI follow-up mobile, Arabic توصية generator).
+
+### 27.7 SharedAssessmentViewer Parity
+
+The shared assessment viewer (client-facing PDF export) now has full parity with the main app:
+- Arabic توصية generation with same system prompt and rendering
+- `exportToPDF` converted to async
+- `forceLoadArabicFont()` called before rendering
+- Progress feedback via `setExportMessage` with spinner
+- Same `generateArabicRecommendations` function with `onProgress` callback
+- Same `renderArabicBlock` canvas renderer with whitelist sanitization
+
+### 27.8 Files Modified
+
+| File | Changes |
+|------|---------|
+| `index.html` | Field-testing fixes (4 issues), button redesign CSS + JSX, progress overlay, Arabic prompt refinements, model update, shared viewer parity |
+| `PROJECT_LOG.md` | Phase 27 documentation |
+
+### 27.9 Version Update
+
+**Version:** 2.2.0 → 2.3.0
+- 4 field-testing fixes (follow-up context, collapsible refine, nav guard, swipe removal)
+- AI rewrite button system redesign (desktop + mobile)
+- PDF generation progress overlay with progress bar
+- Arabic prompt V3.1 (dashes, punctuation, tashkeel, universal center name)
+- API model upgraded to claude-sonnet-4-5-20250929
+- SharedAssessmentViewer full Arabic parity
 
 ---
 
@@ -3917,23 +4372,44 @@ COUNT PRIORITY RULE:
 
 SharedAssessmentViewer PDF export now fully matches the main app's ExecutiveSummaryModal output, including Finding prefixes and standard body text.
 
+### RESOLVED: Arabic توصية Diamond Characters
+
+**Issue ID:** ARABIC-001
+**Severity:** High
+**Status:** ✅ RESOLVED
+**Discovered:** February 9, 2026
+**Resolved:** February 9, 2026
+**Root Cause:** proxy.js UTF-8 encoding bug — multi-byte Arabic characters split across HTTP response chunks
+**Fix:** Buffer.concat() approach in proxy.js (see Error 4 in Phase 26)
+
 ---
 
-*Document Last Updated: February 7, 2026*
-*Application Version: 1.9.0*
-*Domain: st-hubs.com ✅*
+*Document Last Updated: February 9, 2026*
+*Application Version: 2.3.0*
+*Hosting: standards-hub.web.app ✅*
+*Cloud Function: us-central1-standards-hub ✅*
 *Export Features: PDF Complete ✅, Excel Complete ✅*
 *Landing Page: Polished ✅*
 *Share Modal: Functional ✅*
-*Arabic Typography: Amiri Font ✅*
+*Arabic Typography: Amiri + Noto Naskh Arabic ✅*
 *Footer: Redesigned ✅*
 *Google Workspace: Active ✅*
-*Mobile Interface: Implemented ✅*
+*Mobile Interface: V2 Complete ✅*
 *Client Sharing: Implemented ✅*
 *PDF Parity Issue: Resolved ✅*
 *AI Findings Rewrite Engine: Operational ✅*
-*CORS Proxy: Running ✅*
+*AI Rewrite Follow-Up Refinement: Operational ✅*
+*API Proxy: Firebase Cloud Function (deployed) ✅*
+*Smart URL Detection: Auto localhost/production ✅*
+*Arabic توصية Engine: Operational ✅ (V3.1 — tashkeel, dashes, universal)*
+*Arabic توصية Diamond Fix: Resolved ✅*
+*PDF Progress Overlay: Operational ✅*
+*Mobile Nav Guard (Unsaved Rewrite): Operational ✅*
+*Swipe Navigation: Removed (button-only) ✅*
+*API Model: claude-sonnet-4-5-20250929 ✅*
 
-**Upcoming Phases:**
-*Phase 25: Mobile Scoring Interface 📋 (Next)*
+**Completed Phases:**
+*Phase 25: Mobile Scoring + Cloud Function — Complete ✅*
+*Phase 26: Arabic توصية Recommendations — Complete ✅*
+*Phase 27: Field-Testing Fixes, UI Redesign & Arabic Refinement — Complete ✅*
 
